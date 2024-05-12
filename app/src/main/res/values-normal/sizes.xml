@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="font_size">20sp</dimen>
+    <dimen name="button_font_size">18sp</dimen>
+    <dimen name="main_top_padding">18dp</dimen>
+    <dimen name="button_icon_size">20dp</dimen>
+    <dimen name="button_icon_padding">5dp</dimen>
+    <dimen name="button_icon_radius">1dp</dimen>
+    <dimen name="button_margin">16dp</dimen>
+    <dimen name="text_margin">32dp</dimen>
+    <dimen name="settings_header">30dp</dimen>
+    <dimen name="settings_header_icon">30dp</dimen>
+    <dimen name="settings_header_top">20dp</dimen>
+    <dimen name="settings_settings_item">50dp</dimen>
+    <dimen name="button_icon_padding_left">15dp</dimen>
+</resources>
