@@ -7,6 +7,7 @@
     <dimen name="button_icon_padding">5dp</dimen>
     <dimen name="button_icon_radius">16dp</dimen>
     <dimen name="button_margin">16dp</dimen>
+    <dimen name="button_margin_bottom">8dp</dimen>
     <dimen name="title_bottom_margin">30dp</dimen>
     <dimen name="text_margin">32dp</dimen>
     <dimen name="settings_main_header">70dp</dimen>

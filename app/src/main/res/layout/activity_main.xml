@@ -34,9 +34,11 @@
             app:iconSize="@dimen/button_icon_size"
             android:backgroundTint="@color/white"
             android:text="@string/main_screen_search"
-            android:layout_margin="@dimen/button_margin"
             android:textAllCaps="false"
             android:id="@+id/searchId"
+            android:layout_marginStart="@dimen/button_margin"
+            android:layout_marginEnd="@dimen/button_margin"
+            android:layout_marginBottom="@dimen/button_margin_bottom"
             android:textColor="@color/button_title"/>
         <Button
             android:layout_width="match_parent"
@@ -50,8 +52,10 @@
             app:cornerRadius="@dimen/button_icon_radius"
             app:iconSize="@dimen/button_icon_size"
             android:text="@string/main_screen_media"
-            android:layout_margin="@dimen/button_margin"
             android:textAllCaps="false"
+            android:layout_marginStart="@dimen/button_margin"
+            android:layout_marginEnd="@dimen/button_margin"
+            android:layout_marginBottom="@dimen/button_margin_bottom"
             android:id="@+id/mediaId"
             android:textColor="@color/button_title"/>
         <Button
@@ -67,8 +71,10 @@
             android:backgroundTint="@color/white"
             android:text="@string/main_screen_settings"
             android:textAllCaps="false"
-            android:layout_margin="@dimen/button_margin"
             android:id="@+id/settingsId"
+            android:layout_marginStart="@dimen/button_margin"
+            android:layout_marginEnd="@dimen/button_margin"
+            android:layout_marginBottom="@dimen/button_margin_bottom"
             android:textColor="@color/button_title"/>
     </LinearLayout>
 </LinearLayout>
