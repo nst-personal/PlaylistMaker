@@ -18,6 +18,7 @@
             android:layout_height="@dimen/settings_header_icon"
             android:scaleType="centerCrop"
             android:src="@drawable/back"
+            android:layout_marginLeft="@dimen/settings_header_left"
             android:id="@+id/backId"
             />
         <TextView
@@ -51,7 +52,6 @@
             <Switch
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="20dp"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
         </LinearLayout>
         <Button
@@ -66,7 +66,6 @@
             android:backgroundTint="@color/white"
             android:text="@string/settings_share_app"
             android:layout_marginTop="@dimen/button_margin"
-            android:layout_marginRight="@dimen/button_margin"
             style="?android:attr/borderlessButtonStyle"
             android:textAllCaps="false"
             android:textSize="@dimen/button_font_size"
@@ -84,7 +83,6 @@
             android:backgroundTint="@color/white"
             android:text="@string/settings_support"
             android:layout_marginTop="@dimen/button_margin"
-            android:layout_marginRight="@dimen/button_margin"
             style="?android:attr/borderlessButtonStyle"
             android:textSize="@dimen/button_font_size"
             android:textAllCaps="false"
@@ -104,7 +102,6 @@
             android:textSize="@dimen/button_font_size"
             android:textAllCaps="false"
             android:layout_marginTop="@dimen/button_margin"
-            android:layout_marginRight="@dimen/button_margin"
             style="?android:attr/borderlessButtonStyle"
             android:textColor="@color/button_title"/>
     </LinearLayout>
