@@ -15,6 +15,7 @@
         android:text="@string/playlist_maker_title"
         android:layout_marginLeft="@dimen/button_margin"
         android:layout_marginRight="@dimen/button_margin"
+        android:layout_marginBottom="@dimen/title_bottom_margin"
         android:textColor="@color/white"
         android:textSize="@dimen/font_size" />
     <LinearLayout
