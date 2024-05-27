@@ -1,10 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchActivity">
+    android:background="?attr/colorOnBackground"
+    android:theme="@style/Base.Theme.PlaylistMaker.Common"
+    android:orientation="vertical"
+    android:id="@+id/main"
+    android:padding="@dimen/main_top_padding">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_main_header_small"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="@dimen/common_header_icon"
+            android:layout_height="@dimen/common_header_icon"
+            android:scaleType="centerCrop"
+            app:tint="?attr/colorPrimary"
+            android:src="@drawable/back"
+            android:layout_marginLeft="@dimen/common_header_left"
+            android:id="@+id/backId"
+            />
+        <TextView
+            style="@style/CommonText"
+            android:text="@string/search_main_header"
+            android:layout_marginLeft="@dimen/button_margin"
+            android:layout_marginRight="@dimen/button_margin"
+            android:textSize="@dimen/font_size" />
+    </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/main_top_padding"
+        tools:context=".SettingsActivity">
+        <EditText
+            android:drawableLeft="@drawable/search"
+            android:id="@+id/inputEditText"
+            style="@style/CommonEditText"
+            android:hint="@string/search"
+            android:maxLength="30"
+            android:maxLines="1"
+            android:inputType="text" />
+        <ImageView
+            android:id="@+id/clearIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:visibility="gone" />
+    </LinearLayout>
+</LinearLayout>

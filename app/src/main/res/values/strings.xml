@@ -9,4 +9,11 @@
     <string name="settings_share_app">Поделиться приложением</string>
     <string name="settings_support">Написать в поддержку</string>
     <string name="settings_tc">Пользовательское соглашение</string>
+    <string name="settings_shareadble_link">https://practicum.yandex.kz/profile/android-developer-plus/</string>
+    <string name="settings_shareadble_email">anastasiya.katolikava@yandex.kz</string>
+    <string name="settings_shareadble_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="settings_shareadble_text">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="settings_shareadble_url">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="search_main_header">Поиск</string>
+    <string name="search">Поиск</string>
 </resources>
