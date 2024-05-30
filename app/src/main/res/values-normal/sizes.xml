@@ -23,5 +23,5 @@
     <dimen name="button_icon_padding_left">15dp</dimen>
     <dimen name="textbox_padding">10dp</dimen>
     <dimen name="textbox_padding_top">3dp</dimen>
-    <dimen name="icon_size">24dp</dimen>
+    <dimen name="icon_size">22dp</dimen>
 </resources>
