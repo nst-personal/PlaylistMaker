@@ -3,7 +3,7 @@ package com.example.playlistmaker
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -11,12 +11,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
+
 
 class SearchActivity : AppCompatActivity() {
 
-    companion object {
-        const val SEARCH = "SEARCH"
-    }
     private var searchValue: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,16 +32,14 @@ class SearchActivity : AppCompatActivity() {
         backButton.setOnClickListener{
             finish()
         }
+        val mainLayout = findViewById<LinearLayout>(R.id.main)
         val inputEditText = findViewById<EditText>(R.id.inputEditText)
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
 
         clearButton.setOnClickListener {
             inputEditText.setText("")
-        }
-
-        if (savedInstanceState != null) {
-            searchValue = savedInstanceState.getString(SEARCH, "")
-            inputEditText.setText(searchValue)
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(mainLayout.windowToken, 0)
         }
 
         val simpleTextWatcher = object : TextWatcher {
@@ -51,8 +48,9 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearButton.visibility = clearButtonVisibility(s)
-                if (!s.isNullOrEmpty()) {
+                val isVisible = !s.isNullOrEmpty()
+                clearButton.isVisible = isVisible
+                if (isVisible) {
                     searchValue = s.toString()
                 } else {
                     searchValue = ""
@@ -66,14 +64,6 @@ class SearchActivity : AppCompatActivity() {
         inputEditText.addTextChangedListener(simpleTextWatcher)
     }
 
-    private fun clearButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH, searchValue)
@@ -82,7 +72,10 @@ class SearchActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         searchValue = savedInstanceState.getString(SEARCH, "")
+        findViewById<EditText>(R.id.inputEditText).setText(searchValue)
     }
 
-
+    private companion object {
+        const val SEARCH = "SEARCH"
+    }
 }

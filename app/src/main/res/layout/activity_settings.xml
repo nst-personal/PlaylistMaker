@@ -9,11 +9,15 @@
     android:theme="@style/Base.Theme.PlaylistMaker.Common"
     android:orientation="vertical"
     android:id="@+id/main"
-    android:padding="@dimen/main_top_padding">
+    android:padding="@dimen/main_top_padding"
+    >
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/common_main_header"
-        android:orientation="horizontal">
+        android:layout_height="@dimen/common_main_header_small"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="@dimen/title_bottom_margin"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/main_top_padding_left">
         <ImageView
             android:layout_width="@dimen/common_header_icon"
             android:layout_height="@dimen/common_header_icon"
@@ -25,6 +29,7 @@
             />
         <TextView
             style="@style/CommonText"
+            android:layout_gravity="center"
             android:text="@string/settings_title"
             android:layout_marginLeft="@dimen/button_margin"
             android:layout_marginRight="@dimen/button_margin"
@@ -38,13 +43,16 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/settings_header"
             android:layout_marginTop="@dimen/settings_header_top"
+            android:layout_marginEnd="@dimen/settings_header_left"
             android:orientation="horizontal">
+
             <TextView
                 style="@style/SettingsSubText"
+                android:layout_marginLeft="@dimen/button_margin_mode"
+                android:layout_marginRight="@dimen/button_margin_mode"
                 android:text="@string/settings_dark_mode"
-                android:layout_marginLeft="@dimen/button_margin"
-                android:layout_marginRight="@dimen/button_margin"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
+
             <Switch
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
