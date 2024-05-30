@@ -10,13 +10,10 @@
     android:padding="@dimen/main_top_padding"
     android:paddingLeft="@dimen/main_top_padding_left"
     android:theme="@style/Base.Theme.PlaylistMaker.Common">
-
-    <LinearLayout
+    <Toolbar
         android:layout_width="match_parent"
         android:layout_height="@dimen/common_main_header_small"
-        android:layout_marginBottom="@dimen/main_top_padding"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_marginBottom="@dimen/main_top_padding">
 
         <ImageView
             android:id="@+id/backId"
@@ -26,15 +23,14 @@
             android:scaleType="centerCrop"
             android:src="@drawable/back"
             app:tint="?attr/colorPrimary" />
-
         <TextView
             style="@style/CommonText"
-            android:layout_gravity="center"
+            android:layout_gravity="left"
             android:layout_marginLeft="@dimen/button_margin"
             android:layout_marginRight="@dimen/button_margin"
             android:text="@string/search_main_header"
             android:textSize="@dimen/font_size" />
-    </LinearLayout>
+    </Toolbar>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -50,10 +46,13 @@
         <EditText
             android:id="@+id/inputEditText"
             style="@style/CommonEditText"
+            android:inputType="textVisiblePassword"
             android:background="@null"
+            android:defaultFocusHighlightEnabled="false"
+            app:backgroundTint="@null"
             android:drawableLeft="@drawable/search"
             android:hint="@string/search"
-            android:inputType="text"
+            app:tint="?attr/titleTextAppearance"
             android:maxLength="30"
             android:maxLines="1"
             android:textColor="@color/black"

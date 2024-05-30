@@ -11,23 +11,36 @@
     android:padding="@dimen/main_top_padding">
     <TextView
         android:text="@string/playlist_maker_title"
+        android:layout_marginLeft="@dimen/button_margin"
+        android:layout_marginRight="@dimen/button_margin"
+        android:layout_marginBottom="@dimen/title_bottom_margin"
         style="@style/CommonTitle"
     />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <Button
+            android:layout_marginStart="@dimen/button_margin"
+            android:layout_marginEnd="@dimen/button_margin"
+            android:layout_marginBottom="@dimen/button_margin_bottom"
             app:icon="@drawable/search"
             style="@style/MainButtonItem"
             android:text="@string/main_screen_search"
             android:id="@+id/searchId"/>
         <Button
+            android:layout_marginStart="@dimen/button_margin"
+            android:layout_marginEnd="@dimen/button_margin"
+            android:layout_marginBottom="@dimen/button_margin_bottom"
             style="@style/MainButtonItem"
             app:icon="@drawable/media"
             android:text="@string/main_screen_media"
             android:id="@+id/mediaId"/>
         <Button
+            android:layout_marginStart="@dimen/button_margin"
+            android:layout_marginEnd="@dimen/button_margin"
+            android:layout_marginBottom="@dimen/button_margin_bottom"
             style="@style/MainButtonItem"
             android:layout_weight="1"
             app:icon="@drawable/settings"

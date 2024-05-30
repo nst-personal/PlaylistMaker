@@ -11,12 +11,10 @@
     android:id="@+id/main"
     android:padding="@dimen/main_top_padding"
     >
-    <LinearLayout
+    <Toolbar
         android:layout_width="match_parent"
         android:layout_height="@dimen/common_main_header_small"
-        android:gravity="center_vertical"
         android:layout_marginBottom="@dimen/title_bottom_margin"
-        android:orientation="horizontal"
         android:paddingLeft="@dimen/main_top_padding_left">
         <ImageView
             android:layout_width="@dimen/common_header_icon"
@@ -29,12 +27,12 @@
             />
         <TextView
             style="@style/CommonText"
-            android:layout_gravity="center"
+            android:layout_gravity="left"
             android:text="@string/settings_title"
             android:layout_marginLeft="@dimen/button_margin"
             android:layout_marginRight="@dimen/button_margin"
             android:textSize="@dimen/font_size" />
-    </LinearLayout>
+    </Toolbar>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -59,16 +57,19 @@
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
         </LinearLayout>
         <Button
+            android:gravity="left|center_vertical"
             style="@style/SettingsMenuItem"
             app:icon="@drawable/share"
             android:id="@+id/shareId"
             android:text="@string/settings_share_app"/>
         <Button
+            android:gravity="left|center_vertical"
             style="@style/SettingsMenuItem"
             app:icon="@drawable/support"
             android:id="@+id/supportId"
             android:text="@string/settings_support"/>
         <Button
+            android:gravity="left|center_vertical"
             style="@style/SettingsMenuItem"
             app:icon="@drawable/tc"
             android:id="@+id/tcId"
