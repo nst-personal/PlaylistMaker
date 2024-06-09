@@ -1,10 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchActivity">
+    android:background="?attr/colorOnBackground"
+    android:orientation="vertical"
+    android:padding="@dimen/main_top_padding"
+    android:paddingLeft="@dimen/main_top_padding_left"
+    android:theme="@style/Base.Theme.PlaylistMaker.Common">
+    <Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_main_header_small"
+        android:layout_marginBottom="@dimen/main_top_padding">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/backId"
+            android:layout_width="@dimen/common_header_icon"
+            android:layout_height="@dimen/common_header_icon"
+            android:layout_marginLeft="@dimen/common_header_left"
+            android:scaleType="centerCrop"
+            android:src="@drawable/back"
+            app:tint="?attr/colorPrimary" />
+        <TextView
+            style="@style/CommonText"
+            android:layout_gravity="left"
+            android:layout_marginLeft="@dimen/button_margin"
+            android:layout_marginRight="@dimen/button_margin"
+            android:text="@string/search_main_header"
+            android:textSize="@dimen/font_size" />
+    </Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/main_top_padding"
+        android:layout_marginEnd="@dimen/main_top_padding"
+        android:background="@drawable/textbox"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/textbox_padding"
+        tools:context=".SettingsActivity">
+
+        <EditText
+            android:id="@+id/inputEditText"
+            style="@style/CommonEditText"
+            android:inputType="textVisiblePassword"
+            android:background="@null"
+            android:defaultFocusHighlightEnabled="false"
+            app:backgroundTint="@null"
+            android:drawableLeft="@drawable/search"
+            android:hint="@string/search"
+            app:tint="?attr/titleTextAppearance"
+            android:maxLength="30"
+            android:maxLines="1"
+            android:textColor="@color/black"
+            android:textColorHint="?attr/titleTextAppearance" />
+
+        <ImageView
+            android:id="@+id/clearIcon"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_gravity="center"
+            android:src="@drawable/clear"
+            android:visibility="gone" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:app="http://schemas.android.com/apk/res-auto">
+    <style name="MainButtonItem" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconTint">@color/button_title</item>
+        <item name="cornerRadius">@dimen/button_icon_radius</item>
+        <item name="iconSize">@dimen/button_icon_size</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:text">@string/main_screen_search</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/button_title</item>
+        <item name="android:fontFamily">@font/ys_display_bold</item>
+    </style>
+    <style name="CommonTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">start</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/font_size</item>
+        <item name="android:fontFamily">@font/ys_display_bold</item>
+    </style>
+    <style name="SettingsMenuItem" parent="@style/Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/settings_settings_item</item>
+        <item name="iconGravity">end</item>
+        <item name="iconTint">?attr/colorPrimary</item>
+        <item name="cornerRadius">@dimen/button_icon_radius</item>
+        <item name="iconSize">@dimen/button_icon_size</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:layout_marginTop">@dimen/button_margin</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/button_font_size</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+    </style>
+    <style name="CommonText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:fontFamily">@font/ys_display_bold</item>
+    </style>
+    <style name="SettingsSubText" parent="@style/CommonText">
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+    <style name="CommonEditTextContainer">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">?attr/colorPrimaryContainer</item>
+    </style>
+    <style name="CommonEditText">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:drawableTint">?attr/titleTextAppearance</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">?attr/colorPrimaryContainer</item>
+        <item name="android:textColor">?attr/titleTextAppearance</item>
+        <item name="android:textColorHint">?attr/titleTextAppearance</item>
+    </style>
+
+</resources>

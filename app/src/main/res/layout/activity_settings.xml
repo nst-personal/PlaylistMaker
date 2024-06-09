@@ -5,32 +5,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/settings_background"
+    android:background="?attr/colorOnBackground"
+    android:theme="@style/Base.Theme.PlaylistMaker.Common"
     android:orientation="vertical"
     android:id="@+id/main"
-    android:padding="@dimen/main_top_padding">
-    <LinearLayout
+    android:padding="@dimen/main_top_padding"
+    >
+    <Toolbar
         android:layout_width="match_parent"
-        android:layout_height="@dimen/settings_main_header"
-        android:orientation="horizontal">
+        android:layout_height="@dimen/common_main_header_small"
+        android:layout_marginBottom="@dimen/title_bottom_margin"
+        android:paddingLeft="@dimen/main_top_padding_left">
         <ImageView
-            android:layout_width="@dimen/settings_header_icon"
-            android:layout_height="@dimen/settings_header_icon"
+            android:layout_width="@dimen/common_header_icon"
+            android:layout_height="@dimen/common_header_icon"
             android:scaleType="centerCrop"
+            app:tint="?attr/colorPrimary"
             android:src="@drawable/back"
-            android:layout_marginLeft="@dimen/settings_header_left"
+            android:layout_marginLeft="@dimen/common_header_left"
             android:id="@+id/backId"
             />
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
+            style="@style/CommonText"
+            android:layout_gravity="left"
             android:text="@string/settings_title"
             android:layout_marginLeft="@dimen/button_margin"
             android:layout_marginRight="@dimen/button_margin"
-            android:textColor="@color/black"
             android:textSize="@dimen/font_size" />
-    </LinearLayout>
+    </Toolbar>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -39,70 +41,38 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/settings_header"
             android:layout_marginTop="@dimen/settings_header_top"
+            android:layout_marginEnd="@dimen/settings_header_left"
             android:orientation="horizontal">
+
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
+                style="@style/SettingsSubText"
+                android:layout_marginLeft="@dimen/button_margin_mode"
+                android:layout_marginRight="@dimen/button_margin_mode"
                 android:text="@string/settings_dark_mode"
-                android:layout_marginLeft="@dimen/button_margin"
-                android:layout_marginRight="@dimen/button_margin"
-                android:textColor="@color/black"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
+
             <Switch
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
         </LinearLayout>
         <Button
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/settings_settings_item"
+            android:gravity="left|center_vertical"
+            style="@style/SettingsMenuItem"
             app:icon="@drawable/share"
-            app:iconGravity="end"
-            app:iconTint="@color/button_title"
-            android:gravity="left|center_vertical"
-            app:cornerRadius="@dimen/button_icon_radius"
-            app:iconSize="@dimen/button_icon_size"
-            android:backgroundTint="@color/white"
-            android:text="@string/settings_share_app"
-            android:layout_marginTop="@dimen/button_margin"
-            style="?android:attr/borderlessButtonStyle"
-            android:textAllCaps="false"
-            android:textSize="@dimen/button_font_size"
-            android:textColor="@color/button_title"/>
+            android:id="@+id/shareId"
+            android:text="@string/settings_share_app"/>
         <Button
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/settings_settings_item"
+            android:gravity="left|center_vertical"
+            style="@style/SettingsMenuItem"
             app:icon="@drawable/support"
-            app:iconGravity="end"
-            app:iconPadding="@dimen/button_icon_padding"
-            app:iconTint="@color/button_title"
-            app:cornerRadius="@dimen/button_icon_radius"
-            app:iconSize="@dimen/button_icon_size"
-            android:gravity="left|center_vertical"
-            android:backgroundTint="@color/white"
-            android:text="@string/settings_support"
-            android:layout_marginTop="@dimen/button_margin"
-            style="?android:attr/borderlessButtonStyle"
-            android:textSize="@dimen/button_font_size"
-            android:textAllCaps="false"
-            android:textColor="@color/button_title"/>
+            android:id="@+id/supportId"
+            android:text="@string/settings_support"/>
         <Button
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/settings_settings_item"
-            app:icon="@drawable/tc"
-            app:iconGravity="end"
-            app:iconPadding="@dimen/button_icon_padding"
-            app:iconTint="@color/button_title"
-            app:cornerRadius="@dimen/button_icon_radius"
-            app:iconSize="@dimen/button_icon_size"
             android:gravity="left|center_vertical"
-            android:backgroundTint="@color/white"
-            android:text="@string/settings_tc"
-            android:textSize="@dimen/button_font_size"
-            android:textAllCaps="false"
-            android:layout_marginTop="@dimen/button_margin"
-            style="?android:attr/borderlessButtonStyle"
-            android:textColor="@color/button_title"/>
+            style="@style/SettingsMenuItem"
+            app:icon="@drawable/tc"
+            android:id="@+id/tcId"
+            android:text="@string/settings_tc"/>
     </LinearLayout>
 </LinearLayout>
