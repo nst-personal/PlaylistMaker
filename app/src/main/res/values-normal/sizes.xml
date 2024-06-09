@@ -3,6 +3,7 @@
     <dimen name="font_size">20sp</dimen>
     <dimen name="button_font_size">18sp</dimen>
     <dimen name="main_top_padding">18dp</dimen>
+    <dimen name="item_top_padding">8dp</dimen>
     <dimen name="main_top_padding_left">4dp</dimen>
     <dimen name="button_icon_size">20dp</dimen>
     <dimen name="button_icon_padding">5dp</dimen>
@@ -24,4 +25,8 @@
     <dimen name="textbox_padding">10dp</dimen>
     <dimen name="textbox_padding_top">3dp</dimen>
     <dimen name="icon_size">22dp</dimen>
+    <dimen name="title_size">16dp</dimen>
+    <dimen name="subtitle_size">13dp</dimen>
+    <dimen name="view_padding">18dp</dimen>
+    <dimen name="icon_margin_right">6dp</dimen>
 </resources>

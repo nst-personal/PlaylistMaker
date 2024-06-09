@@ -61,5 +61,36 @@
         <item name="android:textColor">?attr/titleTextAppearance</item>
         <item name="android:textColorHint">?attr/titleTextAppearance</item>
     </style>
+    <style name="TrackImage">
+        <item name="android:layout_width">45dp</item>
+        <item name="android:layout_height">45dp</item>
+        <item name="android:background">?attr/backgroundIconColor</item>
+        <item name="android:backgroundTint">?attr/backgroundIconColor</item>
+    </style>
+    <style name="TrackDelimiter">
+        <item name="android:layout_width">16dp</item>
+        <item name="android:layout_height">16dp</item>
+        <item name="android:backgroundTint">?attr/searchSubTitle</item>
+    </style>
+    <style name="TrackTitle">
+        <item name="android:color">?attr/searchTitle</item>
+        <item name="android:textSize">@dimen/title_size</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    <style name="TrackSubTitle">
+        <item name="android:textSize">@dimen/subtitle_size</item>
+        <item name="android:color">?attr/searchSubTitle</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    <style name="TrackButton">
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
+    </style>
+    <style name="TrackViewContainer">
+        <item name="android:layout_marginTop">4dp</item>
+    </style>
+
 
 </resources>
