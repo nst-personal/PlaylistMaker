@@ -9,11 +9,25 @@
     android:gravity="center"
     android:theme="@style/Base.Theme.PlaylistMaker"
     android:padding="@dimen/item_top_padding">
-    <ImageView
-        android:id="@+id/image"
-        android:background="@drawable/image_icon"
+    <com.google.android.material.card.MaterialCardView
+        style="@style/TrackImage"
+        android:visibility="visible"
+        app:strokeColor="@null"
+        app:strokeWidth="0dp"
+        app:cardCornerRadius="4dp"
         android:layout_marginRight="@dimen/icon_margin_right"
-        style="@style/TrackImage"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </com.google.android.material.card.MaterialCardView>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
