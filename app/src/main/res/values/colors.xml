@@ -7,4 +7,6 @@
     <color name="button_title">#585858</color>
     <color name="textbox">#E6E8EB</color>
     <color name="textbox_text">#AEAFB4</color>
+    <color name="title_text">#000000</color>
+    <color name="subtitle_text">#AEAFB4</color>
 </resources>
