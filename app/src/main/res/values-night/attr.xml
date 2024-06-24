@@ -3,4 +3,6 @@
     <attr name="searchTitle" format="reference" />
     <attr name="searchSubTitle" format="reference" />
     <attr name="backgroundIconColor" format="reference" />
+    <attr name="retryBackgroundColor" format="reference" />
+    <attr name="retryTextColor" format="reference" />
 </resources>

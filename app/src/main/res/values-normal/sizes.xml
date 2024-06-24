@@ -30,4 +30,8 @@
     <dimen name="view_padding">18dp</dimen>
     <dimen name="icon_margin_right">6dp</dimen>
     <dimen name="icon_radius">4dp</dimen>
+    <dimen name="icon_issue">100dp</dimen>
+    <dimen name="settings_description_top">110dp</dimen>
+    <dimen name="sub_description">20dp</dimen>
+    <dimen name="margin_top">8dp</dimen>
 </resources>
