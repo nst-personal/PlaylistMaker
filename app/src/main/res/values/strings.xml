@@ -16,4 +16,8 @@
     <string name="settings_shareadble_url">https://yandex.ru/legal/practicum_offer/</string>
     <string name="search_main_header">Поиск</string>
     <string name="search">Поиск</string>
+    <string name="search_not_found">Ничего не нашлось</string>
+    <string name="search_error">Проблемы со связью</string>
+    <string name="search_error_check_connection">Загрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="search_retry">Обновить</string>
 </resources>

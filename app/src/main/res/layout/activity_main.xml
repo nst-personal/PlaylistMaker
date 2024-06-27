@@ -25,7 +25,7 @@
             android:layout_marginStart="@dimen/button_margin"
             android:layout_marginEnd="@dimen/button_margin"
             android:layout_marginBottom="@dimen/button_margin_bottom"
-            app:icon="@drawable/search"
+            app:icon="@drawable/search_button"
             style="@style/MainButtonItem"
             android:text="@string/main_screen_search"
             android:id="@+id/searchId"/>
