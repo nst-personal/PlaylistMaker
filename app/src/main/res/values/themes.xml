@@ -16,6 +16,8 @@
         <item name="colorControlNormal">@color/textbox</item>
         <item name="retryBackgroundColor">@color/black</item>
         <item name="retryTextColor">@color/white</item>
+        <item name="notFoundDescription">@color/black</item>
+        <item name="iconColor">@color/textbox_text</item>
     </style>
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker"/>
 </resources>

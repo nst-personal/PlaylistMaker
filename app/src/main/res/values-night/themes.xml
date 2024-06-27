@@ -16,5 +16,7 @@
         <item name="colorControlNormal">@color/white</item>
         <item name="retryBackgroundColor">@color/white</item>
         <item name="retryTextColor">@color/black</item>
+        <item name="notFoundDescription">@color/white</item>
+        <item name="iconColor">@color/black</item>
     </style>
 </resources>

@@ -12,6 +12,7 @@
         <item name="android:text">@string/main_screen_search</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@color/button_title</item>
+        <item name="android:textSize">@dimen/main_button</item>
         <item name="android:fontFamily">@font/ys_display_bold</item>
     </style>
     <style name="CommonTitle">
@@ -53,6 +54,7 @@
     </style>
     <style name="CommonEditText">
         <item name="android:layout_width">0dp</item>
+        <item name="android:textSize">@dimen/title_size</item>
         <item name="android:drawablePadding">8dp</item>
         <item name="android:drawableTint">?attr/titleTextAppearance</item>
         <item name="android:layout_height">wrap_content</item>
@@ -94,18 +96,19 @@
 
     <style name="SearchSubDescription">
         <item name="android:textSize">@dimen/font_size</item>
+        <item name="android:textColor">?attr/notFoundDescription</item>
         <item name="android:gravity">center</item>
         <item name="android:textFontWeight">@integer/material_motion_duration_medium_2</item>
     </style>
 
     <style name="RetryButtonItem" parent="Widget.MaterialComponents.Button.UnelevatedButton">
-        <item name="android:layout_width">150dp</item>
+        <item name="android:layout_width">100dp</item>
         <item name="android:layout_height">fill_parent</item>
         <item name="android:layout_weight">1</item>
         <item name="iconGravity">textStart</item>
         <item name="iconSize">@dimen/button_icon_size</item>
         <item name="iconTint">?attr/retryBackgroundColor</item>
-        <item name="cornerRadius">@dimen/button_icon_radius</item>
+        <item name="cornerRadius">@dimen/button_retry_icon_radius</item>
         <item name="android:textColor">?attr/retryTextColor</item>
         <item name="android:text">@string/main_screen_search</item>
         <item name="android:textAllCaps">false</item>
@@ -114,6 +117,8 @@
         <item name="cornerSize">0dp</item>
         <item name="cornerSizeTopLeft">50%</item>
         <item name="android:layout_marginTop">@dimen/margin_top</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
     </style>
 
 </resources>

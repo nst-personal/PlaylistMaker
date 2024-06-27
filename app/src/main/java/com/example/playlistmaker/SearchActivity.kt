@@ -124,8 +124,9 @@ class SearchActivity : AppCompatActivity() {
     private fun handleTrackData(response: Response<TrackResponse>, recyclerView: RecyclerView, savedSearchValue: String) {
         showSearchErrorView(false, savedSearchValue, recyclerView)
         if (response.isSuccessful) {
-            if (response.body()?.results?.isEmpty() != true) {
-                tracks = response.body()!!.results
+            val resultList = response.body()?.results!!
+            if (resultList.isNotEmpty()) {
+                tracks = resultList
                 adapter = TrackAdapter(tracks)
                 recyclerView.adapter = adapter
                 recyclerView.isVisible = true
