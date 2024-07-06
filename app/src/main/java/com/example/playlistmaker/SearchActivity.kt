@@ -35,6 +35,7 @@ class SearchActivity : AppCompatActivity() {
     lateinit var adapter: TrackAdapter
     private lateinit var historyService: SearchHistory
     private lateinit var historyView: RecyclerView
+    private lateinit var recyclerView: RecyclerView
     private var searchValue: String = ""
 
     private var tracks = listOf<Track>()
@@ -72,11 +73,11 @@ class SearchActivity : AppCompatActivity() {
             inputEditText.setText("")
             val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(mainLayout.windowToken, 0)
+            handleHistoryView()
         }
 
-        val recyclerView = findViewById<RecyclerView>(R.id.tracksList)
+        recyclerView = findViewById(R.id.tracksList)
         recyclerView.layoutManager = LinearLayoutManager(this)
-
         recyclerView.isClickable = true
 
         historyView = findViewById(R.id.historyTracksList)
@@ -97,7 +98,7 @@ class SearchActivity : AppCompatActivity() {
                 }
                 showHistory(false)
                 showSearchNotFoundView(false)
-                showSearchErrorView(false, "", recyclerView)
+                showSearchErrorView(false, "")
                 recyclerView.isVisible = true
 
             }
@@ -112,7 +113,7 @@ class SearchActivity : AppCompatActivity() {
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 val savedSearchValue = searchValue
-                handleSearchTracks(savedSearchValue, recyclerView)
+                handleSearchTracks(savedSearchValue)
                 true
             }
             false
@@ -120,8 +121,7 @@ class SearchActivity : AppCompatActivity() {
 
         inputEditText.setOnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
-                recyclerView.isVisible = false
-                showHistory(!historyService.isEmpty() && searchValue.isEmpty())
+                handleHistoryView()
             }
         }
 
@@ -133,16 +133,21 @@ class SearchActivity : AppCompatActivity() {
 
     }
 
-    private fun handleSearchTracks(savedSearchValue: String, recyclerView: RecyclerView) {
+    private fun handleHistoryView() {
+        recyclerView.isVisible = false
+        showHistory(!historyService.isEmpty() && searchValue.isEmpty())
+    }
+
+    private fun handleSearchTracks(savedSearchValue: String) {
         trackService.search(searchValue)
             .enqueue(object : Callback<TrackResponse> {
                 override fun onResponse(call: Call<TrackResponse>,
                                         response: Response<TrackResponse>
                 ) {
-                    handleTrackData(response, recyclerView, savedSearchValue)
+                    handleTrackData(response, savedSearchValue)
                 }
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                    showSearchErrorView(true, savedSearchValue, recyclerView)
+                    showSearchErrorView(true, savedSearchValue)
                     showSearchNotFoundView(false)
                     showHistory(false)
                     recyclerView.isVisible = false
@@ -150,8 +155,8 @@ class SearchActivity : AppCompatActivity() {
             })
     }
 
-    private fun handleTrackData(response: Response<TrackResponse>, recyclerView: RecyclerView, savedSearchValue: String) {
-        showSearchErrorView(false, savedSearchValue, recyclerView)
+    private fun handleTrackData(response: Response<TrackResponse>, savedSearchValue: String) {
+        showSearchErrorView(false, savedSearchValue)
         if (response.isSuccessful) {
             val resultList = response.body()?.results!!
             if (resultList.isNotEmpty()) {
@@ -172,7 +177,7 @@ class SearchActivity : AppCompatActivity() {
                 recyclerView.isVisible = false
             }
         } else {
-            showSearchErrorView(true, savedSearchValue, recyclerView)
+            showSearchErrorView(true, savedSearchValue)
             showSearchNotFoundView(false)
             showHistory(false)
             recyclerView.isVisible = false
@@ -183,7 +188,6 @@ class SearchActivity : AppCompatActivity() {
         if (isVisible) {
             historyView.adapter = TrackAdapter(historyService.findAll(), null)
         }
-
         val searchNoDataTextView = findViewById<LinearLayout>(R.id.historyData)
         searchNoDataTextView.isVisible = isVisible
     }
@@ -195,7 +199,7 @@ class SearchActivity : AppCompatActivity() {
         searchNoDataImageView.isVisible = isVisible
     }
 
-    private fun showSearchErrorView(isVisible: Boolean, savedSearchValue: String, recyclerView: RecyclerView) {
+    private fun showSearchErrorView(isVisible: Boolean, savedSearchValue: String) {
         val searchErrorTextView = findViewById<TextView>(R.id.searchErrorText)
         val searchErrorConnectionTextView = findViewById<TextView>(R.id.searchErrorTextConnection)
         val searchErrorImageView = findViewById<ImageView>(R.id.searchErrorIcon)
@@ -205,7 +209,7 @@ class SearchActivity : AppCompatActivity() {
         searchErrorImageView.isVisible = isVisible
         retryButton.isVisible = isVisible
         retryButton.setOnClickListener{
-            handleSearchTracks(savedSearchValue, recyclerView)
+            handleSearchTracks(savedSearchValue)
         }
     }
 
