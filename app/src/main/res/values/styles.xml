@@ -47,6 +47,12 @@
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:textColor">?attr/colorPrimary</item>
     </style>
+    <style name="HistorySubText" parent="@style/CommonText">
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textSize">@dimen/search_history_text_size</item>
+        <item name="android:layout_marginEnd">@dimen/search_history_text_margin</item>
+    </style>
     <style name="CommonEditTextContainer">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
@@ -119,6 +125,26 @@
         <item name="android:layout_marginTop">@dimen/margin_top</item>
         <item name="android:paddingLeft">0dp</item>
         <item name="android:paddingRight">0dp</item>
+    </style>
+
+    <style name="ClearHistoryButtonItem" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:layout_width">164dp</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconSize">@dimen/button_icon_size</item>
+        <item name="iconTint">?attr/retryBackgroundColor</item>
+        <item name="cornerRadius">@dimen/button_retry_icon_radius</item>
+        <item name="android:textColor">?attr/retryTextColor</item>
+        <item name="android:text">@string/main_screen_search</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">@font/ys_display_bold</item>
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">0dp</item>
+        <item name="cornerSizeTopLeft">50%</item>
+        <item name="android:layout_marginTop">@dimen/margin_top</item>
+        <item name="android:paddingLeft">6dp</item>
+        <item name="android:paddingRight">6dp</item>
     </style>
 
 </resources>

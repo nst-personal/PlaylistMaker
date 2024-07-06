@@ -10,6 +10,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.playlistmaker.configuration.ShareablePreferencesConfig
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -52,5 +54,14 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(shareIntent)
         }
         tcButton.setOnClickListener(tcButtonClickListener)
+
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
+        themeSwitcher.isChecked = (applicationContext as App).darkTheme
+
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
+            val sharedPreferences = getSharedPreferences(ShareablePreferencesConfig.DARK_THEME, MODE_PRIVATE)
+            sharedPreferences.edit().putBoolean(ShareablePreferencesConfig.DARK_THEME, checked).apply()
+        }
     }
 }

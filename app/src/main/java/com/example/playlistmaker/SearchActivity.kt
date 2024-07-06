@@ -17,8 +17,11 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.configuration.ShareablePreferencesConfig
 import com.example.playlistmaker.entities.Track
+import com.example.playlistmaker.interfaces.OnTrackItemClickListener
 import com.example.playlistmaker.models.TrackResponse
+import com.example.playlistmaker.services.SearchHistory
 import com.example.playlistmaker.services.TrackApi
 import com.example.playlistmaker.view.adapter.TrackAdapter
 import retrofit2.Call
@@ -30,9 +33,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
     lateinit var adapter: TrackAdapter
+    private lateinit var historyService: SearchHistory
+    private lateinit var historyView: RecyclerView
     private var searchValue: String = ""
 
-    var tracks = listOf<Track>()
+    private var tracks = listOf<Track>()
 
     private val translateBaseUrl = "https://itunes.apple.com"
 
@@ -53,6 +58,8 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
 
+        historyService = SearchHistory(getSharedPreferences(ShareablePreferencesConfig.HISTORY_LIST, MODE_PRIVATE))
+
         val backButton = findViewById<ImageView>(R.id.backId)
         backButton.setOnClickListener{
             finish()
@@ -70,6 +77,11 @@ class SearchActivity : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.tracksList)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
+        recyclerView.isClickable = true
+
+        historyView = findViewById(R.id.historyTracksList)
+        historyView.layoutManager = LinearLayoutManager(this)
+
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
@@ -83,9 +95,11 @@ class SearchActivity : AppCompatActivity() {
                 } else {
                     searchValue = ""
                 }
+                showHistory(false)
                 showSearchNotFoundView(false)
                 showSearchErrorView(false, "", recyclerView)
                 recyclerView.isVisible = true
+
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -103,6 +117,20 @@ class SearchActivity : AppCompatActivity() {
             }
             false
         }
+
+        inputEditText.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                recyclerView.isVisible = false
+                showHistory(!historyService.isEmpty() && searchValue.isEmpty())
+            }
+        }
+
+        val clearHistoryButton = findViewById<Button>(R.id.clearHistory)
+        clearHistoryButton.setOnClickListener {
+            historyService.remove()
+            showHistory(false)
+        }
+
     }
 
     private fun handleSearchTracks(savedSearchValue: String, recyclerView: RecyclerView) {
@@ -116,6 +144,7 @@ class SearchActivity : AppCompatActivity() {
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
                     showSearchErrorView(true, savedSearchValue, recyclerView)
                     showSearchNotFoundView(false)
+                    showHistory(false)
                     recyclerView.isVisible = false
                 }
             })
@@ -127,19 +156,36 @@ class SearchActivity : AppCompatActivity() {
             val resultList = response.body()?.results!!
             if (resultList.isNotEmpty()) {
                 tracks = resultList
-                adapter = TrackAdapter(tracks)
+                val trackClickListener = object : OnTrackItemClickListener {
+                    override fun onItemClick(track: Track) {
+                        historyService.add(track)
+                    }
+                }
+                adapter = TrackAdapter(tracks, trackClickListener)
                 recyclerView.adapter = adapter
                 recyclerView.isVisible = true
                 showSearchNotFoundView(false)
+                showHistory(false)
             } else {
                 showSearchNotFoundView(true)
+                showHistory(false)
                 recyclerView.isVisible = false
             }
         } else {
             showSearchErrorView(true, savedSearchValue, recyclerView)
             showSearchNotFoundView(false)
+            showHistory(false)
             recyclerView.isVisible = false
         }
+    }
+
+    private fun showHistory(isVisible: Boolean) {
+        if (isVisible) {
+            historyView.adapter = TrackAdapter(historyService.findAll(), null)
+        }
+
+        val searchNoDataTextView = findViewById<LinearLayout>(R.id.historyData)
+        searchNoDataTextView.isVisible = isVisible
     }
 
     private fun showSearchNotFoundView(isVisible: Boolean) {
