@@ -16,10 +16,6 @@ class App : Application() {
                 Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
         val appMode = sharedPreferences.getBoolean(ShareablePreferencesConfig.DARK_THEME, currentMode);
         switchTheme(appMode)
-
-        sharedPreferences.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
-
-        }
     }
 
     fun switchTheme(darkThemeEnabled: Boolean) {
