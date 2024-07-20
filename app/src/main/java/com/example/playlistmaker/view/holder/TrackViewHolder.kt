@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.entities.Track
+import com.example.playlistmaker.interfaces.OnTrackItemClickListener
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -17,6 +18,11 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val artistNameTextView: TextView = itemView.findViewById(R.id.artistName)
     private val trackTimeTextView: TextView = itemView.findViewById(R.id.trackTime)
     private val imageView: ImageView = itemView.findViewById(R.id.image)
+
+    fun bindView(track: Track, listener: OnTrackItemClickListener?) {
+        itemView.setOnClickListener { listener?.onItemClick(track) }
+        this.bind(track)
+    }
 
     fun bind(model: Track) {
         trackNameTextView.text = model.trackName

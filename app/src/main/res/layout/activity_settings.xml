@@ -51,10 +51,12 @@
                 android:text="@string/settings_dark_mode"
                 android:textSize="18sp" />
 
-            <Switch
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/themeSwitcher"
+                android:layout_gravity="start"
+                style="@style/SettingsMenuItem"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
+                android:layout_height="wrap_content"/>
         </LinearLayout>
         <Button
             android:gravity="left|center_vertical"

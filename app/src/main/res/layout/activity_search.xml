@@ -158,4 +158,44 @@
             />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/historyData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        tools:context=".SettingsActivity"
+        android:layout_marginStart="@dimen/main_top_padding"
+        android:layout_marginEnd="@dimen/main_top_padding"
+        android:visibility="gone"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            style="@style/HistorySubText"
+            android:text="@string/search_history"
+            />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/historyTracksList"
+            android:layout_weight="7"
+            style="@style/TrackViewContainer"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/search_history_margin"
+            android:layout_height="match_parent"
+            />
+        <com.google.android.material.button.MaterialButton
+            android:layout_marginStart="@dimen/margin_search_history_top"
+            android:layout_marginEnd="@dimen/button_margin"
+            android:layout_marginTop="@dimen/search_history_margin"
+            android:layout_marginBottom="@dimen/button_margin_bottom"
+            style="@style/ClearHistoryButtonItem"
+            android:text="@string/clear_history"
+            android:id="@+id/clearHistory"
+            android:layout_width="164dp"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            />
+    </LinearLayout>
 </LinearLayout>
