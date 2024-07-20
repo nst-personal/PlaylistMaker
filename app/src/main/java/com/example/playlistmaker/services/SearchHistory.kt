@@ -7,7 +7,9 @@ import com.example.playlistmaker.models.TrackHistory
 import com.google.gson.Gson
 
 class SearchHistory(val shareableHistory: SharedPreferences) {
-    private val countOfTracks = 10
+    companion object {
+        const val countOfTracks = 10
+    }
 
     fun isEmpty() : Boolean {
         val trackHistory = getHistory()

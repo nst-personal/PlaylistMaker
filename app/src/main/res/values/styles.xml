@@ -128,7 +128,6 @@
     </style>
 
     <style name="ClearHistoryButtonItem" parent="Widget.MaterialComponents.Button.UnelevatedButton">
-        <item name="android:layout_width">164dp</item>
         <item name="android:layout_height">fill_parent</item>
         <item name="android:layout_weight">1</item>
         <item name="iconGravity">textStart</item>
@@ -143,8 +142,6 @@
         <item name="cornerSize">0dp</item>
         <item name="cornerSizeTopLeft">50%</item>
         <item name="android:layout_marginTop">@dimen/margin_top</item>
-        <item name="android:paddingLeft">6dp</item>
-        <item name="android:paddingRight">6dp</item>
     </style>
 
 </resources>

@@ -193,7 +193,9 @@
             style="@style/ClearHistoryButtonItem"
             android:text="@string/clear_history"
             android:id="@+id/clearHistory"
+            android:layout_width="164dp"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
             />
     </LinearLayout>
-
 </LinearLayout>
