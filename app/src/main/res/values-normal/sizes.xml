@@ -40,4 +40,14 @@
     <dimen name="search_history_margin">20dp</dimen>
     <dimen name="search_history_text_size">20dp</dimen>
     <dimen name="search_history_text_margin">16dp</dimen>
+    <dimen name="media_player_main_title">22dp</dimen>
+    <dimen name="media_player_main_subtitle">14dp</dimen>
+    <dimen name="media_player_main_title_padding">8dp</dimen>
+    <dimen name="media_player_description_padding">16dp</dimen>
+    <dimen name="media_player_author_title_padding">24dp</dimen>
+    <dimen name="media_player_button_padding">10dp</dimen>
+    <dimen name="media_player_icon_margin">16dp</dimen>
+    <dimen name="media_player_margin">18dp</dimen>
+    <dimen name="media_player_track_title_padding">18dp</dimen>
+    <dimen name="media_player_author_name_title_padding">32dp</dimen>
 </resources>

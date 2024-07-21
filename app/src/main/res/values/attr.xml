@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="searchTitle" format="reference" />
+    <attr name="trackTitle" format="reference" />
+    <attr name="mediaDescriptionTitle" format="reference" />
     <attr name="searchSubTitle" format="reference" />
     <attr name="backgroundIconColor" format="reference" />
     <attr name="retryBackgroundColor" format="reference" />

@@ -74,11 +74,55 @@
         <item name="android:layout_height">45dp</item>
         <item name="android:layout_marginRight">@dimen/icon_margin_right</item>
     </style>
+
+
+    <style name="TrackSettings">
+        <item name="android:layout_width">51dp</item>
+        <item name="android:layout_height">51dp</item>
+    </style>
+
+    <style name="TrackPlay">
+        <item name="android:layout_width">83dp</item>
+        <item name="android:layout_height">83dp</item>
+        <item name="android:layout_marginRight">@dimen/icon_margin_right</item>
+    </style>
+
     <style name="TrackDelimiter">
         <item name="android:layout_width">16dp</item>
         <item name="android:layout_height">16dp</item>
         <item name="iconTint">?attr/searchSubTitle</item>
         <item name="android:backgroundTint">?attr/searchSubTitle</item>
+    </style>
+
+    <style name="PlayerTrackTitle">
+        <item name="android:textColor">?attr/trackTitle</item>
+        <item name="android:textSize">@dimen/media_player_main_title</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    <style name="PlayerTrackTimeTitle">
+        <item name="android:textColor">?attr/trackTitle</item>
+        <item name="android:textSize">@dimen/media_player_main_subtitle</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="PlayerTrackValueDetails">
+        <item name="android:textColor">?attr/trackTitle</item>
+        <item name="android:textSize">@dimen/media_player_main_subtitle</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="PlayerTrackTitleDetails" parent="@style/PlayerTrackValueDetails">
+        <item name="android:textColor">?attr/mediaDescriptionTitle</item>
+    </style>
+
+    <style name="PlayerAuthorName">
+        <item name="android:textColor">?attr/trackTitle</item>
+        <item name="android:textSize">@dimen/media_player_main_subtitle</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
     </style>
     <style name="TrackTitle">
         <item name="android:textColor">?attr/searchTitle</item>
