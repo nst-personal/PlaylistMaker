@@ -9,10 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.configuration.ShareablePreferencesConfig
 import com.example.playlistmaker.entities.Track
-import com.example.playlistmaker.models.TrackHistory
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -45,19 +45,11 @@ class MediaPlayerActivity : AppCompatActivity() {
         setText(R.id.yearValue, track.releaseDate)
         setText(R.id.durationValue, SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTime))
 
-        val imageView = findViewById<ImageView>(R.id.image)
+        val imageView = findViewById<com.google.android.material.imageview.ShapeableImageView>(R.id.imageTrack)
         Glide.with(imageView)
             .load(getCoverArtwork(track.artworkUrl100))
             .placeholder(R.drawable.placeholder)
-            .transform(
-                RoundedCorners(
-                TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    4F,
-                    imageView.resources.displayMetrics).toInt()
-            )
-        )
-        .into(imageView)
+            .into(imageView)
     }
     private fun setText(id: Int, text: String) {
         val view = findViewById<TextView>(id)
