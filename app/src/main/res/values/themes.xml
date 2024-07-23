@@ -22,6 +22,9 @@
         <item name="iconColor">@color/textbox_text</item>
         <item name="searchTitle">@color/title_text</item>
         <item name="mediaDescriptionTitle">@color/subtitle_text</item>
+        <item name="switchColorTint">@color/textbox</item>
+        <item name="switchColorThumbTint">@color/switcher</item>
+        <item name="menuItem">@color/menu_item</item>
     </style>
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker"/>
 </resources>

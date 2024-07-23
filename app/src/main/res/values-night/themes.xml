@@ -22,5 +22,8 @@
         <item name="iconColor">@color/black</item>
         <item name="searchTitle">@color/title_text</item>
         <item name="mediaDescriptionTitle">@color/subtitle_text</item>
+        <item name="switchColorTint">@color/switcher_line</item>
+        <item name="switchColorThumbTint">@color/switcher_disabled</item>
+        <item name="menuItem">@color/white</item>
     </style>
 </resources>

@@ -9,4 +9,7 @@
     <attr name="retryTextColor" format="reference" />
     <attr name="notFoundDescription" format="reference" />
     <attr name="iconColor" format="reference" />
+    <attr name="switchColorTint" format="reference" />
+    <attr name="switchColorThumbTint" format="reference" />
+    <attr name="menuItem" format="reference" />
 </resources>

@@ -47,7 +47,9 @@
     <dimen name="media_player_author_title_padding">24dp</dimen>
     <dimen name="media_player_button_padding">10dp</dimen>
     <dimen name="media_player_icon_margin">16dp</dimen>
-    <dimen name="media_player_margin">18dp</dimen>
+    <dimen name="media_player_margin">28dp</dimen>
     <dimen name="media_player_track_title_padding">18dp</dimen>
     <dimen name="media_player_author_name_title_padding">32dp</dimen>
+    <dimen name="media_player_toolbar_padding">32dp</dimen>
+    <dimen name="toolbar_padding_navigation_icon">8dp</dimen>
 </resources>

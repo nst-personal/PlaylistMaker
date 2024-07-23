@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -27,8 +28,12 @@ class MediaPlayerActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val backButton = findViewById<ImageView>(R.id.backId)
-        backButton.setOnClickListener{
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.tooltipId)
+        setSupportActionBar(toolbar);
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+        supportActionBar?.setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener{
             finish()
         }
         fillContent()
@@ -43,6 +48,7 @@ class MediaPlayerActivity : AppCompatActivity() {
         setText(R.id.albumValue, track.collectionName)
         setText(R.id.typeValue, track.primaryGenreName)
         setText(R.id.yearValue, track.releaseDate)
+        setText(R.id.time, SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTime))
         setText(R.id.durationValue, SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTime))
 
         val imageView = findViewById<com.google.android.material.imageview.ShapeableImageView>(R.id.imageTrack)

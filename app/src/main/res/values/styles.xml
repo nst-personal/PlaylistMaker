@@ -27,7 +27,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/settings_settings_item</item>
         <item name="iconGravity">end</item>
-        <item name="iconTint">?attr/colorPrimary</item>
+        <item name="iconTint">?attr/menuItem</item>
         <item name="cornerRadius">@dimen/button_icon_radius</item>
         <item name="iconSize">@dimen/button_icon_size</item>
         <item name="android:backgroundTint">@color/white</item>
@@ -36,6 +36,10 @@
         <item name="android:textSize">@dimen/button_font_size</item>
         <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
+    </style>
+    <style name="SettingsMenuItemSwitcher" parent="@style/SettingsMenuItem">
+        <item name="thumbTint">?attr/switchColorThumbTint</item>
+        <item name="trackTint">?attr/switchColorTint</item>
     </style>
     <style name="CommonText">
         <item name="android:layout_width">wrap_content</item>
