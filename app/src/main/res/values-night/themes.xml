@@ -7,10 +7,12 @@
         <item name="searchTitle">@color/white</item>
         <item name="searchSubTitle">@color/white</item>
         <item name="backgroundIconColor">@color/textbox</item>
+        <item name="mediaDescriptionTitle">@color/subtitle_text</item>
     </style>
     <style name="Base.Theme.PlaylistMaker.Common" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="titleTextAppearance">@color/black</item>
         <item name="colorPrimary">@color/white</item>
+        <item name="trackTitle">@color/white</item>
         <item name="colorPrimaryContainer">@color/white</item>
         <item name="colorOnBackground">@color/black</item>
         <item name="colorControlNormal">@color/white</item>
@@ -18,5 +20,10 @@
         <item name="retryTextColor">@color/black</item>
         <item name="notFoundDescription">@color/white</item>
         <item name="iconColor">@color/black</item>
+        <item name="searchTitle">@color/title_text</item>
+        <item name="mediaDescriptionTitle">@color/subtitle_text</item>
+        <item name="switchColorTint">@color/switcher_line</item>
+        <item name="switchColorThumbTint">@color/switcher_disabled</item>
+        <item name="menuItem">@color/white</item>
     </style>
 </resources>

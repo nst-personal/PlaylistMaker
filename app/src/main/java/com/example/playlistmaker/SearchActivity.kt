@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -24,6 +25,7 @@ import com.example.playlistmaker.models.TrackResponse
 import com.example.playlistmaker.services.SearchHistory
 import com.example.playlistmaker.services.TrackApi
 import com.example.playlistmaker.view.adapter.TrackAdapter
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -82,6 +84,7 @@ class SearchActivity : AppCompatActivity() {
 
         historyView = findViewById(R.id.historyTracksList)
         historyView.layoutManager = LinearLayoutManager(this)
+        historyView.isClickable = true
 
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -133,6 +136,13 @@ class SearchActivity : AppCompatActivity() {
 
     }
 
+    private fun openMediaPlayer(track: Track) {
+        val sharedPreferences = getSharedPreferences(ShareablePreferencesConfig.CURRENT_MEDIA, MODE_PRIVATE)
+        sharedPreferences.edit().putString(ShareablePreferencesConfig.CURRENT_MEDIA, Gson().toJson(track)).apply()
+        val displayMediaIntent = Intent(this, MediaPlayerActivity::class.java)
+        startActivity(displayMediaIntent)
+    }
+
     private fun handleHistoryView() {
         recyclerView.isVisible = false
         showHistory(!historyService.isEmpty() && searchValue.isEmpty())
@@ -164,6 +174,7 @@ class SearchActivity : AppCompatActivity() {
                 val trackClickListener = object : OnTrackItemClickListener {
                     override fun onItemClick(track: Track) {
                         historyService.add(track)
+                        openMediaPlayer(track)
                     }
                 }
                 adapter = TrackAdapter(tracks, trackClickListener)
@@ -186,7 +197,12 @@ class SearchActivity : AppCompatActivity() {
 
     private fun showHistory(isVisible: Boolean) {
         if (isVisible) {
-            historyView.adapter = TrackAdapter(historyService.findAll(), null)
+            val trackClickListener = object : OnTrackItemClickListener {
+                override fun onItemClick(track: Track) {
+                    openMediaPlayer(track)
+                }
+            }
+            historyView.adapter = TrackAdapter(historyService.findAll(), trackClickListener)
         }
         val searchNoDataTextView = findViewById<LinearLayout>(R.id.historyData)
         searchNoDataTextView.isVisible = isVisible

@@ -58,6 +58,7 @@
             android:textColor="@color/black"
             android:textColorHint="?attr/titleTextAppearance"
             app:backgroundTint="@null"
+            android:textCursorDrawable="@drawable/custom_cursor"
             app:tint="?attr/titleTextAppearance" />
 
         <ImageView
