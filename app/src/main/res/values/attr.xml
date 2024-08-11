@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="searchTitle" format="reference" />
+    <attr name="trackTitle" format="reference" />
+    <attr name="mediaDescriptionTitle" format="reference" />
     <attr name="searchSubTitle" format="reference" />
     <attr name="backgroundIconColor" format="reference" />
     <attr name="retryBackgroundColor" format="reference" />
     <attr name="retryTextColor" format="reference" />
     <attr name="notFoundDescription" format="reference" />
     <attr name="iconColor" format="reference" />
+    <attr name="switchColorTint" format="reference" />
+    <attr name="switchColorThumbTint" format="reference" />
+    <attr name="menuItem" format="reference" />
 </resources>

@@ -27,7 +27,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/settings_settings_item</item>
         <item name="iconGravity">end</item>
-        <item name="iconTint">?attr/colorPrimary</item>
+        <item name="iconTint">?attr/menuItem</item>
         <item name="cornerRadius">@dimen/button_icon_radius</item>
         <item name="iconSize">@dimen/button_icon_size</item>
         <item name="android:backgroundTint">@color/white</item>
@@ -36,6 +36,10 @@
         <item name="android:textSize">@dimen/button_font_size</item>
         <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
+    </style>
+    <style name="SettingsMenuItemSwitcher" parent="@style/SettingsMenuItem">
+        <item name="thumbTint">?attr/switchColorThumbTint</item>
+        <item name="trackTint">?attr/switchColorTint</item>
     </style>
     <style name="CommonText">
         <item name="android:layout_width">wrap_content</item>
@@ -70,15 +74,61 @@
         <item name="android:textColorHint">?attr/titleTextAppearance</item>
     </style>
     <style name="TrackImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
         <item name="android:layout_width">45dp</item>
         <item name="android:layout_height">45dp</item>
         <item name="android:layout_marginRight">@dimen/icon_margin_right</item>
     </style>
+
+
+    <style name="TrackSettings">
+        <item name="android:layout_width">51dp</item>
+        <item name="android:layout_height">51dp</item>
+    </style>
+
+    <style name="TrackPlay">
+        <item name="android:layout_width">83dp</item>
+        <item name="android:layout_height">83dp</item>
+        <item name="android:layout_marginRight">@dimen/icon_margin_right</item>
+    </style>
+
     <style name="TrackDelimiter">
         <item name="android:layout_width">16dp</item>
         <item name="android:layout_height">16dp</item>
         <item name="iconTint">?attr/searchSubTitle</item>
         <item name="android:backgroundTint">?attr/searchSubTitle</item>
+    </style>
+
+    <style name="PlayerTrackTitle">
+        <item name="android:textColor">?attr/trackTitle</item>
+        <item name="android:textSize">@dimen/media_player_main_title</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    <style name="PlayerTrackTimeTitle">
+        <item name="android:textColor">?attr/trackTitle</item>
+        <item name="android:textSize">@dimen/media_player_main_subtitle</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="PlayerTrackValueDetails">
+        <item name="android:textColor">?attr/trackTitle</item>
+        <item name="android:textSize">@dimen/media_player_main_subtitle</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="PlayerTrackTitleDetails" parent="@style/PlayerTrackValueDetails">
+        <item name="android:textColor">?attr/mediaDescriptionTitle</item>
+    </style>
+
+    <style name="PlayerAuthorName">
+        <item name="android:textColor">?attr/trackTitle</item>
+        <item name="android:textSize">@dimen/media_player_main_subtitle</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
     </style>
     <style name="TrackTitle">
         <item name="android:textColor">?attr/searchTitle</item>

@@ -8,7 +8,8 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="horizontal"
-    android:padding="@dimen/item_top_padding"
+    android:paddingTop="@dimen/item_top_padding"
+    android:paddingBottom="@dimen/item_top_padding"
     android:theme="@style/Base.Theme.PlaylistMaker">
 
     <ImageView
