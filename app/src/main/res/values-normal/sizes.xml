@@ -52,4 +52,6 @@
     <dimen name="media_player_author_name_title_padding">32dp</dimen>
     <dimen name="media_player_toolbar_padding">32dp</dimen>
     <dimen name="toolbar_padding_navigation_icon">8dp</dimen>
+    <dimen name="search_progress_bar">44dp</dimen>
+    <dimen name="search_progress_bar_margin">108dp</dimen>
 </resources>
