@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
@@ -99,6 +98,7 @@ class SearchActivity : AppCompatActivity() {
             val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(mainLayout.windowToken, 0)
             handleHistoryView()
+            searchProgressBar.isVisible = false
         }
 
         recyclerView = findViewById(R.id.tracksList)
@@ -147,6 +147,7 @@ class SearchActivity : AppCompatActivity() {
         clearHistoryButton.setOnClickListener {
             historyService.remove()
             showHistory(false)
+            searchProgressBar.isVisible = false
         }
 
     }

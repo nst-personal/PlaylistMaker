@@ -27,4 +27,5 @@
     <string name="media_player_year">Год</string>
     <string name="media_player_type">Жанр</string>
     <string name="media_player_country">Страна</string>
+    <string name="media_player_initial_value">00:00</string>
 </resources>

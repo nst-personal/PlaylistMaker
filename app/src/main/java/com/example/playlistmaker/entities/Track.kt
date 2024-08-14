@@ -1,5 +1,4 @@
 package com.example.playlistmaker.entities
-
 data class Track(
     val trackName: String,
     val trackId: Long,

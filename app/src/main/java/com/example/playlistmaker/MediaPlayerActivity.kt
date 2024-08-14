@@ -25,6 +25,8 @@ class MediaPlayerActivity : AppCompatActivity() {
     private var playerState = STATE_DEFAULT
     private var mainMediaPlayerThreadHandler: Handler? = null
     private var timeLeftTextView: TextView? = null
+    private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
+    private val gson by lazy { Gson() }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,15 +68,15 @@ class MediaPlayerActivity : AppCompatActivity() {
 
     private fun fillContent() {
         val media = getSharedPreferences(ShareablePreferencesConfig.CURRENT_MEDIA, MODE_PRIVATE)
-        track = Gson().fromJson(media.getString(ShareablePreferencesConfig.CURRENT_MEDIA, null), Track::class.java)
+        track = gson.fromJson(media.getString(ShareablePreferencesConfig.CURRENT_MEDIA, null), Track::class.java)
         setText(R.id.authorName, track.artistName)
         setText(R.id.trackName, track.trackName)
         setText(R.id.countryValue, track.country)
         setText(R.id.albumValue, track.collectionName)
         setText(R.id.typeValue, track.primaryGenreName)
         setText(R.id.yearValue, track.releaseDate)
-        setText(R.id.time, SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis))
-        setText(R.id.durationValue, SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis))
+        setText(R.id.time, getResources().getString(R.string.media_player_initial_value))
+        setText(R.id.durationValue, dateFormat.format(track.trackTimeMillis))
 
         val imageView = findViewById<com.google.android.material.imageview.ShapeableImageView>(R.id.imageTrack)
         Glide.with(imageView)
@@ -101,7 +103,7 @@ class MediaPlayerActivity : AppCompatActivity() {
             playerState = STATE_PREPARED
             play.setImageResource(R.drawable.playlist_play)
             stopTimer()
-            timeLeftTextView?.text = "00:00"
+            timeLeftTextView?.text = getResources().getString(R.string.media_player_initial_value)
         }
     }
 
@@ -144,8 +146,7 @@ class MediaPlayerActivity : AppCompatActivity() {
         return object : Runnable {
             override fun run() {
                 val remainingTime = mediaPlayer.currentPosition
-                timeLeftTextView?.text =
-                    SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis - remainingTime)
+                timeLeftTextView?.text = dateFormat.format(remainingTime)
                 mainMediaPlayerThreadHandler?.postDelayed(this, DELAY)
             }
         }

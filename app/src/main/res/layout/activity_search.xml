@@ -68,6 +68,7 @@
             android:layout_gravity="center"
             android:src="@drawable/clear"
             app:tint="?attr/iconColor"
+            android:visibility="gone"
             />
     </LinearLayout>
 
