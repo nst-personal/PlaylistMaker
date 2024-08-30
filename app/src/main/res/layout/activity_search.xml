@@ -68,8 +68,17 @@
             android:layout_gravity="center"
             android:src="@drawable/clear"
             app:tint="?attr/iconColor"
+            android:visibility="gone"
             />
     </LinearLayout>
+
+    <ProgressBar android:id="@+id/searchProgressBarId"
+        android:layout_marginTop="@dimen/search_progress_bar_margin"
+        android:layout_width="@dimen/search_progress_bar"
+        android:layout_height="@dimen/search_progress_bar"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/search_cursor_color"
+        android:visibility="gone"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tracksList"

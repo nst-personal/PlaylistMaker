@@ -2,14 +2,16 @@ package com.example.playlistmaker
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -38,6 +40,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historyService: SearchHistory
     private lateinit var historyView: RecyclerView
     private lateinit var recyclerView: RecyclerView
+    private lateinit var searchProgressBar: ProgressBar
+
     private var searchValue: String = ""
 
     private var tracks = listOf<Track>()
@@ -51,6 +55,22 @@ class SearchActivity : AppCompatActivity() {
 
     private val trackService = retrofit.create(TrackApi::class.java)
 
+    private val searchHandler = Handler(Looper.getMainLooper())
+    private val itemClickHandler = Handler(Looper.getMainLooper())
+
+    private val searchRunnable = Runnable { handleSearchTracks(searchValue) }
+
+    private var isItemClickAllowed = true
+
+    private fun clickItemDebounce() : Boolean {
+        val current = isItemClickAllowed
+        if (isItemClickAllowed) {
+            isItemClickAllowed = false
+            itemClickHandler.postDelayed({ isItemClickAllowed = true }, ITEM_BUTTON_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -60,6 +80,8 @@ class SearchActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        searchProgressBar = findViewById(R.id.searchProgressBarId)
 
         historyService = SearchHistory(getSharedPreferences(ShareablePreferencesConfig.HISTORY_LIST, MODE_PRIVATE))
 
@@ -76,6 +98,7 @@ class SearchActivity : AppCompatActivity() {
             val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(mainLayout.windowToken, 0)
             handleHistoryView()
+            searchProgressBar.isVisible = false
         }
 
         recyclerView = findViewById(R.id.tracksList)
@@ -102,8 +125,9 @@ class SearchActivity : AppCompatActivity() {
                 showHistory(false)
                 showSearchNotFoundView(false)
                 showSearchErrorView(false, "")
-                recyclerView.isVisible = true
-
+                recyclerView.isVisible = false
+                searchProgressBar.isVisible = true
+                searchDebounce()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -112,15 +136,6 @@ class SearchActivity : AppCompatActivity() {
         }
 
         inputEditText.addTextChangedListener(simpleTextWatcher)
-
-        inputEditText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                val savedSearchValue = searchValue
-                handleSearchTracks(savedSearchValue)
-                true
-            }
-            false
-        }
 
         inputEditText.setOnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
@@ -132,15 +147,18 @@ class SearchActivity : AppCompatActivity() {
         clearHistoryButton.setOnClickListener {
             historyService.remove()
             showHistory(false)
+            searchProgressBar.isVisible = false
         }
 
     }
 
     private fun openMediaPlayer(track: Track) {
-        val sharedPreferences = getSharedPreferences(ShareablePreferencesConfig.CURRENT_MEDIA, MODE_PRIVATE)
-        sharedPreferences.edit().putString(ShareablePreferencesConfig.CURRENT_MEDIA, Gson().toJson(track)).apply()
-        val displayMediaIntent = Intent(this, MediaPlayerActivity::class.java)
-        startActivity(displayMediaIntent)
+        if (clickItemDebounce()) {
+            val sharedPreferences = getSharedPreferences(ShareablePreferencesConfig.CURRENT_MEDIA, MODE_PRIVATE)
+            sharedPreferences.edit().putString(ShareablePreferencesConfig.CURRENT_MEDIA, Gson().toJson(track)).apply()
+            val displayMediaIntent = Intent(this, MediaPlayerActivity::class.java)
+            startActivity(displayMediaIntent)
+        }
     }
 
     private fun handleHistoryView() {
@@ -168,6 +186,7 @@ class SearchActivity : AppCompatActivity() {
     private fun handleTrackData(response: Response<TrackResponse>, savedSearchValue: String) {
         showSearchErrorView(false, savedSearchValue)
         if (response.isSuccessful) {
+            searchProgressBar.isVisible = false
             val resultList = response.body()?.results!!
             if (resultList.isNotEmpty()) {
                 tracks = resultList
@@ -213,6 +232,7 @@ class SearchActivity : AppCompatActivity() {
         val searchNoDataImageView = findViewById<ImageView>(R.id.searchNoDataIcon)
         searchNoDataTextView.isVisible = isVisible
         searchNoDataImageView.isVisible = isVisible
+        searchProgressBar.isVisible = false
     }
 
     private fun showSearchErrorView(isVisible: Boolean, savedSearchValue: String) {
@@ -227,6 +247,7 @@ class SearchActivity : AppCompatActivity() {
         retryButton.setOnClickListener{
             handleSearchTracks(savedSearchValue)
         }
+        searchProgressBar.isVisible = false
     }
 
 
@@ -241,7 +262,14 @@ class SearchActivity : AppCompatActivity() {
         findViewById<EditText>(R.id.inputEditText).setText(searchValue)
     }
 
+    private fun searchDebounce() {
+        searchHandler.removeCallbacks(searchRunnable)
+        searchHandler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
     private companion object {
         const val SEARCH = "SEARCH"
+        const val SEARCH_DEBOUNCE_DELAY = 2000L
+        const val ITEM_BUTTON_DEBOUNCE_DELAY = 1000L
     }
 }
