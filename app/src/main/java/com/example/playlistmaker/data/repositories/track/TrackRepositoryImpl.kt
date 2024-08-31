@@ -1,16 +1,12 @@
-package com.example.playlistmaker.data.repositories
+package com.example.playlistmaker.data.repositories.track
 
 import com.example.playlistmaker.data.dto.history.TrackResponse
 import com.example.playlistmaker.data.dto.search.TracksSearchRequest
-import com.example.playlistmaker.data.entities.Track
+import com.example.playlistmaker.data.models.Track
 import com.example.playlistmaker.domain.network.NetworkClient
-import com.example.playlistmaker.domain.repositories.TrackRepository
-import java.text.SimpleDateFormat
-import java.util.Locale
+import com.example.playlistmaker.domain.repositories.track.TrackRepository
 
 class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepository {
-
-    private val dateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
 
     override fun search(search: String): List<Track>? {
        val response = networkClient.doRequest(TracksSearchRequest(search))

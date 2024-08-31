@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.playlistmaker.App
 import com.example.playlistmaker.R
 import com.example.playlistmaker.configuration.ShareablePreferencesConfig
+import com.example.playlistmaker.domain.creators.settings.SettingsCreator
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
@@ -26,6 +27,9 @@ class SettingsActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        val settingsManager = SettingsCreator().provideSettingsManager(this)
+
         val backButton = findViewById<ImageView>(R.id.backId)
         backButton.setOnClickListener{
             finish()
@@ -62,8 +66,7 @@ class SettingsActivity : AppCompatActivity() {
 
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
             (applicationContext as App).switchTheme(checked)
-            val sharedPreferences = getSharedPreferences(ShareablePreferencesConfig.DARK_THEME, MODE_PRIVATE)
-            sharedPreferences.edit().putBoolean(ShareablePreferencesConfig.DARK_THEME, checked).apply()
+            settingsManager.updateDarkMode(checked)
         }
     }
 }

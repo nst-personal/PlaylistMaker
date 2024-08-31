@@ -21,16 +21,14 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
-import com.example.playlistmaker.configuration.ShareablePreferencesConfig
-import com.example.playlistmaker.data.entities.Track
+import com.example.playlistmaker.data.models.Track
 import com.example.playlistmaker.domain.api.TrackInteractor
-import com.example.playlistmaker.domain.creators.TrackCreator
-import com.example.playlistmaker.domain.creators.TrackHistoryCreator
-import com.example.playlistmaker.domain.managers.TrackHistoryManager
+import com.example.playlistmaker.domain.creators.track.TrackCreator
+import com.example.playlistmaker.domain.creators.track.TrackHistoryCreator
+import com.example.playlistmaker.domain.managers.track.TrackHistoryManager
 import com.example.playlistmaker.presentation.ui.media_player.MediaPlayerActivity
 import com.example.playlistmaker.presentation.ui.search.interfaces.OnTrackItemClickListener
 import com.example.playlistmaker.presentation.ui.search.view.adapter.TrackAdapter
-import com.google.gson.Gson
 
 
 class SearchActivity : AppCompatActivity() {
@@ -146,8 +144,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun openMediaPlayer(track: Track) {
         if (clickItemDebounce()) {
-            val sharedPreferences = getSharedPreferences(ShareablePreferencesConfig.CURRENT_MEDIA, MODE_PRIVATE)
-            sharedPreferences.edit().putString(ShareablePreferencesConfig.CURRENT_MEDIA, Gson().toJson(track)).apply()
+            trackHistoryManager.updateLast(track)
             val displayMediaIntent = Intent(this, MediaPlayerActivity::class.java)
             startActivity(displayMediaIntent)
         }

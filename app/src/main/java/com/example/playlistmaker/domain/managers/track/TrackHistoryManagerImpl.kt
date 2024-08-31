@@ -1,7 +1,7 @@
-package com.example.playlistmaker.domain.managers
+package com.example.playlistmaker.domain.managers.track
 
-import com.example.playlistmaker.data.entities.Track
-import com.example.playlistmaker.domain.repositories.TrackHistoryRepository
+import com.example.playlistmaker.data.models.Track
+import com.example.playlistmaker.domain.repositories.track.TrackHistoryRepository
 
 class TrackHistoryManagerImpl(private val trackHistoryRepository: TrackHistoryRepository) :
     TrackHistoryManager {
@@ -16,5 +16,13 @@ class TrackHistoryManagerImpl(private val trackHistoryRepository: TrackHistoryRe
     }
     override fun add(track: Track) {
         trackHistoryRepository.add(track)
+    }
+
+    override fun findLast(): Track {
+        return trackHistoryRepository.findLast()
+    }
+
+    override fun updateLast(track: Track) {
+        trackHistoryRepository.updateLast(track)
     }
 }

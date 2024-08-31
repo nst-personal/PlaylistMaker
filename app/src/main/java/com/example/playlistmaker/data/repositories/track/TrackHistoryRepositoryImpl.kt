@@ -1,17 +1,19 @@
-package com.example.playlistmaker.data.repositories
+package com.example.playlistmaker.data.repositories.track
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.configuration.ShareablePreferencesConfig
-import com.example.playlistmaker.data.entities.Track
-import com.example.playlistmaker.domain.repositories.TrackHistoryRepository
 import com.example.playlistmaker.data.dto.history.TrackHistory
+import com.example.playlistmaker.data.models.Track
+import com.example.playlistmaker.domain.repositories.track.TrackHistoryRepository
 import com.google.gson.Gson
 
 class TrackHistoryRepositoryImpl(private val context: Context) : TrackHistoryRepository {
     companion object {
         const val countOfTracks = 10
     }
+
+    private val gson by lazy { Gson() }
 
     override fun isEmpty() : Boolean {
         val trackHistory = getHistory()
@@ -36,6 +38,20 @@ class TrackHistoryRepositoryImpl(private val context: Context) : TrackHistoryRep
         }
         trackHistory.results.add(0, track)
         saveHistory(trackHistory)
+    }
+
+    override fun findLast() : Track {
+        val media = context.getSharedPreferences(ShareablePreferencesConfig.CURRENT_MEDIA,
+            AppCompatActivity.MODE_PRIVATE
+        )
+        return gson.fromJson(media.getString(ShareablePreferencesConfig.CURRENT_MEDIA, null), Track::class.java)
+    }
+
+    override fun updateLast(track: Track) {
+        val sharedPreferences = context.getSharedPreferences(ShareablePreferencesConfig.CURRENT_MEDIA,
+            AppCompatActivity.MODE_PRIVATE
+        )
+        sharedPreferences.edit().putString(ShareablePreferencesConfig.CURRENT_MEDIA, Gson().toJson(track)).apply()
     }
 
     private fun getHistory() : TrackHistory {

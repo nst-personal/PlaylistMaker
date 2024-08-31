@@ -12,23 +12,21 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
-import com.example.playlistmaker.configuration.ShareablePreferencesConfig
-import com.example.playlistmaker.data.dto.search.TrackDto
-import com.google.gson.Gson
+import com.example.playlistmaker.data.models.Track
+import com.example.playlistmaker.domain.creators.track.TrackHistoryCreator
+import com.example.playlistmaker.domain.managers.track.TrackHistoryManager
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class MediaPlayerActivity : AppCompatActivity() {
-
+    private lateinit var trackHistoryManager: TrackHistoryManager
     private lateinit var play: ImageView
-    private lateinit var track: TrackDto
+    private lateinit var track: Track
     private var mediaPlayer = MediaPlayer()
     private var playerState = STATE_DEFAULT
     private var mainMediaPlayerThreadHandler: Handler? = null
     private var timeLeftTextView: TextView? = null
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
-    private val gson by lazy { Gson() }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +37,9 @@ class MediaPlayerActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        trackHistoryManager = TrackHistoryCreator().provideTrackHistoryManager(this)
+
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.tooltipId)
         setSupportActionBar(toolbar);
 
@@ -68,8 +69,7 @@ class MediaPlayerActivity : AppCompatActivity() {
     }
 
     private fun fillContent() {
-        val media = getSharedPreferences(ShareablePreferencesConfig.CURRENT_MEDIA, MODE_PRIVATE)
-        track = gson.fromJson(media.getString(ShareablePreferencesConfig.CURRENT_MEDIA, null), TrackDto::class.java)
+        track = trackHistoryManager.findLast()
         setText(R.id.authorName, track.artistName)
         setText(R.id.trackName, track.trackName)
         setText(R.id.countryValue, track.country)
