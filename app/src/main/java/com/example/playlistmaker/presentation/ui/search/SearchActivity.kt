@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui.search
 
 import android.content.Intent
 import android.os.Bundle
@@ -20,41 +20,32 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.R
 import com.example.playlistmaker.configuration.ShareablePreferencesConfig
-import com.example.playlistmaker.entities.Track
-import com.example.playlistmaker.interfaces.OnTrackItemClickListener
-import com.example.playlistmaker.models.TrackResponse
-import com.example.playlistmaker.services.SearchHistory
-import com.example.playlistmaker.services.TrackApi
-import com.example.playlistmaker.view.adapter.TrackAdapter
+import com.example.playlistmaker.data.entities.Track
+import com.example.playlistmaker.domain.api.TrackInteractor
+import com.example.playlistmaker.domain.creators.TrackCreator
+import com.example.playlistmaker.domain.creators.TrackHistoryCreator
+import com.example.playlistmaker.domain.managers.TrackHistoryManager
+import com.example.playlistmaker.presentation.ui.media_player.MediaPlayerActivity
+import com.example.playlistmaker.presentation.ui.search.interfaces.OnTrackItemClickListener
+import com.example.playlistmaker.presentation.ui.search.view.adapter.TrackAdapter
 import com.google.gson.Gson
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 
 class SearchActivity : AppCompatActivity() {
-    lateinit var adapter: TrackAdapter
-    private lateinit var historyService: SearchHistory
+    private lateinit var trackHistoryManager: TrackHistoryManager
+    private lateinit var trackInteractor: TrackInteractor
     private lateinit var historyView: RecyclerView
     private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: TrackAdapter
     private lateinit var searchProgressBar: ProgressBar
 
     private var searchValue: String = ""
 
     private var tracks = listOf<Track>()
 
-    private val translateBaseUrl = "https://itunes.apple.com"
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(translateBaseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val trackService = retrofit.create(TrackApi::class.java)
-
+    private val trackListHandler = Handler(Looper.getMainLooper())
     private val searchHandler = Handler(Looper.getMainLooper())
     private val itemClickHandler = Handler(Looper.getMainLooper())
 
@@ -83,7 +74,8 @@ class SearchActivity : AppCompatActivity() {
 
         searchProgressBar = findViewById(R.id.searchProgressBarId)
 
-        historyService = SearchHistory(getSharedPreferences(ShareablePreferencesConfig.HISTORY_LIST, MODE_PRIVATE))
+        trackInteractor = TrackCreator().provideTracksInteractor()
+        trackHistoryManager = TrackHistoryCreator().provideTrackHistoryManager(this)
 
         val backButton = findViewById<ImageView>(R.id.backId)
         backButton.setOnClickListener{
@@ -145,7 +137,7 @@ class SearchActivity : AppCompatActivity() {
 
         val clearHistoryButton = findViewById<Button>(R.id.clearHistory)
         clearHistoryButton.setOnClickListener {
-            historyService.remove()
+            trackHistoryManager.remove()
             showHistory(false)
             searchProgressBar.isVisible = false
         }
@@ -163,36 +155,35 @@ class SearchActivity : AppCompatActivity() {
 
     private fun handleHistoryView() {
         recyclerView.isVisible = false
-        showHistory(!historyService.isEmpty() && searchValue.isEmpty())
+        showHistory(!trackHistoryManager.isEmpty() && searchValue.isEmpty())
     }
 
     private fun handleSearchTracks(savedSearchValue: String) {
-        trackService.search(searchValue)
-            .enqueue(object : Callback<TrackResponse> {
-                override fun onResponse(call: Call<TrackResponse>,
-                                        response: Response<TrackResponse>
-                ) {
-                    handleTrackData(response, savedSearchValue)
-                }
-                override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                    showSearchErrorView(true, savedSearchValue)
-                    showSearchNotFoundView(false)
-                    showHistory(false)
-                    recyclerView.isVisible = false
-                }
-            })
+        trackInteractor.searchTracks(savedSearchValue, object : TrackInteractor.TracksConsumer {
+            override fun consume(foundTracks: List<Track>?) {
+                trackListHandler.postDelayed({
+                    if (foundTracks == null) {
+                        showSearchErrorView(true, savedSearchValue)
+                        showSearchNotFoundView(false)
+                        showHistory(false)
+                        recyclerView.isVisible = false
+                    } else {
+                        handleTrackData(foundTracks, savedSearchValue)
+                    }
+                }, SEARCH_HANDLE_DEBOUNCE_DELAY)
+            }
+        })
     }
 
-    private fun handleTrackData(response: Response<TrackResponse>, savedSearchValue: String) {
+    private fun handleTrackData(resultList: List<Track>?, savedSearchValue: String) {
         showSearchErrorView(false, savedSearchValue)
-        if (response.isSuccessful) {
+        if (resultList != null) {
             searchProgressBar.isVisible = false
-            val resultList = response.body()?.results!!
             if (resultList.isNotEmpty()) {
                 tracks = resultList
                 val trackClickListener = object : OnTrackItemClickListener {
                     override fun onItemClick(track: Track) {
-                        historyService.add(track)
+                        trackHistoryManager.add(track)
                         openMediaPlayer(track)
                     }
                 }
@@ -221,7 +212,7 @@ class SearchActivity : AppCompatActivity() {
                     openMediaPlayer(track)
                 }
             }
-            historyView.adapter = TrackAdapter(historyService.findAll(), trackClickListener)
+            historyView.adapter = TrackAdapter(trackHistoryManager.findAll(), trackClickListener)
         }
         val searchNoDataTextView = findViewById<LinearLayout>(R.id.historyData)
         searchNoDataTextView.isVisible = isVisible
@@ -240,6 +231,7 @@ class SearchActivity : AppCompatActivity() {
         val searchErrorConnectionTextView = findViewById<TextView>(R.id.searchErrorTextConnection)
         val searchErrorImageView = findViewById<ImageView>(R.id.searchErrorIcon)
         val retryButton = findViewById<Button>(R.id.retry)
+        searchErrorTextView.isVisible = isVisible
         searchErrorTextView.isVisible = isVisible
         searchErrorConnectionTextView.isVisible = isVisible
         searchErrorImageView.isVisible = isVisible
@@ -270,6 +262,7 @@ class SearchActivity : AppCompatActivity() {
     private companion object {
         const val SEARCH = "SEARCH"
         const val SEARCH_DEBOUNCE_DELAY = 2000L
+        const val SEARCH_HANDLE_DEBOUNCE_DELAY = 1000L
         const val ITEM_BUTTON_DEBOUNCE_DELAY = 1000L
     }
 }

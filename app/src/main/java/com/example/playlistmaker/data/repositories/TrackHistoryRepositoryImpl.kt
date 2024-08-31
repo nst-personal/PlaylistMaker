@@ -1,33 +1,35 @@
-package com.example.playlistmaker.services
+package com.example.playlistmaker.data.repositories
 
-import android.content.SharedPreferences
+import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.configuration.ShareablePreferencesConfig
-import com.example.playlistmaker.entities.Track
-import com.example.playlistmaker.models.TrackHistory
+import com.example.playlistmaker.data.entities.Track
+import com.example.playlistmaker.domain.repositories.TrackHistoryRepository
+import com.example.playlistmaker.data.dto.history.TrackHistory
 import com.google.gson.Gson
 
-class SearchHistory(val shareableHistory: SharedPreferences) {
+class TrackHistoryRepositoryImpl(private val context: Context) : TrackHistoryRepository {
     companion object {
         const val countOfTracks = 10
     }
 
-    fun isEmpty() : Boolean {
+    override fun isEmpty() : Boolean {
         val trackHistory = getHistory()
         return trackHistory.results.isEmpty()
     }
 
-    fun findAll(): MutableList<Track> {
+    override fun findAll(): MutableList<Track> {
         val trackHistory = getHistory()
         return trackHistory.results
     }
 
-    fun remove() {
+    override fun remove() {
         val trackHistory = getHistory()
         trackHistory.results.clear()
         saveHistory(trackHistory)
     }
 
-    fun add(track: Track) {
+    override fun add(track: Track) {
         val trackHistory = getHistory()
         trackHistory.results.removeIf{historyTrack ->
             historyTrack.trackId == track.trackId
@@ -38,7 +40,9 @@ class SearchHistory(val shareableHistory: SharedPreferences) {
 
     private fun getHistory() : TrackHistory {
         val history =
-            shareableHistory.getString(ShareablePreferencesConfig.HISTORY_LIST, "")
+            context.getSharedPreferences(ShareablePreferencesConfig.HISTORY_LIST,
+                AppCompatActivity.MODE_PRIVATE
+            ).getString(ShareablePreferencesConfig.HISTORY_LIST, "")
         var trackHistory = TrackHistory(arrayListOf());
         if (!history.isNullOrEmpty()) {
             trackHistory = Gson().fromJson(history, TrackHistory::class.java)
@@ -50,7 +54,9 @@ class SearchHistory(val shareableHistory: SharedPreferences) {
     }
 
     private fun saveHistory(trackHistory: TrackHistory) {
-        shareableHistory.edit().putString(
+        context.getSharedPreferences(ShareablePreferencesConfig.HISTORY_LIST,
+            AppCompatActivity.MODE_PRIVATE
+        ).edit().putString(
             ShareablePreferencesConfig.HISTORY_LIST,
             Gson().toJson(trackHistory)
         ).apply()

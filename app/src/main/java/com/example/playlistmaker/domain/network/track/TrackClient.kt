@@ -1,11 +1,11 @@
-package com.example.playlistmaker.services
+package com.example.playlistmaker.domain.network.track
 
-import com.example.playlistmaker.models.TrackResponse
+import com.example.playlistmaker.data.dto.history.TrackResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface TrackApi {
+interface TrackClient {
     @GET("/search")
     fun search(@Query("term") text: String): Call<TrackResponse>
 }

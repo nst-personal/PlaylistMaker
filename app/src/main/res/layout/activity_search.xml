@@ -41,7 +41,7 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="@dimen/textbox_padding"
-        tools:context=".SettingsActivity">
+        tools:context=".presentation.ui.settings.SettingsActivity">
 
         <EditText
             android:id="@+id/inputEditText"
@@ -97,7 +97,7 @@
         android:gravity="center"
         android:orientation="vertical"
         android:padding="@dimen/textbox_padding"
-        tools:context=".SettingsActivity"
+        tools:context=".presentation.ui.settings.SettingsActivity"
     >
         <ImageView
             android:layout_marginTop="@dimen/settings_description_top"
@@ -128,7 +128,7 @@
         android:gravity="center"
         android:orientation="vertical"
         android:padding="@dimen/textbox_padding"
-        tools:context=".SettingsActivity"
+        tools:context=".presentation.ui.settings.SettingsActivity"
         >
         <ImageView
             android:layout_marginTop="@dimen/settings_description_top"
@@ -174,7 +174,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        tools:context=".SettingsActivity"
+        tools:context=".presentation.ui.settings.SettingsActivity"
         android:layout_marginStart="@dimen/main_top_padding"
         android:layout_marginEnd="@dimen/main_top_padding"
         android:visibility="gone"

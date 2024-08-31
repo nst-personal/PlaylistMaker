@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui.media_player
 
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -11,8 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
+import com.example.playlistmaker.R
 import com.example.playlistmaker.configuration.ShareablePreferencesConfig
-import com.example.playlistmaker.entities.Track
+import com.example.playlistmaker.data.dto.search.TrackDto
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -20,7 +21,7 @@ import java.util.Locale
 class MediaPlayerActivity : AppCompatActivity() {
 
     private lateinit var play: ImageView
-    private lateinit var track: Track
+    private lateinit var track: TrackDto
     private var mediaPlayer = MediaPlayer()
     private var playerState = STATE_DEFAULT
     private var mainMediaPlayerThreadHandler: Handler? = null
@@ -68,7 +69,7 @@ class MediaPlayerActivity : AppCompatActivity() {
 
     private fun fillContent() {
         val media = getSharedPreferences(ShareablePreferencesConfig.CURRENT_MEDIA, MODE_PRIVATE)
-        track = gson.fromJson(media.getString(ShareablePreferencesConfig.CURRENT_MEDIA, null), Track::class.java)
+        track = gson.fromJson(media.getString(ShareablePreferencesConfig.CURRENT_MEDIA, null), TrackDto::class.java)
         setText(R.id.authorName, track.artistName)
         setText(R.id.trackName, track.trackName)
         setText(R.id.countryValue, track.country)
