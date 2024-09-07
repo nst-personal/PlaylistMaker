@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain.network.track
+package com.example.playlistmaker.data.network.track
 
 import com.example.playlistmaker.data.dto.history.TrackResponse
 import retrofit2.Call

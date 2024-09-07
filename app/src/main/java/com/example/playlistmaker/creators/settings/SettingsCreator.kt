@@ -1,12 +1,12 @@
-package com.example.playlistmaker.domain.creators.settings
+package com.example.playlistmaker.creators.settings
 
 import android.content.Context
 import com.example.playlistmaker.data.repositories.settings.SettingsRepositoryImpl
-import com.example.playlistmaker.domain.managers.settings.SettingsManager
-import com.example.playlistmaker.domain.managers.settings.SettingsManagerImpl
+import com.example.playlistmaker.domain.interactors.settings.SettingsManager
+import com.example.playlistmaker.domain.interactors.settings.SettingsManagerImpl
 import com.example.playlistmaker.domain.repositories.settings.SettingsRepository
 
-class SettingsCreator {
+object SettingsCreator {
     private fun getSettingsRepository(context: Context): SettingsRepository {
         return SettingsRepositoryImpl(context)
     }

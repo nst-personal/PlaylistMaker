@@ -1,8 +1,8 @@
-package com.example.playlistmaker.domain.network.track
+package com.example.playlistmaker.data.network.track
 
 import com.example.playlistmaker.data.dto.Response
 import com.example.playlistmaker.data.dto.search.TracksSearchRequest
-import com.example.playlistmaker.domain.network.NetworkClient
+import com.example.playlistmaker.data.network.NetworkClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -19,12 +19,12 @@ class TrackNetworkClient : NetworkClient {
             try {
                 val resp = trackClient.search(dto.expression).execute()
                 val response = resp.body() ?: Response()
-                response.apply { resultCode = resp.code() }
+                response.apply { isSuccessful = resp.isSuccessful }
             } catch (ex: Exception) {
-                Response().apply { resultCode = 500 }
+                Response().apply { isSuccessful = false }
             }
         } else {
-            Response().apply { resultCode = 400 }
+            Response().apply { isSuccessful = false }
         }
     }
 }

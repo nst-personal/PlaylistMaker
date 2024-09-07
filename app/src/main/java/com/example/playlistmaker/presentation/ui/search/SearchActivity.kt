@@ -21,11 +21,11 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
+import com.example.playlistmaker.creators.track.TrackCreator
+import com.example.playlistmaker.creators.track.TrackHistoryCreator
 import com.example.playlistmaker.data.models.Track
 import com.example.playlistmaker.domain.api.TrackInteractor
-import com.example.playlistmaker.domain.creators.track.TrackCreator
-import com.example.playlistmaker.domain.creators.track.TrackHistoryCreator
-import com.example.playlistmaker.domain.managers.track.TrackHistoryManager
+import com.example.playlistmaker.domain.interactors.track.TrackHistoryManager
 import com.example.playlistmaker.presentation.ui.media_player.MediaPlayerActivity
 import com.example.playlistmaker.presentation.ui.search.interfaces.OnTrackItemClickListener
 import com.example.playlistmaker.presentation.ui.search.view.adapter.TrackAdapter
@@ -72,8 +72,8 @@ class SearchActivity : AppCompatActivity() {
 
         searchProgressBar = findViewById(R.id.searchProgressBarId)
 
-        trackInteractor = TrackCreator().provideTracksInteractor()
-        trackHistoryManager = TrackHistoryCreator().provideTrackHistoryManager(this)
+        trackInteractor = TrackCreator.provideTracksInteractor()
+        trackHistoryManager = TrackHistoryCreator.provideTrackHistoryManager(this)
 
         val backButton = findViewById<ImageView>(R.id.backId)
         backButton.setOnClickListener{

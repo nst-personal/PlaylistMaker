@@ -1,12 +1,12 @@
-package com.example.playlistmaker.domain.creators.track
+package com.example.playlistmaker.creators.track
 
 import android.content.Context
 import com.example.playlistmaker.data.repositories.track.TrackHistoryRepositoryImpl
-import com.example.playlistmaker.domain.managers.track.TrackHistoryManager
-import com.example.playlistmaker.domain.managers.track.TrackHistoryManagerImpl
+import com.example.playlistmaker.domain.interactors.track.TrackHistoryManager
+import com.example.playlistmaker.domain.interactors.track.TrackHistoryManagerImpl
 import com.example.playlistmaker.domain.repositories.track.TrackHistoryRepository
 
-class TrackHistoryCreator {
+object TrackHistoryCreator {
     private fun getTrackHistoryRepository(context: Context): TrackHistoryRepository {
         return TrackHistoryRepositoryImpl(context)
     }

@@ -3,7 +3,7 @@ package com.example.playlistmaker
 import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.domain.creators.settings.SettingsCreator
+import com.example.playlistmaker.creators.settings.SettingsCreator
 
 
 class App : Application() {
@@ -11,7 +11,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        val settingsManager = SettingsCreator().provideSettingsManager(this)
+        val settingsManager = SettingsCreator.provideSettingsManager(this)
         val currentMode = resources.configuration.uiMode and
                 Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
         val appMode = settingsManager.findDarkMode(currentMode)

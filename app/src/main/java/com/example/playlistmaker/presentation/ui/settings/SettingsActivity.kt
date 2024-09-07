@@ -12,8 +12,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.playlistmaker.App
 import com.example.playlistmaker.R
-import com.example.playlistmaker.configuration.ShareablePreferencesConfig
-import com.example.playlistmaker.domain.creators.settings.SettingsCreator
+import com.example.playlistmaker.creators.settings.SettingsCreator
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
@@ -28,7 +27,7 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
-        val settingsManager = SettingsCreator().provideSettingsManager(this)
+        val settingsManager = SettingsCreator.provideSettingsManager(this)
 
         val backButton = findViewById<ImageView>(R.id.backId)
         backButton.setOnClickListener{

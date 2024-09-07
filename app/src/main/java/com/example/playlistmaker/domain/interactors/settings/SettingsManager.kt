@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain.managers.settings
+package com.example.playlistmaker.domain.interactors.settings
 
 interface SettingsManager {
     fun findDarkMode(default: Boolean): Boolean

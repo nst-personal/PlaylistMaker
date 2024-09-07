@@ -12,10 +12,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
+import com.example.playlistmaker.creators.track.TrackHistoryCreator
 import com.example.playlistmaker.data.models.Track
-import com.example.playlistmaker.domain.creators.track.TrackHistoryCreator
-import com.example.playlistmaker.domain.managers.track.TrackHistoryManager
+import com.example.playlistmaker.domain.interactors.track.TrackHistoryManager
 import java.text.SimpleDateFormat
+import java.time.ZoneId
 import java.util.Locale
 
 class MediaPlayerActivity : AppCompatActivity() {
@@ -27,6 +28,7 @@ class MediaPlayerActivity : AppCompatActivity() {
     private var mainMediaPlayerThreadHandler: Handler? = null
     private var timeLeftTextView: TextView? = null
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
+    private val dateFormatParse by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +40,7 @@ class MediaPlayerActivity : AppCompatActivity() {
             insets
         }
 
-        trackHistoryManager = TrackHistoryCreator().provideTrackHistoryManager(this)
+        trackHistoryManager = TrackHistoryCreator.provideTrackHistoryManager(this)
 
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.tooltipId)
         setSupportActionBar(toolbar);
@@ -75,7 +77,8 @@ class MediaPlayerActivity : AppCompatActivity() {
         setText(R.id.countryValue, track.country)
         setText(R.id.albumValue, track.collectionName)
         setText(R.id.typeValue, track.primaryGenreName)
-        setText(R.id.yearValue, track.releaseDate)
+        val date = dateFormatParse.parse(track.releaseDate)
+        setText(R.id.yearValue, date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().year.toString())
         setText(R.id.time, getResources().getString(R.string.media_player_initial_value))
         setText(R.id.durationValue, dateFormat.format(track.trackTimeMillis))
 
