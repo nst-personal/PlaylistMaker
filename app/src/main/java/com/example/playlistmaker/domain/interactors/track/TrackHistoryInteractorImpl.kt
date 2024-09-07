@@ -3,8 +3,8 @@ package com.example.playlistmaker.domain.interactors.track
 import com.example.playlistmaker.data.models.Track
 import com.example.playlistmaker.domain.repositories.track.TrackHistoryRepository
 
-class TrackHistoryManagerImpl(private val trackHistoryRepository: TrackHistoryRepository) :
-    TrackHistoryManager {
+class TrackHistoryInteractorImpl(private val trackHistoryRepository: TrackHistoryRepository) :
+    TrackHistoryInteractor {
     override fun isEmpty() : Boolean {
         return trackHistoryRepository.isEmpty()
     }

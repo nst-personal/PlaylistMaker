@@ -25,14 +25,14 @@ import com.example.playlistmaker.creators.track.TrackCreator
 import com.example.playlistmaker.creators.track.TrackHistoryCreator
 import com.example.playlistmaker.data.models.Track
 import com.example.playlistmaker.domain.api.TrackInteractor
-import com.example.playlistmaker.domain.interactors.track.TrackHistoryManager
+import com.example.playlistmaker.domain.interactors.track.TrackHistoryInteractor
 import com.example.playlistmaker.presentation.ui.media_player.MediaPlayerActivity
 import com.example.playlistmaker.presentation.ui.search.interfaces.OnTrackItemClickListener
 import com.example.playlistmaker.presentation.ui.search.view.adapter.TrackAdapter
 
 
 class SearchActivity : AppCompatActivity() {
-    private lateinit var trackHistoryManager: TrackHistoryManager
+    private lateinit var trackHistoryInteractor: TrackHistoryInteractor
     private lateinit var trackInteractor: TrackInteractor
     private lateinit var historyView: RecyclerView
     private lateinit var recyclerView: RecyclerView
@@ -73,7 +73,7 @@ class SearchActivity : AppCompatActivity() {
         searchProgressBar = findViewById(R.id.searchProgressBarId)
 
         trackInteractor = TrackCreator.provideTracksInteractor()
-        trackHistoryManager = TrackHistoryCreator.provideTrackHistoryManager(this)
+        trackHistoryInteractor = TrackHistoryCreator.provideTrackHistoryManager(this)
 
         val backButton = findViewById<ImageView>(R.id.backId)
         backButton.setOnClickListener{
@@ -135,7 +135,7 @@ class SearchActivity : AppCompatActivity() {
 
         val clearHistoryButton = findViewById<Button>(R.id.clearHistory)
         clearHistoryButton.setOnClickListener {
-            trackHistoryManager.remove()
+            trackHistoryInteractor.remove()
             showHistory(false)
             searchProgressBar.isVisible = false
         }
@@ -144,7 +144,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun openMediaPlayer(track: Track) {
         if (clickItemDebounce()) {
-            trackHistoryManager.updateLast(track)
+            trackHistoryInteractor.updateLast(track)
             val displayMediaIntent = Intent(this, MediaPlayerActivity::class.java)
             startActivity(displayMediaIntent)
         }
@@ -152,7 +152,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun handleHistoryView() {
         recyclerView.isVisible = false
-        showHistory(!trackHistoryManager.isEmpty() && searchValue.isEmpty())
+        showHistory(!trackHistoryInteractor.isEmpty() && searchValue.isEmpty())
     }
 
     private fun handleSearchTracks(savedSearchValue: String) {
@@ -180,7 +180,7 @@ class SearchActivity : AppCompatActivity() {
                 tracks = resultList
                 val trackClickListener = object : OnTrackItemClickListener {
                     override fun onItemClick(track: Track) {
-                        trackHistoryManager.add(track)
+                        trackHistoryInteractor.add(track)
                         openMediaPlayer(track)
                     }
                 }
@@ -209,7 +209,7 @@ class SearchActivity : AppCompatActivity() {
                     openMediaPlayer(track)
                 }
             }
-            historyView.adapter = TrackAdapter(trackHistoryManager.findAll(), trackClickListener)
+            historyView.adapter = TrackAdapter(trackHistoryInteractor.findAll(), trackClickListener)
         }
         val searchNoDataTextView = findViewById<LinearLayout>(R.id.historyData)
         searchNoDataTextView.isVisible = isVisible

@@ -14,13 +14,13 @@ import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.creators.track.TrackHistoryCreator
 import com.example.playlistmaker.data.models.Track
-import com.example.playlistmaker.domain.interactors.track.TrackHistoryManager
+import com.example.playlistmaker.domain.interactors.track.TrackHistoryInteractor
 import java.text.SimpleDateFormat
 import java.time.ZoneId
 import java.util.Locale
 
 class MediaPlayerActivity : AppCompatActivity() {
-    private lateinit var trackHistoryManager: TrackHistoryManager
+    private lateinit var trackHistoryInteractor: TrackHistoryInteractor
     private lateinit var play: ImageView
     private lateinit var track: Track
     private var mediaPlayer = MediaPlayer()
@@ -40,7 +40,7 @@ class MediaPlayerActivity : AppCompatActivity() {
             insets
         }
 
-        trackHistoryManager = TrackHistoryCreator.provideTrackHistoryManager(this)
+        trackHistoryInteractor = TrackHistoryCreator.provideTrackHistoryManager(this)
 
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.tooltipId)
         setSupportActionBar(toolbar);
@@ -71,7 +71,7 @@ class MediaPlayerActivity : AppCompatActivity() {
     }
 
     private fun fillContent() {
-        track = trackHistoryManager.findLast()
+        track = trackHistoryInteractor.findLast()
         setText(R.id.authorName, track.artistName)
         setText(R.id.trackName, track.trackName)
         setText(R.id.countryValue, track.country)

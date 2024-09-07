@@ -2,7 +2,7 @@ package com.example.playlistmaker.domain.interactors.settings
 
 import com.example.playlistmaker.domain.repositories.settings.SettingsRepository
 
-class SettingsManagerImpl(private val settingsRepository: SettingsRepository): SettingsManager {
+class SettingsInteractorImpl(private val settingsRepository: SettingsRepository): SettingsInteractor {
     override fun findDarkMode(default: Boolean): Boolean {
         return settingsRepository.findDarkMode(default);
     }
