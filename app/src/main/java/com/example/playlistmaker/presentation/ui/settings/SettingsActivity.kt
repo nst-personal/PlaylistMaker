@@ -4,45 +4,44 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.App
 import com.example.playlistmaker.R
-import com.example.playlistmaker.creators.settings.SettingsCreator
-import com.google.android.material.switchmaterial.SwitchMaterial
+import com.example.playlistmaker.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {
-
+    private lateinit var binding: ActivitySettingsBinding
+    private lateinit var viewModel: SettingsViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_settings)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        viewModel = ViewModelProvider(
+            this, SettingsViewModel.getViewModelFactory(this)
+        )[SettingsViewModel::class.java]
 
-        val settingsManager = SettingsCreator.provideSettingsManager(this)
-
-        val backButton = findViewById<ImageView>(R.id.backId)
+        val backButton = binding.backId
         backButton.setOnClickListener{
             finish()
         }
         val sendIntent = Intent(Intent.ACTION_SENDTO)
-        val shareButton = findViewById<Button>(R.id.shareId)
+        val shareButton = binding.shareId
         val shareButtonClickListener: View.OnClickListener = View.OnClickListener {
             sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.settings_shareadble_link))
             startActivity(Intent.createChooser(sendIntent, null))
         }
         shareButton.setOnClickListener(shareButtonClickListener)
 
-
-        val supportButton = findViewById<Button>(R.id.supportId)
+        val supportButton = binding.supportId
         val supportButtonClickListener: View.OnClickListener = View.OnClickListener {
             val shareIntent = Intent(Intent.ACTION_SENDTO)
             shareIntent.data = Uri.parse("mailto:")
@@ -53,19 +52,19 @@ class SettingsActivity : AppCompatActivity() {
         }
         supportButton.setOnClickListener(supportButtonClickListener)
 
-        val tcButton = findViewById<Button>(R.id.tcId)
+        val tcButton = binding.tcId
         val tcButtonClickListener: View.OnClickListener = View.OnClickListener {
             val shareIntent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.settings_shareadble_url)))
             startActivity(shareIntent)
         }
         tcButton.setOnClickListener(tcButtonClickListener)
 
-        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
+        val themeSwitcher = binding.themeSwitcher
         themeSwitcher.isChecked = (applicationContext as App).darkTheme
 
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
             (applicationContext as App).switchTheme(checked)
-            settingsManager.updateDarkMode(checked)
+            viewModel.updateTheme(checked)
         }
     }
 }

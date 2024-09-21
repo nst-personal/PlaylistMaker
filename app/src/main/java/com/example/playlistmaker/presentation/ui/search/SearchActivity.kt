@@ -7,47 +7,36 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.R
-import com.example.playlistmaker.creators.track.TrackCreator
-import com.example.playlistmaker.creators.track.TrackHistoryCreator
 import com.example.playlistmaker.data.models.Track
-import com.example.playlistmaker.domain.api.TrackInteractor
-import com.example.playlistmaker.domain.interactors.track.TrackHistoryInteractor
+import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.presentation.ui.media_player.MediaPlayerActivity
 import com.example.playlistmaker.presentation.ui.search.interfaces.OnTrackItemClickListener
+import com.example.playlistmaker.presentation.ui.search.interfaces.TrackScreenState
 import com.example.playlistmaker.presentation.ui.search.view.adapter.TrackAdapter
 
 
 class SearchActivity : AppCompatActivity() {
-    private lateinit var trackHistoryInteractor: TrackHistoryInteractor
-    private lateinit var trackInteractor: TrackInteractor
     private lateinit var historyView: RecyclerView
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: TrackAdapter
     private lateinit var searchProgressBar: ProgressBar
 
+    private lateinit var viewModel: SearchViewModel
+
     private var searchValue: String = ""
 
     private var tracks = listOf<Track>()
-
-    private val trackListHandler = Handler(Looper.getMainLooper())
-    private val searchHandler = Handler(Looper.getMainLooper())
+    private lateinit var binding: ActivitySearchBinding
     private val itemClickHandler = Handler(Looper.getMainLooper())
-
-    private val searchRunnable = Runnable { handleSearchTracks(searchValue) }
 
     private var isItemClickAllowed = true
 
@@ -63,39 +52,38 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_search)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        binding = ActivitySearchBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        viewModel = ViewModelProvider(
+            this, SearchViewModel.getViewModelFactory(this)
+        )[SearchViewModel::class.java]
 
-        searchProgressBar = findViewById(R.id.searchProgressBarId)
+        searchProgressBar = binding.searchProgressBarId
 
-        trackInteractor = TrackCreator.provideTracksInteractor()
-        trackHistoryInteractor = TrackHistoryCreator.provideTrackHistoryManager(this)
-
-        val backButton = findViewById<ImageView>(R.id.backId)
+        val backButton = binding.backId
         backButton.setOnClickListener{
             finish()
         }
-        val mainLayout = findViewById<LinearLayout>(R.id.main)
-        val inputEditText = findViewById<EditText>(R.id.inputEditText)
-        val clearButton = findViewById<ImageView>(R.id.clearIcon)
+        val clearButton = binding.clearIcon
 
         clearButton.setOnClickListener {
-            inputEditText.setText("")
+            binding.inputEditText.setText("")
             val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(mainLayout.windowToken, 0)
+            imm.hideSoftInputFromWindow(binding.main.windowToken, 0)
             handleHistoryView()
             searchProgressBar.isVisible = false
         }
 
-        recyclerView = findViewById(R.id.tracksList)
+        recyclerView = binding.tracksList
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.isClickable = true
 
-        historyView = findViewById(R.id.historyTracksList)
+        historyView = binding.historyTracksList
         historyView.layoutManager = LinearLayoutManager(this)
         historyView.isClickable = true
 
@@ -117,7 +105,9 @@ class SearchActivity : AppCompatActivity() {
                 showSearchErrorView(false, "")
                 recyclerView.isVisible = false
                 searchProgressBar.isVisible = true
-                searchDebounce()
+                viewModel.searchDebounce(
+                    changedText = s?.toString() ?: ""
+                )
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -125,26 +115,41 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        inputEditText.addTextChangedListener(simpleTextWatcher)
+        binding.inputEditText.addTextChangedListener(simpleTextWatcher)
 
-        inputEditText.setOnFocusChangeListener { view, hasFocus ->
+        binding.inputEditText.setOnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
                 handleHistoryView()
             }
         }
 
-        val clearHistoryButton = findViewById<Button>(R.id.clearHistory)
+        val clearHistoryButton = binding.clearHistory
         clearHistoryButton.setOnClickListener {
-            trackHistoryInteractor.remove()
+            viewModel.clearHistory()
             showHistory(false)
             searchProgressBar.isVisible = false
+        }
+
+        viewModel.getLoadingTrackLiveData().observe(this) { screenState ->
+            when (screenState) {
+                is TrackScreenState.SearchContent -> {
+                    if (screenState.tracks == null) {
+                        showSearchErrorView(true, screenState.search)
+                        showSearchNotFoundView(false)
+                        showHistory(false)
+                        recyclerView.isVisible = false
+                    } else {
+                        handleTrackData(screenState.tracks, screenState.search)
+                    }
+                }
+            }
         }
 
     }
 
     private fun openMediaPlayer(track: Track) {
         if (clickItemDebounce()) {
-            trackHistoryInteractor.updateLast(track)
+            viewModel.saveTrack(track)
             val displayMediaIntent = Intent(this, MediaPlayerActivity::class.java)
             startActivity(displayMediaIntent)
         }
@@ -152,24 +157,11 @@ class SearchActivity : AppCompatActivity() {
 
     private fun handleHistoryView() {
         recyclerView.isVisible = false
-        showHistory(!trackHistoryInteractor.isEmpty() && searchValue.isEmpty())
+        showHistory(!viewModel.isHistoryVisible() && searchValue.isEmpty())
     }
 
     private fun handleSearchTracks(savedSearchValue: String) {
-        trackInteractor.searchTracks(savedSearchValue, object : TrackInteractor.TracksConsumer {
-            override fun consume(foundTracks: List<Track>?) {
-                trackListHandler.postDelayed({
-                    if (foundTracks == null) {
-                        showSearchErrorView(true, savedSearchValue)
-                        showSearchNotFoundView(false)
-                        showHistory(false)
-                        recyclerView.isVisible = false
-                    } else {
-                        handleTrackData(foundTracks, savedSearchValue)
-                    }
-                }, SEARCH_HANDLE_DEBOUNCE_DELAY)
-            }
-        })
+        viewModel.searchTracks(savedSearchValue);
     }
 
     private fun handleTrackData(resultList: List<Track>?, savedSearchValue: String) {
@@ -180,7 +172,7 @@ class SearchActivity : AppCompatActivity() {
                 tracks = resultList
                 val trackClickListener = object : OnTrackItemClickListener {
                     override fun onItemClick(track: Track) {
-                        trackHistoryInteractor.add(track)
+                        viewModel.addTrack(track)
                         openMediaPlayer(track)
                     }
                 }
@@ -209,25 +201,25 @@ class SearchActivity : AppCompatActivity() {
                     openMediaPlayer(track)
                 }
             }
-            historyView.adapter = TrackAdapter(trackHistoryInteractor.findAll(), trackClickListener)
+            historyView.adapter = TrackAdapter(viewModel.getHistory(), trackClickListener)
         }
-        val searchNoDataTextView = findViewById<LinearLayout>(R.id.historyData)
+        val searchNoDataTextView = binding.historyData
         searchNoDataTextView.isVisible = isVisible
     }
 
     private fun showSearchNotFoundView(isVisible: Boolean) {
-        val searchNoDataTextView = findViewById<TextView>(R.id.searchNoDataText)
-        val searchNoDataImageView = findViewById<ImageView>(R.id.searchNoDataIcon)
+        val searchNoDataTextView = binding.searchNoDataText
+        val searchNoDataImageView = binding.searchNoDataIcon
         searchNoDataTextView.isVisible = isVisible
         searchNoDataImageView.isVisible = isVisible
         searchProgressBar.isVisible = false
     }
 
     private fun showSearchErrorView(isVisible: Boolean, savedSearchValue: String) {
-        val searchErrorTextView = findViewById<TextView>(R.id.searchErrorText)
-        val searchErrorConnectionTextView = findViewById<TextView>(R.id.searchErrorTextConnection)
-        val searchErrorImageView = findViewById<ImageView>(R.id.searchErrorIcon)
-        val retryButton = findViewById<Button>(R.id.retry)
+        val searchErrorTextView = binding.searchErrorText
+        val searchErrorConnectionTextView = binding.searchErrorTextConnection
+        val searchErrorImageView = binding.searchErrorIcon
+        val retryButton = binding.retry
         searchErrorTextView.isVisible = isVisible
         searchErrorTextView.isVisible = isVisible
         searchErrorConnectionTextView.isVisible = isVisible
@@ -248,18 +240,11 @@ class SearchActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         searchValue = savedInstanceState.getString(SEARCH, "")
-        findViewById<EditText>(R.id.inputEditText).setText(searchValue)
-    }
-
-    private fun searchDebounce() {
-        searchHandler.removeCallbacks(searchRunnable)
-        searchHandler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+        binding.inputEditText.setText(searchValue)
     }
 
     private companion object {
         const val SEARCH = "SEARCH"
-        const val SEARCH_DEBOUNCE_DELAY = 2000L
-        const val SEARCH_HANDLE_DEBOUNCE_DELAY = 1000L
         const val ITEM_BUTTON_DEBOUNCE_DELAY = 1000L
     }
 }
