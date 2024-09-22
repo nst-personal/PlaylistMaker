@@ -62,10 +62,6 @@ class SearchViewModel(
         })
     }
 
-    fun isHistoryVisible() : Boolean {
-        return trackHistoryInteractor.isEmpty()
-    }
-
     fun searchTracks(savedSearchValue: String) {
         trackInteractor.searchTracks(savedSearchValue, object : TrackInteractor.TracksConsumer {
             override fun consume(foundTracks: List<Track>?) {

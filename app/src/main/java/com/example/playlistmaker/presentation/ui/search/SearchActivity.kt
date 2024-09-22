@@ -165,7 +165,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun handleHistoryView() {
         recyclerView.isVisible = false
-        showHistory(!viewModel.isHistoryVisible() && searchValue.isEmpty())
+        showHistory(searchValue.isEmpty())
     }
 
     private fun handleSearchTracks(savedSearchValue: String) {
