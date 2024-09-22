@@ -6,11 +6,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.creators.settings.SettingsCreator
+import com.example.playlistmaker.domain.interactors.settings.SettingsInteractor
 
 class SettingsViewModel(
-    context: Context,
+    private val settingsManager: SettingsInteractor
 ): ViewModel() {
-    private val settingsManager = SettingsCreator.provideSettingsManager(context)
 
     fun updateTheme(checked: Boolean) {
         settingsManager.updateDarkMode(checked)
@@ -19,8 +19,9 @@ class SettingsViewModel(
     companion object {
         fun getViewModelFactory(context: Context): ViewModelProvider.Factory = viewModelFactory {
             initializer {
+                val settingsManager = SettingsCreator.provideSettingsManager(context)
                 SettingsViewModel(
-                    context
+                    settingsManager
                 )
             }
         }

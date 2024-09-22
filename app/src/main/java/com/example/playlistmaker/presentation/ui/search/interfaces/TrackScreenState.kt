@@ -7,4 +7,8 @@ sealed class TrackScreenState {
         val tracks: List<Track>?,
         val search: String
     ): TrackScreenState()
+
+    data class HistoryContent(
+        val tracks: List<Track>,
+    ): TrackScreenState()
 }

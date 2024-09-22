@@ -18,7 +18,8 @@ import com.example.playlistmaker.domain.interactors.track.TrackHistoryInteractor
 import com.example.playlistmaker.presentation.ui.search.interfaces.TrackScreenState
 
 class SearchViewModel(
-    context: Context,
+    private val trackHistoryInteractor: TrackHistoryInteractor,
+    private val trackInteractor: TrackInteractor
 ): ViewModel() {
 
     private var loadingTrackLiveData = MutableLiveData<TrackScreenState>()
@@ -27,9 +28,6 @@ class SearchViewModel(
     private val trackListHandler = Handler(Looper.getMainLooper())
     private val searchHandler = Handler(Looper.getMainLooper())
     private var latestSearchText: String? = null
-
-    private val trackHistoryInteractor: TrackHistoryInteractor = TrackHistoryCreator.provideTrackHistoryManager(context)
-    private val trackInteractor: TrackInteractor = TrackCreator.provideTracksInteractor()
 
     override fun onCleared() {
         searchHandler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
@@ -90,8 +88,8 @@ class SearchViewModel(
         trackHistoryInteractor.add(track)
     }
 
-    fun getHistory() : MutableList<Track> {
-        return trackHistoryInteractor.findAll()
+    fun showHistory() {
+        loadingTrackLiveData.postValue(TrackScreenState.HistoryContent(trackHistoryInteractor.findAll()))
     }
 
     companion object {
@@ -102,8 +100,11 @@ class SearchViewModel(
         private val SEARCH_REQUEST_TOKEN = Any()
         fun getViewModelFactory(context: Context): ViewModelProvider.Factory = viewModelFactory {
             initializer {
+                val trackHistoryInteractor: TrackHistoryInteractor = TrackHistoryCreator.provideTrackHistoryManager(context)
+                val trackInteractor: TrackInteractor = TrackCreator.provideTracksInteractor()
                 SearchViewModel(
-                    context
+                    trackHistoryInteractor,
+                    trackInteractor
                 )
             }
         }

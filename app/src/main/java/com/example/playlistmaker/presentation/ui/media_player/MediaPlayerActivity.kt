@@ -1,9 +1,6 @@
 package com.example.playlistmaker.presentation.ui.media_player
 
-import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -13,15 +10,16 @@ import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.data.models.Track
 import com.example.playlistmaker.databinding.ActivityMediaPlayerBinding
+import com.example.playlistmaker.presentation.ui.media_player.interfaces.MediaScreenState
+import com.example.playlistmaker.presentation.ui.media_player.interfaces.MediaState
 import java.text.SimpleDateFormat
 import java.time.ZoneId
 import java.util.Locale
 
 class MediaPlayerActivity : AppCompatActivity() {
     private lateinit var track: Track
-    private var mediaPlayer = MediaPlayer()
-    private var playerState = STATE_DEFAULT
-    private var mainMediaPlayerThreadHandler: Handler? = null
+    private var playerState: Int = MediaState.STATE_DEFAULT
+
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
     private val dateFormatParse by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
     private lateinit var viewModel: MediaViewModel
@@ -44,8 +42,20 @@ class MediaPlayerActivity : AppCompatActivity() {
         )[MediaViewModel::class.java]
 
         viewModel.getLoadingTrackLiveData().observe(this) { data ->
-            track = data
-            fillContent()
+            if (data is MediaScreenState.Ready) {
+                track = data.track!!
+                fillContent()
+            }
+            if (data is MediaScreenState.Completed) {
+                stopPlayer()
+            }
+            if (data is MediaScreenState.State) {
+                playerState = data.state
+            }
+            if (data is MediaScreenState.Time) {
+                val remainingTime = data.currentPosition
+                binding.time.text = dateFormat.format(remainingTime)
+            }
         }
 
         setSupportActionBar(binding.tooltipId);
@@ -59,12 +69,10 @@ class MediaPlayerActivity : AppCompatActivity() {
         binding.playMedia.setOnClickListener {
             playbackControl()
         }
-
-        mainMediaPlayerThreadHandler = Handler(Looper.getMainLooper())
     }
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
+        viewModel.release()
     }
 
     override fun onPause() {
@@ -88,76 +96,37 @@ class MediaPlayerActivity : AppCompatActivity() {
             .load(getCoverArtwork(track.artworkUrl100))
             .placeholder(R.drawable.placeholder)
             .into(imageView)
-        preparePlayer(track.previewUrl)
+        binding.playMedia.isEnabled = true
     }
     
     fun getCoverArtwork(url: String) = url.replaceAfterLast('/',"512x512bb.jpg")
 
-    private fun preparePlayer(url: String) {
-        mediaPlayer.setDataSource(url)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            binding.playMedia.isEnabled = true
-            playerState = STATE_PREPARED
-        }
-        mediaPlayer.setOnCompletionListener {
-            playerState = STATE_PREPARED
-            binding.playMedia.setImageResource(R.drawable.playlist_play)
-            stopTimer()
-            binding.time.text = getResources().getString(R.string.media_player_initial_value)
-        }
+    private fun stopPlayer() {
+        playerState = MediaState.STATE_PREPARED
+        binding.playMedia.setImageResource(R.drawable.playlist_play)
+        binding.time.text = getResources().getString(R.string.media_player_initial_value)
     }
 
     private fun playbackControl() {
         when(playerState) {
-            STATE_PLAYING -> {
+            MediaState.STATE_PLAYING -> {
                 pausePlayer()
             }
-            STATE_PREPARED, STATE_PAUSED -> {
+            MediaState.STATE_PREPARED,
+            MediaState.STATE_PAUSED -> {
                 startPlayer()
             }
         }
     }
 
     private fun startPlayer() {
-        mediaPlayer.start()
-        playerState = STATE_PLAYING
-        startTimer()
+        viewModel.start()
         binding.playMedia.setImageResource(R.drawable.playlist_pause)
     }
 
     private fun pausePlayer() {
-        mediaPlayer.pause()
-        playerState = STATE_PAUSED
-        stopTimer()
+        viewModel.pause()
         binding.playMedia.setImageResource(R.drawable.playlist_play)
     }
 
-    private fun stopTimer() {
-        mainMediaPlayerThreadHandler?.removeCallbacksAndMessages(null)
-    }
-
-    private fun startTimer() {
-        mainMediaPlayerThreadHandler?.post(
-            createUpdateTimerTask()
-        )
-    }
-
-    private fun createUpdateTimerTask(): Runnable {
-        return object : Runnable {
-            override fun run() {
-                val remainingTime = mediaPlayer.currentPosition
-                binding.time.text = dateFormat.format(remainingTime)
-                mainMediaPlayerThreadHandler?.postDelayed(this, DELAY)
-            }
-        }
-    }
-
-    companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-        private const val DELAY = 500L
-    }
 }

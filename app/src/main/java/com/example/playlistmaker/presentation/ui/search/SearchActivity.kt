@@ -142,6 +142,14 @@ class SearchActivity : AppCompatActivity() {
                         handleTrackData(screenState.tracks, screenState.search)
                     }
                 }
+                is TrackScreenState.HistoryContent -> {
+                    val trackClickListener = object : OnTrackItemClickListener {
+                        override fun onItemClick(track: Track) {
+                            openMediaPlayer(track)
+                        }
+                    }
+                    historyView.adapter = TrackAdapter(screenState.tracks, trackClickListener)
+                }
             }
         }
 
@@ -196,12 +204,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun showHistory(isVisible: Boolean) {
         if (isVisible) {
-            val trackClickListener = object : OnTrackItemClickListener {
-                override fun onItemClick(track: Track) {
-                    openMediaPlayer(track)
-                }
-            }
-            historyView.adapter = TrackAdapter(viewModel.getHistory(), trackClickListener)
+            viewModel.showHistory()
         }
         val searchNoDataTextView = binding.historyData
         searchNoDataTextView.isVisible = isVisible
