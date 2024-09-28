@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.data.models.Track
@@ -22,6 +21,7 @@ import com.example.playlistmaker.presentation.ui.media_player.MediaPlayerActivit
 import com.example.playlistmaker.presentation.ui.search.interfaces.OnTrackItemClickListener
 import com.example.playlistmaker.presentation.ui.search.interfaces.TrackScreenState
 import com.example.playlistmaker.presentation.ui.search.view.adapter.TrackAdapter
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class SearchActivity : AppCompatActivity() {
@@ -30,14 +30,12 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var adapter: TrackAdapter
     private lateinit var searchProgressBar: ProgressBar
 
-    private lateinit var viewModel: SearchViewModel
-
     private var searchValue: String = ""
 
     private var tracks = listOf<Track>()
     private lateinit var binding: ActivitySearchBinding
     private val itemClickHandler = Handler(Looper.getMainLooper())
-
+    private val viewModel: SearchViewModel by viewModel()
     private var isItemClickAllowed = true
 
     private fun clickItemDebounce() : Boolean {
@@ -59,9 +57,6 @@ class SearchActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        viewModel = ViewModelProvider(
-            this, SearchViewModel.getViewModelFactory(this)
-        )[SearchViewModel::class.java]
 
         searchProgressBar = binding.searchProgressBarId
 
