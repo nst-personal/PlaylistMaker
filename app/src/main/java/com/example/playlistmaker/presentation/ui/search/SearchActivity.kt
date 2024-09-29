@@ -72,6 +72,7 @@ class SearchActivity : AppCompatActivity() {
             val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(binding.main.windowToken, 0)
             handleHistoryView()
+            viewModel.showHistory()
             searchProgressBar.isVisible = false
         }
 
@@ -82,7 +83,6 @@ class SearchActivity : AppCompatActivity() {
         historyView = binding.historyTracksList
         historyView.layoutManager = LinearLayoutManager(this)
         historyView.isClickable = true
-        showHistory(false)
 
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

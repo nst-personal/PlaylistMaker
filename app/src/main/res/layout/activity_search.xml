@@ -177,6 +177,7 @@
         tools:context=".presentation.ui.settings.SettingsActivity"
         android:layout_marginStart="@dimen/main_top_padding"
         android:layout_marginEnd="@dimen/main_top_padding"
+        android:visibility="gone"
         >
         <TextView
             android:layout_width="match_parent"
