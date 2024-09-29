@@ -11,19 +11,19 @@ import com.example.playlistmaker.domain.interactors.track.TrackHistoryInteractor
 import org.koin.dsl.module
 
 val interactorModule = module {
-    single<MediaInteractor> {
+    factory<MediaInteractor> {
         MediaInteractorImpl(get())
     }
 
-    single<SettingsInteractor> {
+    factory<SettingsInteractor> {
         SettingsInteractorImpl(get())
     }
 
-    single<TrackHistoryInteractor> {
+    factory<TrackHistoryInteractor> {
         TrackHistoryInteractorImpl(get())
     }
 
-    single<TrackInteractor> {
+    factory<TrackInteractor> {
         TrackInteractorImpl(get())
     }
 }

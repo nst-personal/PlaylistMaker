@@ -177,7 +177,6 @@
         tools:context=".presentation.ui.settings.SettingsActivity"
         android:layout_marginStart="@dimen/main_top_padding"
         android:layout_marginEnd="@dimen/main_top_padding"
-        android:visibility="gone"
         >
         <TextView
             android:layout_width="match_parent"
@@ -185,6 +184,8 @@
             android:gravity="center"
             android:orientation="vertical"
             style="@style/HistorySubText"
+            android:layout_marginStart="@dimen/margin_search_history_top"
+            android:layout_marginEnd="@dimen/button_margin"
             android:text="@string/search_history"
             />
         <androidx.recyclerview.widget.RecyclerView

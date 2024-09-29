@@ -27,10 +27,17 @@ class SearchViewModel(
         searchHandler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
     }
 
+    init {
+        showHistory()
+    }
 
     fun searchDebounce(changedText: String) {
         if (latestSearchText == changedText) {
             return
+        }
+
+        if (changedText.isEmpty()) {
+            return;
         }
 
         this.latestSearchText = changedText

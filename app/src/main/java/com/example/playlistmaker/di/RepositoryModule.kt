@@ -11,19 +11,19 @@ import com.example.playlistmaker.domain.repositories.track.TrackRepository
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single<MediaRepository> {
+    factory<MediaRepository> {
         MediaRepositoryImpl(get())
     }
 
-    single<SettingsRepository> {
+    factory<SettingsRepository> {
         SettingsRepositoryImpl(get())
     }
 
-    single<TrackHistoryRepository> {
+    factory<TrackHistoryRepository> {
         TrackHistoryRepositoryImpl(get(), get())
     }
 
-    single<TrackRepository> {
+    factory<TrackRepository> {
         TrackRepositoryImpl(get())
     }
 }

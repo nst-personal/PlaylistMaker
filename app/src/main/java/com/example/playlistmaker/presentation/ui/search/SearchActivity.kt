@@ -33,6 +33,7 @@ class SearchActivity : AppCompatActivity() {
     private var searchValue: String = ""
 
     private var tracks = listOf<Track>()
+    private var historyTracks = listOf<Track>()
     private lateinit var binding: ActivitySearchBinding
     private val itemClickHandler = Handler(Looper.getMainLooper())
     private val viewModel: SearchViewModel by viewModel()
@@ -81,6 +82,7 @@ class SearchActivity : AppCompatActivity() {
         historyView = binding.historyTracksList
         historyView.layoutManager = LinearLayoutManager(this)
         historyView.isClickable = true
+        showHistory(false)
 
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -143,7 +145,8 @@ class SearchActivity : AppCompatActivity() {
                             openMediaPlayer(track)
                         }
                     }
-                    historyView.adapter = TrackAdapter(screenState.tracks, trackClickListener)
+                    historyTracks = screenState.tracks
+                    historyView.adapter = TrackAdapter(historyTracks, trackClickListener)
                 }
             }
         }
@@ -160,11 +163,13 @@ class SearchActivity : AppCompatActivity() {
 
     private fun handleHistoryView() {
         recyclerView.isVisible = false
-        showHistory(searchValue.isEmpty())
+        showHistory(historyTracks.isNotEmpty() && searchValue.isEmpty())
     }
 
     private fun handleSearchTracks(savedSearchValue: String) {
-        viewModel.searchTracks(savedSearchValue);
+        if (savedSearchValue.isNotEmpty()) {
+            viewModel.searchTracks(savedSearchValue)
+        }
     }
 
     private fun handleTrackData(resultList: List<Track>?, savedSearchValue: String) {
@@ -201,8 +206,7 @@ class SearchActivity : AppCompatActivity() {
         if (isVisible) {
             viewModel.showHistory()
         }
-        val searchNoDataTextView = binding.historyData
-        searchNoDataTextView.isVisible = isVisible
+        binding.historyData.isVisible = isVisible
     }
 
     private fun showSearchNotFoundView(isVisible: Boolean) {
