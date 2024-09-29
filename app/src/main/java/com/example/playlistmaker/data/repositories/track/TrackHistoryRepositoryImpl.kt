@@ -8,12 +8,11 @@ import com.example.playlistmaker.data.models.Track
 import com.example.playlistmaker.domain.repositories.track.TrackHistoryRepository
 import com.google.gson.Gson
 
-class TrackHistoryRepositoryImpl(private val context: Context) : TrackHistoryRepository {
+class TrackHistoryRepositoryImpl(private val context: Context,
+    private val gson: Gson) : TrackHistoryRepository {
     companion object {
         const val countOfTracks = 10
     }
-
-    private val gson by lazy { Gson() }
 
     override fun isEmpty() : Boolean {
         val trackHistory = getHistory()
@@ -51,7 +50,7 @@ class TrackHistoryRepositoryImpl(private val context: Context) : TrackHistoryRep
         val sharedPreferences = context.getSharedPreferences(ShareablePreferencesConfig.CURRENT_MEDIA,
             AppCompatActivity.MODE_PRIVATE
         )
-        sharedPreferences.edit().putString(ShareablePreferencesConfig.CURRENT_MEDIA, Gson().toJson(track)).apply()
+        sharedPreferences.edit().putString(ShareablePreferencesConfig.CURRENT_MEDIA, gson.toJson(track)).apply()
     }
 
     private fun getHistory() : TrackHistory {
@@ -61,7 +60,7 @@ class TrackHistoryRepositoryImpl(private val context: Context) : TrackHistoryRep
             ).getString(ShareablePreferencesConfig.HISTORY_LIST, "")
         var trackHistory = TrackHistory(arrayListOf());
         if (!history.isNullOrEmpty()) {
-            trackHistory = Gson().fromJson(history, TrackHistory::class.java)
+            trackHistory = gson.fromJson(history, TrackHistory::class.java)
         }
         if (trackHistory.results.size >= countOfTracks) {
             trackHistory.results = trackHistory.results.subList(0, countOfTracks - 1).toMutableList()
@@ -74,7 +73,7 @@ class TrackHistoryRepositoryImpl(private val context: Context) : TrackHistoryRep
             AppCompatActivity.MODE_PRIVATE
         ).edit().putString(
             ShareablePreferencesConfig.HISTORY_LIST,
-            Gson().toJson(trackHistory)
+            gson.toJson(trackHistory)
         ).apply()
     }
 

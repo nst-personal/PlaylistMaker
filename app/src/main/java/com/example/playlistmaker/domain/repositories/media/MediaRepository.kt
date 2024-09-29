@@ -6,6 +6,7 @@ interface MediaRepository {
         preparedListenerCallback: () -> Unit,
         completionListener: () -> Unit)
     fun release()
+    fun stop()
     fun start()
     fun pause()
     fun currentPosition() : Int

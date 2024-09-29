@@ -12,6 +12,10 @@ class MediaInteractorImpl(private val mediaRepository: MediaRepository) : MediaI
         mediaRepository.release()
     }
 
+    override fun stop() {
+        mediaRepository.stop()
+    }
+
     override fun start() {
         mediaRepository.start()
     }

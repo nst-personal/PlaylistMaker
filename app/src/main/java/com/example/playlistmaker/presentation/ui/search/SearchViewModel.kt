@@ -1,17 +1,11 @@
 package com.example.playlistmaker.presentation.ui.search
 
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.creators.track.TrackCreator
-import com.example.playlistmaker.creators.track.TrackHistoryCreator
 import com.example.playlistmaker.data.models.Track
 import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.interactors.track.TrackHistoryInteractor
@@ -33,10 +27,17 @@ class SearchViewModel(
         searchHandler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
     }
 
+    init {
+        showHistory()
+    }
 
     fun searchDebounce(changedText: String) {
         if (latestSearchText == changedText) {
             return
+        }
+
+        if (changedText.isEmpty()) {
+            return;
         }
 
         this.latestSearchText = changedText
@@ -94,16 +95,6 @@ class SearchViewModel(
         const val SEARCH_HANDLE_DEBOUNCE_DELAY = 1000L
         const val ITEM_BUTTON_DEBOUNCE_DELAY = 1000L
         private val SEARCH_REQUEST_TOKEN = Any()
-        fun getViewModelFactory(context: Context): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val trackHistoryInteractor: TrackHistoryInteractor = TrackHistoryCreator.provideTrackHistoryManager(context)
-                val trackInteractor: TrackInteractor = TrackCreator.provideTracksInteractor()
-                SearchViewModel(
-                    trackHistoryInteractor,
-                    trackInteractor
-                )
-            }
-        }
     }
 
 }

@@ -19,6 +19,7 @@ lifecycleViewmodelKtx = "2.9.0-alpha02"
 activityKtx = "1.10.0-alpha02"
 activityVersion = "1.9.2"
 activityKtxVersion = "1.9.2"
+koinAndroid = "4.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -39,6 +40,7 @@ androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifec
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activityVersion" }
 activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtxVersion" }
+koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koinAndroid" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

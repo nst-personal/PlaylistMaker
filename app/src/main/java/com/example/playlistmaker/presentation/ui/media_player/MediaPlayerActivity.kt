@@ -5,13 +5,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.data.models.Track
 import com.example.playlistmaker.databinding.ActivityMediaPlayerBinding
 import com.example.playlistmaker.presentation.ui.media_player.interfaces.MediaScreenState
 import com.example.playlistmaker.presentation.ui.media_player.interfaces.MediaState
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.time.ZoneId
 import java.util.Locale
@@ -22,9 +22,8 @@ class MediaPlayerActivity : AppCompatActivity() {
 
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
     private val dateFormatParse by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
-    private lateinit var viewModel: MediaViewModel
     private lateinit var binding: ActivityMediaPlayerBinding
-
+    private val viewModel: MediaViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,10 +35,6 @@ class MediaPlayerActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        viewModel = ViewModelProvider(
-            this, MediaViewModel.getViewModelFactory(this)
-        )[MediaViewModel::class.java]
 
         viewModel.getLoadingTrackLiveData().observe(this) { data ->
             if (data is MediaScreenState.Ready) {
@@ -72,7 +67,7 @@ class MediaPlayerActivity : AppCompatActivity() {
     }
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.release()
+        viewModel.stop()
     }
 
     override fun onPause() {

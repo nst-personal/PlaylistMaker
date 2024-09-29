@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.data.models.Track
@@ -22,6 +21,7 @@ import com.example.playlistmaker.presentation.ui.media_player.MediaPlayerActivit
 import com.example.playlistmaker.presentation.ui.search.interfaces.OnTrackItemClickListener
 import com.example.playlistmaker.presentation.ui.search.interfaces.TrackScreenState
 import com.example.playlistmaker.presentation.ui.search.view.adapter.TrackAdapter
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class SearchActivity : AppCompatActivity() {
@@ -30,14 +30,13 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var adapter: TrackAdapter
     private lateinit var searchProgressBar: ProgressBar
 
-    private lateinit var viewModel: SearchViewModel
-
     private var searchValue: String = ""
 
     private var tracks = listOf<Track>()
+    private var historyTracks = listOf<Track>()
     private lateinit var binding: ActivitySearchBinding
     private val itemClickHandler = Handler(Looper.getMainLooper())
-
+    private val viewModel: SearchViewModel by viewModel()
     private var isItemClickAllowed = true
 
     private fun clickItemDebounce() : Boolean {
@@ -59,9 +58,6 @@ class SearchActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        viewModel = ViewModelProvider(
-            this, SearchViewModel.getViewModelFactory(this)
-        )[SearchViewModel::class.java]
 
         searchProgressBar = binding.searchProgressBarId
 
@@ -76,6 +72,7 @@ class SearchActivity : AppCompatActivity() {
             val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(binding.main.windowToken, 0)
             handleHistoryView()
+            viewModel.showHistory()
             searchProgressBar.isVisible = false
         }
 
@@ -148,7 +145,8 @@ class SearchActivity : AppCompatActivity() {
                             openMediaPlayer(track)
                         }
                     }
-                    historyView.adapter = TrackAdapter(screenState.tracks, trackClickListener)
+                    historyTracks = screenState.tracks
+                    historyView.adapter = TrackAdapter(historyTracks, trackClickListener)
                 }
             }
         }
@@ -165,11 +163,13 @@ class SearchActivity : AppCompatActivity() {
 
     private fun handleHistoryView() {
         recyclerView.isVisible = false
-        showHistory(searchValue.isEmpty())
+        showHistory(historyTracks.isNotEmpty() && searchValue.isEmpty())
     }
 
     private fun handleSearchTracks(savedSearchValue: String) {
-        viewModel.searchTracks(savedSearchValue);
+        if (savedSearchValue.isNotEmpty()) {
+            viewModel.searchTracks(savedSearchValue)
+        }
     }
 
     private fun handleTrackData(resultList: List<Track>?, savedSearchValue: String) {
@@ -206,8 +206,7 @@ class SearchActivity : AppCompatActivity() {
         if (isVisible) {
             viewModel.showHistory()
         }
-        val searchNoDataTextView = binding.historyData
-        searchNoDataTextView.isVisible = isVisible
+        binding.historyData.isVisible = isVisible
     }
 
     private fun showSearchNotFoundView(isVisible: Boolean) {
