@@ -8,6 +8,7 @@ class MediaRepositoryImpl(private val mediaPlayer: MediaPlayer) : MediaRepositor
         url: String,
         preparedListenerCallback: () -> Unit,
         completionListener: () -> Unit) {
+        mediaPlayer.reset()
         mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
@@ -20,7 +21,11 @@ class MediaRepositoryImpl(private val mediaPlayer: MediaPlayer) : MediaRepositor
 
 
     override fun release() {
-        mediaPlayer.release()
+         mediaPlayer.release()
+    }
+
+    override fun stop() {
+        mediaPlayer.stop()
     }
 
     override fun start() {
