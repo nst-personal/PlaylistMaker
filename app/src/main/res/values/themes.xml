@@ -19,6 +19,7 @@
         <item name="retryBackgroundColor">@color/black</item>
         <item name="retryTextColor">@color/white</item>
         <item name="notFoundDescription">@color/black</item>
+        <item name="tabTitle">@color/black</item>
         <item name="iconColor">@color/textbox_text</item>
         <item name="searchTitle">@color/title_text</item>
         <item name="mediaDescriptionTitle">@color/subtitle_text</item>
