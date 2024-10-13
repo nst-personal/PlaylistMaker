@@ -13,7 +13,7 @@
     <Toolbar
         android:layout_width="match_parent"
         android:layout_height="@dimen/common_main_header_small"
-        android:layout_marginBottom="@dimen/title_bottom_margin"
+        android:layout_marginBottom="@dimen/media_bottom_margin"
         android:paddingLeft="@dimen/main_top_padding_left">
         <ImageView
             android:id="@+id/backId"
@@ -39,13 +39,11 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
             android:background="?attr/colorOnBackground"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tabMode="fixed"
-            app:tabGravity="fill"
-            app:tabMinWidth="0dp"
-            app:tabMaxWidth="0dp"
-            android:fillViewport="true"
+            app:tabTextAppearance="@style/MediaToolbar"
+            app:tabIndicatorFullWidth="true"
             app:tabIndicatorColor="?attr/notFoundDescription"
             app:tabTextColor="?attr/notFoundDescription"/>
 

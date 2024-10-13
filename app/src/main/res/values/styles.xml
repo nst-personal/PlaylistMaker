@@ -157,6 +157,9 @@
         <item name="android:textFontWeight">@integer/material_motion_duration_medium_2</item>
     </style>
 
+    <style name="MediaToolbar">
+        <item name="android:textSize">18sp</item>
+    </style>
 
     <style name="MediaSubDescription" parent="SearchSubDescription">
     </style>
