@@ -54,4 +54,11 @@
     <dimen name="toolbar_padding_navigation_icon">8dp</dimen>
     <dimen name="search_progress_bar">44dp</dimen>
     <dimen name="search_progress_bar_margin">108dp</dimen>
+    <dimen name="media_not_found_title">70dp</dimen>
+    <dimen name="media_side_padding">20dp</dimen>
+    <dimen name="icon_media_issue">120dp</dimen>
+    <dimen name="media_not_found_top">50dp</dimen>
+    <dimen name="media_add_new_top">20dp</dimen>
+    <dimen name="media_bottom_margin">5dp</dimen>
+    <dimen name="toolbar_padding">14dp</dimen>
 </resources>

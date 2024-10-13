@@ -4,6 +4,8 @@ import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.api.TrackInteractorImpl
 import com.example.playlistmaker.domain.interactors.media.MediaInteractor
 import com.example.playlistmaker.domain.interactors.media.MediaInteractorImpl
+import com.example.playlistmaker.domain.interactors.media.MediaListInteractor
+import com.example.playlistmaker.domain.interactors.media.MediaListInteractorImpl
 import com.example.playlistmaker.domain.interactors.settings.SettingsInteractor
 import com.example.playlistmaker.domain.interactors.settings.SettingsInteractorImpl
 import com.example.playlistmaker.domain.interactors.track.TrackHistoryInteractor
@@ -25,5 +27,9 @@ val interactorModule = module {
 
     factory<TrackInteractor> {
         TrackInteractorImpl(get())
+    }
+
+    factory<MediaListInteractor> {
+        MediaListInteractorImpl(get())
     }
 }

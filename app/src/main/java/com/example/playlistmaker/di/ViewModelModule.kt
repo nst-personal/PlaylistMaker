@@ -1,5 +1,6 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.presentation.ui.media.MediaListViewModel
 import com.example.playlistmaker.presentation.ui.media_player.MediaViewModel
 import com.example.playlistmaker.presentation.ui.search.SearchViewModel
 import com.example.playlistmaker.presentation.ui.settings.SettingsViewModel
@@ -17,5 +18,9 @@ val viewModelModule = module {
 
     viewModel {
         SettingsViewModel(get())
+    }
+
+    viewModel {
+        MediaListViewModel(get())
     }
 }
