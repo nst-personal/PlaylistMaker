@@ -1,10 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorOnBackground"
+    android:orientation="vertical"
+    android:padding="@dimen/main_top_padding"
+    android:theme="@style/Base.Theme.PlaylistMaker.Common"
     tools:context=".presentation.ui.media.MediaActivity">
+    <Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_main_header_small"
+        android:layout_marginBottom="@dimen/media_bottom_margin"
+        android:paddingLeft="@dimen/main_top_padding_left">
+        <ImageView
+            android:id="@+id/backId"
+            android:layout_width="@dimen/common_header_icon"
+            android:layout_height="@dimen/common_header_icon"
+            android:layout_marginLeft="@dimen/common_header_left"
+            android:scaleType="centerCrop"
+            android:src="@drawable/back"
+            app:tint="?attr/colorPrimary" />
+        <TextView
+            style="@style/CommonText"
+            android:layout_gravity="left"
+            android:layout_marginLeft="@dimen/button_margin"
+            android:layout_marginRight="@dimen/button_margin"
+            android:text="@string/media_title"
+            android:textSize="@dimen/font_size" />
+    </Toolbar>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="@dimen/toolbar_padding"
+        android:paddingEnd="@dimen/toolbar_padding"
+        android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:background="?attr/colorOnBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabMode="fixed"
+            app:tabTextAppearance="@style/MediaToolbar"
+            app:tabIndicatorFullWidth="true"
+            app:tabIndicatorColor="?attr/notFoundDescription"
+            app:tabTextColor="?attr/notFoundDescription"/>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+        />
+
+    </LinearLayout>
+</LinearLayout>

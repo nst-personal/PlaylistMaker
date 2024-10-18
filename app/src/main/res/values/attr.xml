@@ -12,4 +12,5 @@
     <attr name="switchColorTint" format="reference" />
     <attr name="switchColorThumbTint" format="reference" />
     <attr name="menuItem" format="reference" />
+    <attr name="tabTitle" format="reference" />
 </resources>
