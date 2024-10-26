@@ -1,35 +1,36 @@
 package com.example.playlistmaker.presentation.ui.media
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivityMediaBinding
+import com.example.playlistmaker.databinding.FragmentMediaBinding
 import com.example.playlistmaker.presentation.ui.media.fragments.view.MediaViewPagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MediaActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMediaBinding
+class MediaFragment : Fragment() {
+    private lateinit var binding: FragmentMediaBinding
     private lateinit var tabMediator: TabLayoutMediator
     private val viewModel: MediaListViewModel by viewModel()
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivityMediaBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentMediaBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.media) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val backButton = binding.backId
-        backButton.setOnClickListener{
-            finish()
-        }
-        binding.viewPager.adapter = MediaViewPagerAdapter(supportFragmentManager, lifecycle)
+
+        binding.viewPager.adapter = MediaViewPagerAdapter(childFragmentManager, lifecycle)
 
         tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             when(position) {
@@ -40,8 +41,8 @@ class MediaActivity : AppCompatActivity() {
         tabMediator.attach()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         tabMediator.detach()
     }
 }
