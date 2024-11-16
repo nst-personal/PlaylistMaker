@@ -8,7 +8,8 @@
     android:background="?attr/colorOnBackground"
     android:theme="@style/Base.Theme.PlaylistMaker.Common"
     android:orientation="vertical"
-    android:id="@+id/main"
+    android:id="@+id/settings"
+    tools:context=".presentation.ui.settings.SettingsFragment"
     android:padding="@dimen/main_top_padding"
     >
     <Toolbar
@@ -16,15 +17,6 @@
         android:layout_height="@dimen/common_main_header_small"
         android:layout_marginBottom="@dimen/title_bottom_margin"
         android:paddingLeft="@dimen/main_top_padding_left">
-        <ImageView
-            android:layout_width="@dimen/common_header_icon"
-            android:layout_height="@dimen/common_header_icon"
-            android:scaleType="centerCrop"
-            app:tint="?attr/colorPrimary"
-            android:src="@drawable/back"
-            android:layout_marginLeft="@dimen/common_header_left"
-            android:id="@+id/backId"
-            />
         <TextView
             style="@style/CommonText"
             android:layout_gravity="left"

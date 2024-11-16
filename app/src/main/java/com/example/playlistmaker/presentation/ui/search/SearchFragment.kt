@@ -6,25 +6,27 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.inputmethod.InputMethodManager
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ProgressBar
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.data.models.Track
-import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.presentation.ui.media_player.MediaPlayerActivity
 import com.example.playlistmaker.presentation.ui.search.interfaces.OnTrackItemClickListener
 import com.example.playlistmaker.presentation.ui.search.interfaces.TrackScreenState
 import com.example.playlistmaker.presentation.ui.search.view.adapter.TrackAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+class SearchFragment : Fragment() {
+    private lateinit var binding: FragmentSearchBinding
 
-class SearchActivity : AppCompatActivity() {
     private lateinit var historyView: RecyclerView
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: TrackAdapter
@@ -34,26 +36,35 @@ class SearchActivity : AppCompatActivity() {
 
     private var tracks = listOf<Track>()
     private var historyTracks = listOf<Track>()
-    private lateinit var binding: ActivitySearchBinding
     private val itemClickHandler = Handler(Looper.getMainLooper())
     private val viewModel: SearchViewModel by viewModel()
     private var isItemClickAllowed = true
+    private lateinit var textWatcher: TextWatcher
 
     private fun clickItemDebounce() : Boolean {
         val current = isItemClickAllowed
         if (isItemClickAllowed) {
             isItemClickAllowed = false
-            itemClickHandler.postDelayed({ isItemClickAllowed = true }, ITEM_BUTTON_DEBOUNCE_DELAY)
+            itemClickHandler.postDelayed({ isItemClickAllowed = true },
+                SearchFragment.ITEM_BUTTON_DEBOUNCE_DELAY
+            )
         }
         return current
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (savedInstanceState != null) {
+            searchValue = savedInstanceState.getString(SEARCH, "")
+        }
+        binding.inputEditText.setText(searchValue)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.search) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
@@ -61,30 +72,24 @@ class SearchActivity : AppCompatActivity() {
 
         searchProgressBar = binding.searchProgressBarId
 
-        val backButton = binding.backId
-        backButton.setOnClickListener{
-            finish()
-        }
         val clearButton = binding.clearIcon
 
         clearButton.setOnClickListener {
             binding.inputEditText.setText("")
-            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(binding.main.windowToken, 0)
             handleHistoryView()
             viewModel.showHistory()
             searchProgressBar.isVisible = false
         }
 
         recyclerView = binding.tracksList
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.isClickable = true
 
         historyView = binding.historyTracksList
-        historyView.layoutManager = LinearLayoutManager(this)
+        historyView.layoutManager = LinearLayoutManager(requireContext())
         historyView.isClickable = true
 
-        val simpleTextWatcher = object : TextWatcher {
+        textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
@@ -101,7 +106,7 @@ class SearchActivity : AppCompatActivity() {
                 showSearchNotFoundView(false)
                 showSearchErrorView(false, "")
                 recyclerView.isVisible = false
-                searchProgressBar.isVisible = true
+                searchProgressBar.isVisible = isVisible
                 viewModel.searchDebounce(
                     changedText = s?.toString() ?: ""
                 )
@@ -112,7 +117,7 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        binding.inputEditText.addTextChangedListener(simpleTextWatcher)
+        textWatcher?.let { binding.inputEditText.addTextChangedListener(it) }
 
         binding.inputEditText.setOnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
@@ -127,7 +132,7 @@ class SearchActivity : AppCompatActivity() {
             searchProgressBar.isVisible = false
         }
 
-        viewModel.getLoadingTrackLiveData().observe(this) { screenState ->
+        viewModel.getLoadingTrackLiveData().observe(viewLifecycleOwner) { screenState ->
             when (screenState) {
                 is TrackScreenState.SearchContent -> {
                     if (screenState.tracks == null) {
@@ -150,13 +155,19 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        textWatcher?.let { binding.inputEditText.removeTextChangedListener(it) }
+    }
+
 
     private fun openMediaPlayer(track: Track) {
         if (clickItemDebounce()) {
             viewModel.saveTrack(track)
-            val displayMediaIntent = Intent(this, MediaPlayerActivity::class.java)
+            val displayMediaIntent = Intent(requireContext(), MediaPlayerActivity::class.java)
             startActivity(displayMediaIntent)
         }
     }
@@ -237,12 +248,6 @@ class SearchActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH, searchValue)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        searchValue = savedInstanceState.getString(SEARCH, "")
-        binding.inputEditText.setText(searchValue)
     }
 
     private companion object {

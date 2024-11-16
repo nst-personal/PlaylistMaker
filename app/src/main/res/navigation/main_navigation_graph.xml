@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation_graph"
+    app:startDestination="@id/media">
+
+    <fragment
+        android:id="@+id/search"
+        android:name="com.example.playlistmaker.presentation.ui.search.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_mediaPlayerActivity2"
+            app:destination="@id/mediaPlayerActivity2" />
+        <action
+            android:id="@+id/action_searchFragment_to_settingsFragment"
+            app:destination="@id/settings" />
+        <action
+            android:id="@+id/action_searchFragment_to_mediaFragment3"
+            app:destination="@id/media" />
+    </fragment>
+    <fragment
+        android:id="@+id/media"
+        android:name="com.example.playlistmaker.presentation.ui.media.MediaFragment"
+        android:label="fragment_media"
+        tools:layout="@layout/fragment_media" />
+    <fragment
+        android:id="@+id/settings"
+        android:name="com.example.playlistmaker.presentation.ui.settings.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
+    <activity
+        android:id="@+id/mediaPlayerActivity2"
+        android:name="com.example.playlistmaker.presentation.ui.media_player.MediaPlayerActivity"
+        android:label="activity_media_player"
+        tools:layout="@layout/activity_media_player" />
+</navigation>
