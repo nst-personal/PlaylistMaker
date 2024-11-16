@@ -39,4 +39,8 @@ class MediaRepositoryImpl(private val mediaPlayer: MediaPlayer) : MediaRepositor
     override fun currentPosition(): Int {
         return mediaPlayer.currentPosition
     }
+
+    override fun isPlaying() : Boolean {
+        return mediaPlayer.isPlaying
+    }
 }

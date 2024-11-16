@@ -3,17 +3,20 @@ package com.example.playlistmaker.data.network.track
 import com.example.playlistmaker.data.dto.Response
 import com.example.playlistmaker.data.dto.search.TracksSearchRequest
 import com.example.playlistmaker.data.network.NetworkClient
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class TrackNetworkClient(private val trackClient: TrackClient) : NetworkClient {
 
-    override fun doRequest(dto: Any): Response {
+    suspend override fun doRequest(dto: Any): Response {
         return if (dto is TracksSearchRequest) {
-            try {
-                val resp = trackClient.search(dto.expression).execute()
-                val response = resp.body() ?: Response()
-                response.apply { isSuccessful = resp.isSuccessful }
-            } catch (ex: Exception) {
-                Response().apply { isSuccessful = false }
+            return withContext(Dispatchers.IO) {
+                try {
+                    val response = trackClient.search(dto.expression)
+                    response.apply { isSuccessful = true }
+                } catch (e: Throwable) {
+                    Response().apply { isSuccessful = false }
+                }
             }
         } else {
             Response().apply { isSuccessful = false }

@@ -2,14 +2,17 @@ package com.example.playlistmaker.presentation.ui.search
 
 import android.os.Handler
 import android.os.Looper
-import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.data.models.Track
 import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.interactors.track.TrackHistoryInteractor
 import com.example.playlistmaker.presentation.ui.search.interfaces.TrackScreenState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val trackHistoryInteractor: TrackHistoryInteractor,
@@ -20,12 +23,8 @@ class SearchViewModel(
     fun getLoadingTrackLiveData(): LiveData<TrackScreenState> = loadingTrackLiveData
 
     private val trackListHandler = Handler(Looper.getMainLooper())
-    private val searchHandler = Handler(Looper.getMainLooper())
     private var latestSearchText: String? = null
-
-    override fun onCleared() {
-        searchHandler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-    }
+    private var searchJob: Job? = null
 
     init {
         showHistory()
@@ -41,36 +40,32 @@ class SearchViewModel(
         }
 
         this.latestSearchText = changedText
-        searchHandler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
 
-        val searchRunnable = Runnable { handleSearchTracks(changedText) }
-
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        searchHandler.postAtTime(
-            searchRunnable,
-            SEARCH_REQUEST_TOKEN,
-            postTime,
-        )
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            handleSearchTracks(changedText)
+        }
     }
 
     private fun handleSearchTracks(savedSearchValue: String) {
-        trackInteractor.searchTracks(savedSearchValue, object : TrackInteractor.TracksConsumer {
-            override fun consume(foundTracks: List<Track>?) {
-                trackListHandler.postDelayed({
-                    loadingTrackLiveData.postValue(TrackScreenState.SearchContent(foundTracks, savedSearchValue))
-                }, SEARCH_HANDLE_DEBOUNCE_DELAY)
-            }
-        })
+        viewModelScope.launch {
+            trackInteractor.searchTracks(savedSearchValue)
+                .collect { foundTracks ->
+                    trackListHandler.postDelayed({
+                        loadingTrackLiveData.postValue(
+                            TrackScreenState.SearchContent(
+                                foundTracks,
+                                savedSearchValue
+                            )
+                        )
+                    }, SEARCH_HANDLE_DEBOUNCE_DELAY)
+                }
+        }
     }
 
     fun searchTracks(savedSearchValue: String) {
-        trackInteractor.searchTracks(savedSearchValue, object : TrackInteractor.TracksConsumer {
-            override fun consume(foundTracks: List<Track>?) {
-                trackListHandler.postDelayed({
-                    loadingTrackLiveData.postValue(TrackScreenState.SearchContent(foundTracks, savedSearchValue))
-                }, SEARCH_HANDLE_DEBOUNCE_DELAY)
-            }
-        })
+        handleSearchTracks(savedSearchValue)
     }
 
     fun saveTrack(track: Track) {
