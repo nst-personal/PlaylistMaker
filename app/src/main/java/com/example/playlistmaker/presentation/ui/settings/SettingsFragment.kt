@@ -15,11 +15,13 @@ import com.example.playlistmaker.databinding.FragmentSettingsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment : Fragment() {
-    private lateinit var binding: FragmentSettingsBinding
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
+
+
     private val viewModel: SettingsViewModel by viewModel()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentSettingsBinding.inflate(inflater, container, false)
-        binding = FragmentSettingsBinding.inflate(layoutInflater)
+        _binding = FragmentSettingsBinding.inflate(layoutInflater)
         ViewCompat.setOnApplyWindowInsetsListener(binding.settings) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -53,12 +55,17 @@ class SettingsFragment : Fragment() {
         tcButton.setOnClickListener(tcButtonClickListener)
 
         val themeSwitcher = binding.themeSwitcher
-        themeSwitcher.isChecked = (getActivity()?.getApplicationContext() as App).darkTheme
+        themeSwitcher.isChecked = (requireActivity().getApplicationContext() as App).darkTheme
 
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
             (getActivity()?.getApplicationContext() as App).switchTheme(checked)
             viewModel.updateTheme(checked)
         }
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
