@@ -13,14 +13,18 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MediaViewModel(
-    trackHistoryInteractor: TrackHistoryInteractor,
+    val trackHistoryInteractor: TrackHistoryInteractor,
     val mediaInteractor: MediaInteractor,
 ): ViewModel() {
     private var loadingTrackLiveData = MutableLiveData<MediaScreenState>()
     private var timerJob: Job? = null
     fun getLoadingTrackLiveData(): LiveData<MediaScreenState> = loadingTrackLiveData
     init {
-        val data = trackHistoryInteractor.findLast()
+        requestLoadingTrackLiveData()
+    }
+
+    fun requestLoadingTrackLiveData() {
+        val data = this.trackHistoryInteractor.findLast()
         loadingTrackLiveData.postValue(MediaScreenState.Ready(data))
         mediaInteractor.init(
             data.previewUrl,
@@ -29,8 +33,8 @@ class MediaViewModel(
                 loadingTrackLiveData.postValue(MediaScreenState.State(MediaState.STATE_PREPARED))
             },
             {
-                loadingTrackLiveData.postValue(MediaScreenState.Completed(data))
                 loadingTrackLiveData.postValue(MediaScreenState.State(MediaState.STATE_PREPARED))
+                loadingTrackLiveData.postValue(MediaScreenState.Completed(data))
                 stopTimer()
             }
         )
@@ -72,6 +76,6 @@ class MediaViewModel(
     }
 
     companion object {
-        private const val DELAY = 500L
+        private const val DELAY = 300L
     }
 }

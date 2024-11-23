@@ -7,6 +7,7 @@
     <color name="settings_background">#FFFFFFFF</color>
     <color name="button_title">#1A1B22</color>
     <color name="textbox">#E6E8EB</color>
+    <color name="grey">#E6E8EB</color>
     <color name="textbox_text">#AEAFB4</color>
     <color name="title_text">#000000</color>
     <color name="subtitle_text">#AEAFB4</color>
@@ -14,5 +15,6 @@
     <color name="switcher_disabled">#3772E7</color>
     <color name="switcher_line">#9FBBF3</color>
     <color name="menu_item">#AEAFB4</color>
+    <color name="menu">#FFFFFF</color>
     <color name="search_cursor_color">#3772E7</color>
 </resources>

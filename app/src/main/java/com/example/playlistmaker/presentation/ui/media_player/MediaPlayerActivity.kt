@@ -36,21 +36,10 @@ class MediaPlayerActivity : AppCompatActivity() {
             insets
         }
 
+        viewModel.requestLoadingTrackLiveData()
+
         viewModel.getLoadingTrackLiveData().observe(this) { data ->
-            if (data is MediaScreenState.Ready) {
-                track = data.track!!
-                fillContent()
-            }
-            if (data is MediaScreenState.Completed) {
-                stopPlayer()
-            }
-            if (data is MediaScreenState.State) {
-                playerState = data.state
-            }
-            if (data is MediaScreenState.Time) {
-                val remainingTime = data.currentPosition
-                binding.time.text = dateFormat.format(remainingTime)
-            }
+            handleData(data)
         }
 
         setSupportActionBar(binding.tooltipId);
@@ -65,6 +54,24 @@ class MediaPlayerActivity : AppCompatActivity() {
             playbackControl()
         }
     }
+
+    fun handleData(data: MediaScreenState) {
+        if (data is MediaScreenState.Ready) {
+            track = data.track!!
+            fillContent()
+        }
+        if (data is MediaScreenState.Completed) {
+            stopPlayer()
+        }
+        if (data is MediaScreenState.State) {
+            playerState = data.state
+        }
+        if (data is MediaScreenState.Time) {
+            val remainingTime = data.currentPosition
+            binding.time.text = dateFormat.format(remainingTime)
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         viewModel.stop()
@@ -115,8 +122,10 @@ class MediaPlayerActivity : AppCompatActivity() {
     }
 
     private fun startPlayer() {
-        viewModel.start()
-        binding.playMedia.setImageResource(R.drawable.playlist_pause)
+        if (track.trackTimeMillis > 0) {
+            viewModel.start()
+            binding.playMedia.setImageResource(R.drawable.playlist_pause)
+        }
     }
 
     private fun pausePlayer() {

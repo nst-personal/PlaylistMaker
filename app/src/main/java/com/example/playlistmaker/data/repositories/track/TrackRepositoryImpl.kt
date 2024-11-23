@@ -14,7 +14,7 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
        val response = networkClient.doRequest(TracksSearchRequest(search))
        if (response.isSuccessful) {
            val trackResponse = (response as TrackResponse)
-           if (trackResponse.resultCount.equals("0") || trackResponse.results == null) {
+           if (trackResponse.results == null || trackResponse.resultCount == 0) {
                emit(emptyList())
            } else {
                emit(trackResponse.results?.map { item ->

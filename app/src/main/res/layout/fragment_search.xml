@@ -7,8 +7,8 @@
     android:layout_height="match_parent"
     android:background="?attr/colorOnBackground"
     android:orientation="vertical"
-    android:padding="@dimen/main_top_padding"
-    android:paddingLeft="@dimen/main_top_padding_left"
+    android:paddingTop="@dimen/main_top_padding"
+    android:paddingBottom="@dimen/main_top_padding"
     android:theme="@style/Base.Theme.PlaylistMaker.Common"
     tools:context=".presentation.ui.search.SearchFragment">
     <Toolbar
