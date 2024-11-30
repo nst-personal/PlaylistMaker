@@ -9,4 +9,5 @@ interface MediaInteractor {
     fun start()
     fun pause()
     fun currentPosition() : Int
+    fun isPlaying() : Boolean
 }

@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/Base.Theme.PlaylistMaker.Common"
     tools:context=".presentation.ui.main.RootActivity">
     <androidx.fragment.app.FragmentContainerView
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -23,6 +24,9 @@
         />
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
+        style="@style/BottomNavigationView"
+        android:background="@drawable/bottom_menu"
+        app:itemActiveIndicatorStyle="@null"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
 
@@ -32,7 +36,6 @@
 
         app:itemTextColor="@color/bottom_navigation_bar_color"
         app:itemIconTint="@color/bottom_navigation_bar_color"
-
         app:menu="@menu/bottom_navigation_menu"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

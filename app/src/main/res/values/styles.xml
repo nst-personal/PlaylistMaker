@@ -41,6 +41,9 @@
         <item name="thumbTint">?attr/switchColorThumbTint</item>
         <item name="trackTint">?attr/switchColorTint</item>
     </style>
+    <style name="BottomNavigationView">
+        <item name="android:background">?attr/colorBottomMenu</item>
+    </style>
     <style name="CommonText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -105,12 +108,14 @@
         <item name="android:textSize">@dimen/media_player_main_title</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
     </style>
     <style name="PlayerTrackTimeTitle">
         <item name="android:textColor">?attr/trackTitle</item>
         <item name="android:textSize">@dimen/media_player_main_subtitle</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
     </style>
 
     <style name="PlayerTrackValueDetails">
@@ -118,10 +123,12 @@
         <item name="android:textSize">@dimen/media_player_main_subtitle</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
     </style>
 
     <style name="PlayerTrackTitleDetails" parent="@style/PlayerTrackValueDetails">
         <item name="android:textColor">?attr/mediaDescriptionTitle</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
     </style>
 
     <style name="PlayerAuthorName">

@@ -27,4 +27,8 @@ class MediaInteractorImpl(private val mediaRepository: MediaRepository) : MediaI
     override fun currentPosition(): Int {
         return mediaRepository.currentPosition()
     }
+
+    override fun isPlaying() : Boolean {
+        return mediaRepository.isPlaying()
+    }
 }

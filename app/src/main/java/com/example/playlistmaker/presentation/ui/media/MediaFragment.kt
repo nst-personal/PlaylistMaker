@@ -11,12 +11,10 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentMediaBinding
 import com.example.playlistmaker.presentation.ui.media.fragments.view.MediaViewPagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MediaFragment : Fragment() {
     private lateinit var binding: FragmentMediaBinding
     private lateinit var tabMediator: TabLayoutMediator
-    private val viewModel: MediaListViewModel by viewModel()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentMediaBinding.inflate(inflater, container, false)
         return binding.root

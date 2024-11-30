@@ -26,6 +26,8 @@
         <item name="switchColorTint">@color/textbox</item>
         <item name="switchColorThumbTint">@color/switcher</item>
         <item name="menuItem">@color/menu_item</item>
+        <item name="colorBottomMenu">@color/white</item>
+        <item name="colorBorderMenu">@color/grey</item>
     </style>
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker"/>
 </resources>

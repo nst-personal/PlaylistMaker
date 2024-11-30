@@ -26,5 +26,7 @@
         <item name="switchColorTint">@color/switcher_line</item>
         <item name="switchColorThumbTint">@color/switcher_disabled</item>
         <item name="menuItem">@color/white</item>
+        <item name="colorBottomMenu">@color/black</item>
+        <item name="colorBorderMenu">@color/white</item>
     </style>
 </resources>
