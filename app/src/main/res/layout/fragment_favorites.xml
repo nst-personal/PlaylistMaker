@@ -8,11 +8,10 @@
         android:id="@+id/mediaNoDataContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/main_top_padding"
-        android:layout_marginEnd="@dimen/main_top_padding"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="@dimen/textbox_padding"
+        android:paddingTop="@dimen/textbox_padding"
+        android:paddingBottom="@dimen/textbox_padding"
     >
         <ImageView
             android:layout_marginTop="@dimen/settings_description_top"
@@ -29,6 +28,14 @@
             android:layout_height="wrap_content"
             android:text="@string/media_favorites_empty"
             style="@style/MediaSubDescription"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tracksList"
+            style="@style/TrackViewContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+
     </LinearLayout>
 
 </FrameLayout>
