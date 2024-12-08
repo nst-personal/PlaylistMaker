@@ -1,6 +1,7 @@
 package com.example.playlistmaker.domain.interactors.track
 
 import com.example.playlistmaker.data.models.Track
+import kotlinx.coroutines.flow.Flow
 
 interface TrackHistoryInteractor {
     fun isEmpty() : Boolean
@@ -9,4 +10,5 @@ interface TrackHistoryInteractor {
     fun add(track: Track)
     fun findLast() : Track
     fun updateLast(track: Track)
+    fun getFavoriteIds() : Flow<List<Long>>
 }

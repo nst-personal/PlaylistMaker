@@ -9,7 +9,8 @@ import com.example.playlistmaker.domain.repositories.track.TrackHistoryRepositor
 import com.google.gson.Gson
 
 class TrackHistoryRepositoryImpl(private val context: Context,
-    private val gson: Gson) : TrackHistoryRepository {
+    private val gson: Gson
+) : TrackHistoryRepository {
     companion object {
         const val countOfTracks = 10
     }
@@ -21,7 +22,7 @@ class TrackHistoryRepositoryImpl(private val context: Context,
 
     override fun findAll(): MutableList<Track> {
         val trackHistory = getHistory()
-        return trackHistory.results
+        return trackHistory.results;
     }
 
     override fun remove() {

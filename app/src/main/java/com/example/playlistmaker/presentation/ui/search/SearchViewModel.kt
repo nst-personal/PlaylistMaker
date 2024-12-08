@@ -12,6 +12,8 @@ import com.example.playlistmaker.domain.interactors.track.TrackHistoryInteractor
 import com.example.playlistmaker.presentation.ui.search.interfaces.TrackScreenState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
@@ -81,7 +83,17 @@ class SearchViewModel(
     }
 
     fun showHistory() {
-        loadingTrackLiveData.postValue(TrackScreenState.HistoryContent(trackHistoryInteractor.findAll()))
+        viewModelScope.launch {
+            trackHistoryInteractor.getFavoriteIds()
+                .onEach { ids ->
+                    val tracks = trackHistoryInteractor.findAll().map { track ->
+                        track.isFavorite = ids.contains(track.trackId)
+                        track
+                    }.sortedByDescending { track -> track.isFavorite }
+                    loadingTrackLiveData.postValue(TrackScreenState.HistoryContent(tracks))
+                }
+                .launchIn(this)
+        }
     }
 
     companion object {
