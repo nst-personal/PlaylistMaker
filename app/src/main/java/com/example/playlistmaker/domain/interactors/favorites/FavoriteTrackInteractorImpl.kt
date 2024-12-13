@@ -8,12 +8,12 @@ class FavoriteTrackInteractorImpl(
     private val historyRepository: FavoriteTrackRepository
 ) : FavoriteTrackInteractor {
 
-    override fun favoriteTracks(): Flow<List<Track>> {
-        return historyRepository.favoriteTracks()
+    override fun getFavoriteTracks(): Flow<List<Track>> {
+        return historyRepository.getFavoriteTracks()
     }
 
-    override fun favoriteTrackIds(): Flow<List<Long>> {
-        return historyRepository.favoriteTrackIds()
+    override fun getFavoriteTrackIds(): Flow<List<Long>> {
+        return historyRepository.getFavoriteTrackIds()
     }
 
     override suspend fun addTrack(track: Track) {

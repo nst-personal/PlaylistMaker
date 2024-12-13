@@ -87,9 +87,10 @@ class SearchViewModel(
             trackHistoryInteractor.getFavoriteIds()
                 .onEach { ids ->
                     val tracks = trackHistoryInteractor.findAll().map { track ->
-                        track.isFavorite = ids.contains(track.trackId)
-                        track
-                    }.sortedByDescending { track -> track.isFavorite }
+                        track.copy(
+                            isFavorite = ids.contains(track.trackId)
+                        )
+                    }.sortedByDescending { track -> track.isFavorite }.sortedByDescending { track -> track.addedTime }
                     loadingTrackLiveData.postValue(TrackScreenState.HistoryContent(tracks))
                 }
                 .launchIn(this)

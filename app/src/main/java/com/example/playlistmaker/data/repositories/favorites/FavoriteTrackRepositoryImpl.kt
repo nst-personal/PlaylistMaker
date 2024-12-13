@@ -13,14 +13,18 @@ class FavoriteTrackRepositoryImpl(
     private val trackDbConvertor: TrackDbConvertor,
 ) : FavoriteTrackRepository {
 
-    override fun favoriteTracks(): Flow<List<Track>> = flow {
-        val tracks = appDatabase.trackDao().getTracks()
-        emit(convertFromMovieEntity(tracks))
+    override fun getFavoriteTracks(): Flow<List<Track>> {
+        return flow {
+            val tracks = appDatabase.trackDao().getTracks()
+            emit(convertFromMovieEntity(tracks))
+        }
     }
 
-    override fun favoriteTrackIds(): Flow<List<Long>> = flow {
-        val trackIds = appDatabase.trackDao().getTrackIds()
-        emit(trackIds)
+    override fun getFavoriteTrackIds(): Flow<List<Long>> {
+        return flow {
+            val trackIds = appDatabase.trackDao().getTrackIds()
+            emit(trackIds)
+        }
     }
 
 
@@ -37,6 +41,6 @@ class FavoriteTrackRepositoryImpl(
     }
 
     private fun convertFromMovieEntity(movies: List<TrackEntity>): List<Track> {
-        return movies.map { track -> trackDbConvertor.map(track) }.sortedBy { track -> track.isFavorite }
+        return movies.map { track -> trackDbConvertor.map(track) }.sortedByDescending { track -> track.isFavorite }.sortedByDescending { track -> track.addedTime }
     }
 }

@@ -42,6 +42,8 @@
     <dimen name="search_history_text_margin">16dp</dimen>
     <dimen name="media_player_main_title">22dp</dimen>
     <dimen name="media_player_main_subtitle">14dp</dimen>
+    <dimen name="media_player_main_author">16dp</dimen>
+    <dimen name="media_player_main_duration">16dp</dimen>
     <dimen name="media_player_main_title_padding">8dp</dimen>
     <dimen name="media_player_description_padding">16dp</dimen>
     <dimen name="media_player_author_title_padding">24dp</dimen>

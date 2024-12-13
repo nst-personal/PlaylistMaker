@@ -30,6 +30,6 @@ class TrackHistoryInteractorImpl(private val trackHistoryRepository: TrackHistor
     }
 
     override fun getFavoriteIds(): Flow<List<Long>> {
-        return favoriteTrackRepository.favoriteTrackIds()
+        return favoriteTrackRepository.getFavoriteTrackIds()
     }
 }

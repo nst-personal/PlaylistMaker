@@ -11,6 +11,6 @@ data class Track(
     val releaseDate: String,
     val primaryGenreName: String,
     val country: String,
-    var isFavorite: Boolean = false,
-    var addedTime: Long? = null
+    val isFavorite: Boolean = false,
+    val addedTime: Long? = null
 )

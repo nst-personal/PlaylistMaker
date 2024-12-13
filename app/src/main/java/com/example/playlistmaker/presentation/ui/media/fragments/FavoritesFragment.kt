@@ -28,8 +28,8 @@ class FavoritesFragment : Fragment() {
 
     private var tracks = listOf<Track>()
     private val viewModel: FavoriteViewModel by viewModel()
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: TrackAdapter
+    private var recyclerView: RecyclerView? = null
+    private var adapter: TrackAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -43,15 +43,15 @@ class FavoritesFragment : Fragment() {
             if (screenState is FavoriteTrackScreenState.FavoriteContent) {
                 if (screenState.tracks == null) {
                     showSearchNotFoundView(false)
-                    recyclerView.isVisible = false
+                    recyclerView?.isVisible = false
                 } else {
                     handleTrackData(screenState.tracks)
                 }
             }
         }
         recyclerView = binding.tracksList
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.isClickable = true
+        recyclerView?.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView?.isClickable = true
     }
 
     private fun openMediaPlayer(track: Track) {
@@ -75,16 +75,16 @@ class FavoritesFragment : Fragment() {
                     }
                 }
                 adapter = TrackAdapter(tracks, trackClickListener)
-                recyclerView.adapter = adapter
-                recyclerView.isVisible = true
+                recyclerView?.adapter = adapter
+                recyclerView?.isVisible = true
                 showSearchNotFoundView(false)
             } else {
                 showSearchNotFoundView(true)
-                recyclerView.isVisible = false
+                recyclerView?.isVisible = false
             }
         } else {
             showSearchNotFoundView(false)
-            recyclerView.isVisible = false
+            recyclerView?.isVisible = false
         }
     }
 

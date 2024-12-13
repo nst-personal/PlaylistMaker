@@ -29,7 +29,7 @@ class FavoriteViewModel (
 
     fun showFavorites() {
         viewModelScope.launch {
-            favoriteTrackInteractor.favoriteTracks()
+            favoriteTrackInteractor.getFavoriteTracks()
                 .onEach { data ->
                     loadingTrackLiveData.postValue(FavoriteTrackScreenState.FavoriteContent(data))
                 }

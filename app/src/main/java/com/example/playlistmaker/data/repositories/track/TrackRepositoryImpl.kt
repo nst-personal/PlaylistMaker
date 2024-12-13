@@ -21,7 +21,7 @@ class TrackRepositoryImpl(
             if (trackResponse.results == null || trackResponse.resultCount == 0) {
                 emit(emptyList())
             } else {
-                favoriteTrackRepository.favoriteTrackIds().collect { trackIds ->
+                favoriteTrackRepository.getFavoriteTrackIds().collect { trackIds ->
                     emit(trackResponse.results?.map { item ->
                         Track(
                             item.trackId ?: 0,

@@ -66,7 +66,9 @@ class MediaPlayerActivity : AppCompatActivity() {
 
     fun handleTrackData(data: TrackState) {
         if (data is TrackState.Favorite) {
-            track.isFavorite = data.isFavorite
+            track = data.track!!.copy(
+                isFavorite = data.isFavorite
+            )
             fillTrackContent()
         }
     }
