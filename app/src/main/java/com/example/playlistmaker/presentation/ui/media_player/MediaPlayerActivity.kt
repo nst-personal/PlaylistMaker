@@ -11,6 +11,7 @@ import com.example.playlistmaker.data.models.Track
 import com.example.playlistmaker.databinding.ActivityMediaPlayerBinding
 import com.example.playlistmaker.presentation.ui.media_player.interfaces.MediaScreenState
 import com.example.playlistmaker.presentation.ui.media_player.interfaces.MediaState
+import com.example.playlistmaker.presentation.ui.media_player.interfaces.TrackState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.time.ZoneId
@@ -42,6 +43,10 @@ class MediaPlayerActivity : AppCompatActivity() {
             handleData(data)
         }
 
+        viewModel.getTrackLiveData().observe(this) {data ->
+            handleTrackData(data)
+        }
+
         setSupportActionBar(binding.tooltipId);
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
@@ -52,6 +57,19 @@ class MediaPlayerActivity : AppCompatActivity() {
 
         binding.playMedia.setOnClickListener {
             playbackControl()
+        }
+
+        binding.likeMedia.setOnClickListener({
+            onFavoriteClicked()
+        })
+    }
+
+    fun handleTrackData(data: TrackState) {
+        if (data is TrackState.Favorite) {
+            track = data.track!!.copy(
+                isFavorite = data.isFavorite
+            )
+            fillTrackContent()
         }
     }
 
@@ -80,6 +98,14 @@ class MediaPlayerActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         pausePlayer()
+    }
+
+    private fun fillTrackContent() {
+        if (track.isFavorite) {
+            binding.likeMedia.setImageResource(R.drawable.favorite)
+        } else {
+            binding.likeMedia.setImageResource(R.drawable.playlist_like)
+        }
     }
 
     private fun fillContent() {
@@ -131,6 +157,14 @@ class MediaPlayerActivity : AppCompatActivity() {
     private fun pausePlayer() {
         viewModel.pause()
         binding.playMedia.setImageResource(R.drawable.playlist_play)
+    }
+
+    fun onFavoriteClicked() {
+        if (this.track.isFavorite) {
+            viewModel.removeTrack(this.track)
+        } else {
+            viewModel.addTrack(this.track)
+        }
     }
 
 }

@@ -26,12 +26,12 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
-    private lateinit var binding: FragmentSearchBinding
+    private var binding: FragmentSearchBinding? = null
 
-    private lateinit var historyView: RecyclerView
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: TrackAdapter
-    private lateinit var searchProgressBar: ProgressBar
+    private var historyView: RecyclerView? = null
+    private var recyclerView: RecyclerView? = null
+    private var adapter: TrackAdapter? = null
+    private var searchProgressBar: ProgressBar? = null
 
     private var searchValue: String = ""
 
@@ -55,40 +55,44 @@ class SearchFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.showHistory()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState != null) {
             searchValue = savedInstanceState.getString(SEARCH, "")
         }
-        binding.inputEditText.setText(searchValue)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.search) { v, insets ->
+        binding?.inputEditText?.setText(searchValue)
+        ViewCompat.setOnApplyWindowInsetsListener(binding?.search!!) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        searchProgressBar = binding.searchProgressBarId
+        searchProgressBar = binding?.searchProgressBarId
 
-        val clearButton = binding.clearIcon
+        val clearButton = binding?.clearIcon
 
-        clearButton.setOnClickListener {
-            binding.inputEditText.setText("")
+        clearButton?.setOnClickListener {
+            binding?.inputEditText?.setText("")
             handleHistoryView()
             viewModel.showHistory()
-            searchProgressBar.isVisible = false
+            searchProgressBar?.isVisible = false
         }
 
-        recyclerView = binding.tracksList
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.isClickable = true
+        recyclerView = binding?.tracksList
+        recyclerView?.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView?.isClickable = true
 
-        historyView = binding.historyTracksList
-        historyView.layoutManager = LinearLayoutManager(requireContext())
-        historyView.isClickable = true
+        historyView = binding?.historyTracksList
+        historyView?.layoutManager = LinearLayoutManager(requireContext())
+        historyView?.isClickable = true
 
         textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -97,7 +101,7 @@ class SearchFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val isVisible = !s.isNullOrEmpty()
-                clearButton.isVisible = isVisible
+                clearButton?.isVisible = isVisible
                 if (isVisible) {
                     searchValue = s.toString()
                 } else {
@@ -106,8 +110,8 @@ class SearchFragment : Fragment() {
                 showHistory(false)
                 showSearchNotFoundView(false)
                 showSearchErrorView(false, "")
-                recyclerView.isVisible = false
-                searchProgressBar.isVisible = isVisible
+                recyclerView?.isVisible = false
+                searchProgressBar?.isVisible = isVisible
                 viewModel.searchDebounce(
                     changedText = s?.toString() ?: ""
                 )
@@ -118,19 +122,19 @@ class SearchFragment : Fragment() {
             }
         }
 
-        textWatcher?.let { binding.inputEditText.addTextChangedListener(it) }
+        textWatcher?.let { binding?.inputEditText?.addTextChangedListener(it) }
 
-        binding.inputEditText.setOnFocusChangeListener { view, hasFocus ->
+        binding?.inputEditText?.setOnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
                 handleHistoryView()
             }
         }
 
-        val clearHistoryButton = binding.clearHistory
-        clearHistoryButton.setOnClickListener {
+        val clearHistoryButton = binding?.clearHistory
+        clearHistoryButton?.setOnClickListener {
             viewModel.clearHistory()
             showHistory(false)
-            searchProgressBar.isVisible = false
+            searchProgressBar?.isVisible = false
         }
 
         viewModel.getLoadingTrackLiveData().observe(viewLifecycleOwner) { screenState ->
@@ -140,7 +144,7 @@ class SearchFragment : Fragment() {
                         showSearchErrorView(true, screenState.search)
                         showSearchNotFoundView(false)
                         showHistory(false)
-                        recyclerView.isVisible = false
+                        recyclerView?.isVisible = false
                     } else {
                         handleTrackData(screenState.tracks, screenState.search)
                     }
@@ -152,7 +156,7 @@ class SearchFragment : Fragment() {
                         }
                     }
                     historyTracks = screenState.tracks
-                    historyView.adapter = TrackAdapter(historyTracks, trackClickListener)
+                    historyView?.adapter = TrackAdapter(historyTracks, trackClickListener)
                 }
             }
         }
@@ -161,7 +165,7 @@ class SearchFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        textWatcher?.let { binding.inputEditText.removeTextChangedListener(it) }
+        textWatcher?.let { binding?.inputEditText?.removeTextChangedListener(it) }
     }
 
 
@@ -174,7 +178,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun handleHistoryView() {
-        recyclerView.isVisible = false
+        recyclerView?.isVisible = false
         showHistory(historyTracks.isNotEmpty() && searchValue.isEmpty())
     }
 
@@ -187,7 +191,7 @@ class SearchFragment : Fragment() {
     private fun handleTrackData(resultList: List<Track>?, savedSearchValue: String) {
         showSearchErrorView(false, savedSearchValue)
         if (resultList != null) {
-            searchProgressBar.isVisible = false
+            searchProgressBar?.isVisible = false
             if (resultList.isNotEmpty()) {
                 tracks = resultList
                 val trackClickListener = object : OnTrackItemClickListener {
@@ -197,20 +201,20 @@ class SearchFragment : Fragment() {
                     }
                 }
                 adapter = TrackAdapter(tracks, trackClickListener)
-                recyclerView.adapter = adapter
-                recyclerView.isVisible = true
+                recyclerView?.adapter = adapter
+                recyclerView?.isVisible = true
                 showSearchNotFoundView(false)
                 showHistory(false)
             } else {
                 showSearchNotFoundView(true)
                 showHistory(false)
-                recyclerView.isVisible = false
+                recyclerView?.isVisible = false
             }
         } else {
             showSearchErrorView(true, savedSearchValue)
             showSearchNotFoundView(false)
             showHistory(false)
-            recyclerView.isVisible = false
+            recyclerView?.isVisible = false
         }
     }
 
@@ -218,31 +222,31 @@ class SearchFragment : Fragment() {
         if (isVisible) {
             viewModel.showHistory()
         }
-        binding.historyData.isVisible = isVisible
+        binding?.historyData?.isVisible = isVisible
     }
 
     private fun showSearchNotFoundView(isVisible: Boolean) {
-        val searchNoDataTextView = binding.searchNoDataText
-        val searchNoDataImageView = binding.searchNoDataIcon
-        searchNoDataTextView.isVisible = isVisible
-        searchNoDataImageView.isVisible = isVisible
-        searchProgressBar.isVisible = false
+        val searchNoDataTextView = binding?.searchNoDataText
+        val searchNoDataImageView = binding?.searchNoDataIcon
+        searchNoDataTextView?.isVisible = isVisible
+        searchNoDataImageView?.isVisible = isVisible
+        searchProgressBar?.isVisible = false
     }
 
     private fun showSearchErrorView(isVisible: Boolean, savedSearchValue: String) {
-        val searchErrorTextView = binding.searchErrorText
-        val searchErrorConnectionTextView = binding.searchErrorTextConnection
-        val searchErrorImageView = binding.searchErrorIcon
-        val retryButton = binding.retry
-        searchErrorTextView.isVisible = isVisible
-        searchErrorTextView.isVisible = isVisible
-        searchErrorConnectionTextView.isVisible = isVisible
-        searchErrorImageView.isVisible = isVisible
-        retryButton.isVisible = isVisible
-        retryButton.setOnClickListener{
+        val searchErrorTextView = binding?.searchErrorText
+        val searchErrorConnectionTextView = binding?.searchErrorTextConnection
+        val searchErrorImageView = binding?.searchErrorIcon
+        val retryButton = binding?.retry
+        searchErrorTextView?.isVisible = isVisible
+        searchErrorTextView?.isVisible = isVisible
+        searchErrorConnectionTextView?.isVisible = isVisible
+        searchErrorImageView?.isVisible = isVisible
+        retryButton?.isVisible = isVisible
+        retryButton?.setOnClickListener{
             handleSearchTracks(savedSearchValue)
         }
-        searchProgressBar.isVisible = false
+        searchProgressBar?.isVisible = false
     }
 
 
