@@ -79,14 +79,14 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginBottom="@dimen/button_margin"
+
                 android:textColorHint="@color/text_input_hint_color"
                 app:boxStrokeColor="@color/text_input_layout_stroke_color"
                 android:hint="@string/name_required">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tb_name"
-
+                    android:layout_marginBottom="@dimen/textbox_button_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/textbox_padding" />
@@ -100,7 +100,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tb_name_layout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginBottom="@dimen/button_margin"
+
                 android:textColorHint="@color/text_input_hint_color"
                 app:boxStrokeColor="@color/text_input_layout_stroke_color"
                 android:hint="@string/description">

@@ -74,4 +74,5 @@
     <dimen name="margin_add_tack_line">16dp</dimen>
     <dimen name="margin_container_top">16dp</dimen>
     <dimen name="margin_container_top_empty">0dp</dimen>
+    <dimen name="textbox_button_margin">8dp</dimen>
 </resources>
