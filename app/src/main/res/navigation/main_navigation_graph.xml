@@ -24,7 +24,11 @@
         android:id="@+id/media"
         android:name="com.example.playlistmaker.presentation.ui.media.MediaFragment"
         android:label="fragment_media"
-        tools:layout="@layout/fragment_media" />
+        tools:layout="@layout/fragment_media" >
+        <action
+            android:id="@+id/action_media_to_playlistCreateFragment3"
+            app:destination="@id/playlistCreateFragment3" />
+    </fragment>
     <fragment
         android:id="@+id/settings"
         android:name="com.example.playlistmaker.presentation.ui.settings.SettingsFragment"
@@ -35,4 +39,9 @@
         android:name="com.example.playlistmaker.presentation.ui.media_player.MediaPlayerActivity"
         android:label="activity_media_player"
         tools:layout="@layout/activity_media_player" />
+    <fragment
+        android:id="@+id/playlistCreateFragment3"
+        android:name="com.example.playlistmaker.presentation.ui.media.fragments.PlaylistCreateFragment"
+        android:label="fragment_playlist_create"
+        tools:layout="@layout/fragment_playlist_create" />
 </navigation>

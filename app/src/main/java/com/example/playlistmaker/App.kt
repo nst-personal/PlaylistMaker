@@ -8,6 +8,7 @@ import com.example.playlistmaker.di.interactorModule
 import com.example.playlistmaker.di.repositoryModule
 import com.example.playlistmaker.di.viewModelModule
 import com.example.playlistmaker.domain.interactors.settings.SettingsInteractor
+import com.markodevcic.peko.PermissionRequester
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
@@ -23,6 +24,7 @@ class App : Application() {
             androidContext(this@App)
             modules(repositoryModule, dataModule, interactorModule, viewModelModule)
         }
+        PermissionRequester.initialize(applicationContext)
         val currentMode = resources.configuration.uiMode and
                 Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
         val appMode = settingsManager.findDarkMode(currentMode)

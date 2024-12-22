@@ -85,6 +85,35 @@
     </style>
 
 
+    <style name="PlaylistCreateItemImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+        <item name="android:layout_width">45dp</item>
+        <item name="android:layout_height">45dp</item>
+        <item name="android:layout_marginRight">@dimen/icon_margin_right</item>
+    </style>
+
+    <style name="CustomTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="hintTextColor">@color/text_input_hint_color</item>
+    </style>
+
+
+    <style name="PlaylistCreateImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+        <item name="android:layout_width">45dp</item>
+        <item name="android:layout_height">45dp</item>
+        <item name="android:layout_marginRight">@dimen/icon_margin_right</item>
+    </style>
+
+    <style name="PlaylistImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+        <item name="android:layout_width">160dp</item>
+        <item name="android:layout_height">160dp</item>
+        <item name="android:layout_marginRight">@dimen/icon_margin_right</item>
+    </style>
+
     <style name="TrackSettings">
         <item name="android:layout_width">51dp</item>
         <item name="android:layout_height">51dp</item>
@@ -103,6 +132,20 @@
         <item name="android:backgroundTint">?attr/searchSubTitle</item>
     </style>
 
+    <style name="PlaylistCreateDelimiter">
+        <item name="android:layout_width">16dp</item>
+        <item name="android:layout_height">16dp</item>
+        <item name="iconTint">?attr/searchSubTitle</item>
+        <item name="android:backgroundTint">?attr/searchSubTitle</item>
+    </style>
+
+    <style name="PlaylistCreateTitle">
+        <item name="android:textColor">?attr/trackTitle</item>
+        <item name="android:textSize">@dimen/media_player_main_title</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+    </style>
     <style name="PlayerTrackTitle">
         <item name="android:textColor">?attr/trackTitle</item>
         <item name="android:textSize">@dimen/media_player_main_title</item>
@@ -144,6 +187,25 @@
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
     </style>
+
+    <style name="PlaylistSubTitle">
+        <item name="android:textColor">?attr/searchTitle</item>
+        <item name="android:textSize">@dimen/title_size</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    <style name="PlaylistTitle">
+        <item name="android:textColor">?attr/searchTitle</item>
+        <item name="android:textSize">@dimen/title_size</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    <style name="PlaylistCreateSubTitle">
+        <item name="android:textSize">@dimen/subtitle_size</item>
+        <item name="android:textColor">?attr/searchSubTitle</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
     <style name="TrackSubTitle">
         <item name="android:textSize">@dimen/subtitle_size</item>
         <item name="android:textColor">?attr/searchSubTitle</item>
@@ -158,6 +220,11 @@
         <item name="android:layout_marginTop">4dp</item>
     </style>
 
+    <style name="PlaylistCreateViewContainer">
+        <item name="android:layout_marginTop">4dp</item>
+    </style>
+
+
     <style name="SearchSubDescription">
         <item name="android:textSize">@dimen/font_size</item>
         <item name="android:textColor">?attr/notFoundDescription</item>
@@ -171,6 +238,17 @@
     </style>
 
     <style name="MediaSubDescription" parent="SearchSubDescription">
+    </style>
+
+    <style name="PlaylistLine">
+        <item name="android:background">?attr/colorPrimaryContainer</item>
+    </style>
+
+    <style name="AddNewTrackTitle"  parent="SearchSubDescription">
+        <item name="android:textSize">@dimen/add_tack_title</item>
+        <item name="android:fontFamily">@font/ys_display_bold</item>
+        <item name="android:color">@color/black</item>
+        <item name="android:layout_marginTop">@dimen/margin_add_tack_bottom</item>
     </style>
 
     <style name="AddNewButtonItem" parent="Widget.MaterialComponents.Button.UnelevatedButton">

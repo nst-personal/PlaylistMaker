@@ -10,6 +10,7 @@
     <dimen name="button_icon_radius">16dp</dimen>
     <dimen name="button_retry_icon_radius">54dp</dimen>
     <dimen name="button_margin">16dp</dimen>
+    <dimen name="button_height_submit">58dp</dimen>
     <dimen name="button_margin_mode">22dp</dimen>
     <dimen name="button_margin_bottom">8dp</dimen>
     <dimen name="title_bottom_margin">30dp</dimen>
@@ -64,4 +65,11 @@
     <dimen name="media_bottom_margin">5dp</dimen>
     <dimen name="toolbar_padding">14dp</dimen>
     <dimen name="search_side_padding">16dp</dimen>
+    <dimen name="playlist_font_size_title">12sp</dimen>
+    <dimen name="playlist_font_size_track_size">12sp</dimen>
+    <dimen name="cardview_bottom">12dp</dimen>
+    <dimen name="scroll_container_margin">80dp</dimen>
+    <dimen name="margin_add_tack_bottom">20dp</dimen>
+    <dimen name="add_tack_title">19dp</dimen>
+    <dimen name="margin_add_tack_line">16dp</dimen>
 </resources>
