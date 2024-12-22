@@ -72,4 +72,6 @@
     <dimen name="margin_add_tack_bottom">20dp</dimen>
     <dimen name="add_tack_title">19dp</dimen>
     <dimen name="margin_add_tack_line">16dp</dimen>
+    <dimen name="margin_container_top">16dp</dimen>
+    <dimen name="margin_container_top_empty">0dp</dimen>
 </resources>

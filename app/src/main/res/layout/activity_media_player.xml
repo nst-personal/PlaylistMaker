@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/container"
     android:background="#252222"
     android:orientation="vertical">
 
@@ -305,7 +306,6 @@
         android:id="@+id/fragment_container"
         android:name="com.example.playlistmaker.presentation.ui.media.fragments.PlaylistCreateFragment"
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/button_margin"
         android:visibility="gone"
         app:defaultNavHost="true"
         app:navGraph="@navigation/main_navigation_graph"

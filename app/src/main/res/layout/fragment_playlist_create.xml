@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/playlistCreate"
     android:layout_width="match_parent"
+    style="@style/PlaylistCreateContainer"
     android:layout_height="match_parent"
     android:theme="@style/Base.Theme.PlaylistMaker.Common"
     tools:context=".presentation.ui.media.fragments.PlaylistCreateFragment">

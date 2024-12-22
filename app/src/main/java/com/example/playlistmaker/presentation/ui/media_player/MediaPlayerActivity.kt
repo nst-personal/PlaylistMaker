@@ -2,6 +2,7 @@ package com.example.playlistmaker.presentation.ui.media_player
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -174,6 +175,14 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
             binding.blurContainer.visibility = View.GONE
             binding.standardBottomSheet.visibility = View.GONE
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+            binding.container.apply {
+                (layoutParams as ViewGroup.MarginLayoutParams).apply {
+                    topMargin = resources.getDimensionPixelSize(R.dimen.margin_container_top)
+                }
+                requestLayout()
+            }
+
             val createPlaylistFragment = PlaylistCreateFragment()
             val fragmentManager: FragmentManager = supportFragmentManager
             val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
@@ -295,6 +304,12 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
         binding.mediaPlayerActivity.visibility = View.VISIBLE
         binding.blurContainer.visibility = View.GONE
         binding.standardBottomSheet.visibility = View.VISIBLE
+        binding.container.apply {
+            (layoutParams as ViewGroup.MarginLayoutParams).apply {
+                topMargin = resources.getDimensionPixelSize(R.dimen.margin_container_top_empty)
+            }
+            requestLayout()
+        }
     }
 
 }
