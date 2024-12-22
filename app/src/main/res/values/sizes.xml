@@ -75,4 +75,5 @@
     <dimen name="margin_container_top">16dp</dimen>
     <dimen name="margin_container_top_empty">0dp</dimen>
     <dimen name="textbox_button_margin">8dp</dimen>
+    <dimen name="search_history_submit_text_size">16dp</dimen>
 </resources>

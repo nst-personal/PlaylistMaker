@@ -97,6 +97,11 @@
         <item name="hintTextColor">@color/text_input_hint_color</item>
     </style>
 
+    <style name="SubmitButtonCreate" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/search_history_submit_text_size</item>
+    </style>
+
     <style name="PlaylistCreateContainer">
         <item name="android:background">?attr/colorOnBackground</item>
     </style>
