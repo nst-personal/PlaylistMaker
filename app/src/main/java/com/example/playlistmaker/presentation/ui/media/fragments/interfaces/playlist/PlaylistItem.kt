@@ -1,3 +1,5 @@
 package com.example.playlistmaker.presentation.ui.media.fragments.interfaces.playlist
 
-data class PlaylistItem(val title: String, val trackCount: Long, val url: String?)
+import java.io.File
+
+data class PlaylistItem(val id: Long, val title: String, val trackCount: Long, val file: File?)

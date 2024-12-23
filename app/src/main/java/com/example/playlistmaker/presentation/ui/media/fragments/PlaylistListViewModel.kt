@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class PlaylistListViewModel (
-    val playlistInteractor: PlaylistInteractor,
+    private val playlistInteractor: PlaylistInteractor,
 ): ViewModel() {
 
     private var loadingPlaylistLiveData = MutableLiveData<PlaylistListScreenState>()

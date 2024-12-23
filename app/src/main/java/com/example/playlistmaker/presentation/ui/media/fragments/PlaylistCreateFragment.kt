@@ -5,6 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Environment
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +15,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.widget.doAfterTextChanged
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
@@ -39,7 +41,8 @@ class PlaylistCreateFragment : Fragment() {
     private var isContentChanged: Boolean = false
 
     private lateinit var confirmDialog: MaterialAlertDialogBuilder
-    private var source: String? = null
+    private lateinit var textWatcherName: TextWatcher
+    private lateinit var textWatcherDescription: TextWatcher
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,25 +61,55 @@ class PlaylistCreateFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (savedInstanceState != null) {
+            binding?.tbName?.setText(savedInstanceState.getString(NAME, ""))
+            binding?.tbDescription?.setText(savedInstanceState.getString(DESCRIPTION, ""))
+            if (savedInstanceState.getString(URI, "")?.isNotEmpty() == true) {
+                binding?.pickerImage?.setImageURI(savedInstanceState.getString(URI, "").toUri())
+            }
+        }
+
+
         binding.toolbarId.setNavigationOnClickListener {
             handleCloseScreen()
         }
 
-        binding.tbName.doAfterTextChanged { _ ->
-            viewModel.updateField(binding.tbName.text.toString(), "name")
-        }
 
-        binding.tbDescription.doAfterTextChanged { _ ->
-            viewModel.updateField(binding.tbDescription.text.toString(), "description")
+        textWatcherName = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                viewModel.updateField(s.toString(), "name")
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+            }
         }
+        textWatcherName?.let { binding?.tbName?.addTextChangedListener(it) }
+
+        textWatcherDescription = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                viewModel.updateField(s.toString(), "description")
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+        }
+        textWatcherDescription?.let { binding?.tbDescription?.addTextChangedListener(it) }
+
 
         binding.btnSubmit.setOnClickListener({
             onPlaylistCreationClicked()
         })
-
-        viewModel.getLoadingPlaylistLiveData().observe(viewLifecycleOwner) { data ->
-            handlePlaylistData(data)
-        }
 
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -108,8 +141,8 @@ class PlaylistCreateFragment : Fragment() {
             }
         })
 
-        arguments?.getString("from")?.let { data ->
-            this.source = data
+        viewModel.getLoadingPlaylistLiveData().observe(viewLifecycleOwner) { data ->
+            handlePlaylistData(data)
         }
 
     }
@@ -194,7 +227,22 @@ class PlaylistCreateFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        textWatcherName?.let { binding?.tbName?.removeTextChangedListener(it) }
+        textWatcherDescription?.let { binding?.tbDescription?.removeTextChangedListener(it) }
         _binding = null
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(NAME, playlist?.playlistName)
+        outState.putString(DESCRIPTION, playlist?.playlistDescription)
+        outState.putString(URI, playlist?.playlistImageUrl?.toString())
+    }
+
+    private companion object {
+        const val NAME = "NAME"
+        const val DESCRIPTION = "DESCRIPTION"
+        const val URI = "URI"
     }
 
 }

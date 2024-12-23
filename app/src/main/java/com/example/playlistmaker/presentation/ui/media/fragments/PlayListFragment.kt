@@ -1,6 +1,7 @@
 package com.example.playlistmaker.presentation.ui.media.fragments
 
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import com.example.playlistmaker.presentation.ui.media.fragments.adapter.Playlis
 import com.example.playlistmaker.presentation.ui.media.fragments.interfaces.playlist.PlaylistItem
 import com.example.playlistmaker.presentation.ui.media.fragments.interfaces.playlist.screen.PlaylistListScreenState
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
 
 class PlayListFragment : Fragment() {
 
@@ -61,7 +63,18 @@ class PlayListFragment : Fragment() {
         } else {
             binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
             binding.recyclerView.adapter = PlaylistAdapter(
-                playlist!!.map { item -> PlaylistItem(item.playlistName, item.playlistTracksCount, item.playlistImageUrl) })
+                playlist!!.map { item ->
+                    var file: File? = null
+                    if (item.playlistImageUrl?.isNotEmpty() == true) {
+                        val filePath = File(
+                            context?.getExternalFilesDir(
+                                Environment.DIRECTORY_PICTURES
+                            ), "myalbum"
+                        )
+                        file = File(filePath, item.playlistImageUrl?.substringAfterLast("/"))
+                    }
+                    PlaylistItem(item.playlistId, item.playlistName, item.playlistTracksCount, file)
+                })
             binding.recyclerView.visibility = View.VISIBLE
             binding.mediaNoDataText.visibility = View.GONE
             binding.mediaNoDataIcon.visibility = View.GONE

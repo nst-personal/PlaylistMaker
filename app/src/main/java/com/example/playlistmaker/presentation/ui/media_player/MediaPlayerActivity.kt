@@ -1,6 +1,7 @@
 package com.example.playlistmaker.presentation.ui.media_player
 
 import android.os.Bundle
+import android.os.Environment
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -19,6 +20,7 @@ import com.example.playlistmaker.data.models.Playlist
 import com.example.playlistmaker.data.models.Track
 import com.example.playlistmaker.databinding.ActivityMediaPlayerBinding
 import com.example.playlistmaker.presentation.ui.media.fragments.PlaylistCreateFragment
+import com.example.playlistmaker.presentation.ui.media.fragments.interfaces.playlist.PlaylistItem
 import com.example.playlistmaker.presentation.ui.media.fragments.interfaces.playlist.screen.PlaylistListScreenState
 import com.example.playlistmaker.presentation.ui.media_player.interfaces.MediaScreenState
 import com.example.playlistmaker.presentation.ui.media_player.interfaces.MediaState
@@ -28,6 +30,7 @@ import com.example.playlistmaker.presentation.ui.media_player.interfaces.TrackSt
 import com.example.playlistmaker.presentation.ui.search.view.adapter.PlaylistCreateAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
 import java.text.SimpleDateFormat
 import java.time.ZoneId
 import java.util.Locale
@@ -113,20 +116,34 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
                 this,
                 "${getString(R.string.playlist_tracks_already_added)} ${data.playlist.playlistName}", Toast.LENGTH_SHORT
             ).show()
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
     }
 
     private fun handlePlaylistView() {
         val playlistClickListener = object : OnPlaylistItemClickListener {
-            override fun onItemClick(playlist: Playlist) {
-                viewModel.updatePlaylist(track, playlist)
+            override fun onItemClick(playlist: PlaylistItem) {
+                viewModel.updatePlaylist(track,
+                    this@MediaPlayerActivity.playlist?.first { item -> item.playlistId == playlist.id }!!)
             }
         }
         if (playlist?.isEmpty() == false) {
             binding.playlist.layoutManager = LinearLayoutManager(this)
             binding.playlist.isClickable = true
-            adapter = PlaylistCreateAdapter(playlist!!, playlistClickListener)
+            adapter = PlaylistCreateAdapter(
+                    playlist!!.map { item ->
+                        var file: File? = null
+                        if (item.playlistImageUrl?.isNotEmpty() == true) {
+                            val filePath = File(
+                                applicationContext?.getExternalFilesDir(
+                                    Environment.DIRECTORY_PICTURES
+                                ), "myalbum"
+                            )
+                            file = File(filePath, item.playlistImageUrl?.substringAfterLast("/"))
+                        }
+                        PlaylistItem(item.playlistId, item.playlistName, item.playlistTracksCount, file)
+                    }
+
+                , playlistClickListener)
             binding.playlist.adapter = adapter
             binding.playlist.isVisible = true
         } else {
@@ -187,7 +204,6 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
             val fragmentManager: FragmentManager = supportFragmentManager
             val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.replace(R.id.fragment_container, createPlaylistFragment)
-            fragmentTransaction.addToBackStack(null)
             fragmentTransaction.commit()
         }
     }
