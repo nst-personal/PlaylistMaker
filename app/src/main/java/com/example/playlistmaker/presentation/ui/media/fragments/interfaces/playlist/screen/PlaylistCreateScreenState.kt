@@ -14,4 +14,8 @@ sealed class PlaylistCreateScreenState {
     data class PlaylistCreateCreatePhotoUrlContent(
         val photoUrl: Uri
     ): PlaylistCreateScreenState()
+
+    data class PlaylistCreateCompletedContent(
+        val isCleared: Boolean
+    ): PlaylistCreateScreenState()
 }

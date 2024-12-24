@@ -155,12 +155,15 @@ class PlaylistCreateFragment : Fragment() {
             playlist?.playlistName = data.name
         }
         if (data is PlaylistCreateScreenState.PlaylistCreateCreateDescriptionContent) {
-            playlist?.playlistName = data.description
+            playlist?.playlistDescription = data.description
         }
         if (data is PlaylistCreateScreenState.PlaylistCreateCreatePhotoUrlContent) {
             playlist?.playlistImageUrl = data.photoUrl
         }
-        binding.btnSubmit.isEnabled = playlist?.playlistName?.trim()?.isEmpty() != true
+        if (data is PlaylistCreateScreenState.PlaylistCreateCompletedContent) {
+            playlist = null
+        }
+        binding.btnSubmit.isEnabled = playlist?.playlistName != null && playlist?.playlistName?.trim()?.isEmpty() != true
         this.isContentChanged = playlist?.playlistName?.trim()?.isNotEmpty() == true ||
                 playlist?.playlistDescription?.trim()?.isNotEmpty() == true ||
                 playlist?.playlistImageUrl?.toString()?.trim()?.isNotEmpty() == true
@@ -216,6 +219,7 @@ class PlaylistCreateFragment : Fragment() {
     private fun handleBack() {
         val fragmentToRemove = parentFragmentManager.findFragmentById(R.id.fragment_container)
         if (fragmentToRemove != null) {
+            viewModel.clearList()
             val fragmentTransaction = parentFragmentManager.beginTransaction()
             fragmentTransaction.remove(fragmentToRemove)
             fragmentTransaction.commit()

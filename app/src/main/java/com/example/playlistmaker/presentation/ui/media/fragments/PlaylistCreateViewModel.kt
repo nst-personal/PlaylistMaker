@@ -21,7 +21,10 @@ class PlaylistCreateViewModel (
                      playlistUrl: String?) {
         viewModelScope.launch {
             playlistInteractor.addPlaylist(playlistName, playlistDescription, playlistUrl)
-
+            loadingPlaylistLiveData.postValue(
+                PlaylistCreateScreenState.PlaylistCreateCompletedContent(
+                    true
+                ))
         }
     }
 
@@ -40,6 +43,11 @@ class PlaylistCreateViewModel (
                     ))
             }
         }
+    }
+
+    fun clearList() {
+        loadingPlaylistLiveData.postValue(
+            PlaylistCreateScreenState.PlaylistCreateCompletedContent(true))
     }
 
     fun updateURIField(uri: Uri, fieldName: String) {

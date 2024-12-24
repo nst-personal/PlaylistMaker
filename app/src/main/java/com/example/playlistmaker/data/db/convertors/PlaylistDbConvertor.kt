@@ -1,6 +1,7 @@
 package com.example.playlistmaker.data.db.convertors
 
 import com.example.playlistmaker.data.db.entity.PlaylistEntity
+import com.example.playlistmaker.data.dto.playlist.PlaylistDto
 import com.example.playlistmaker.data.models.Playlist
 import java.time.Instant
 
@@ -18,6 +19,18 @@ class PlaylistDbConvertor {
     }
 
     fun map(playlist: Playlist): PlaylistEntity {
+        return PlaylistEntity(
+            playlist.playlistId,
+            playlist.playlistName,
+            playlist.playlistDescription,
+            playlist.playlistImageUrl,
+            playlist.playlistTracks,
+            playlist.playlistTracksCount,
+            playlist.addedTime,
+        )
+    }
+
+    fun map(playlist: PlaylistDto): PlaylistEntity {
         return PlaylistEntity(
             playlist.playlistId,
             playlist.playlistName,

@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.models.Playlist
 import com.example.playlistmaker.presentation.ui.media.fragments.interfaces.playlist.PlaylistItem
 import com.example.playlistmaker.presentation.ui.media_player.interfaces.OnPlaylistItemClickListener
 import com.example.playlistmaker.presentation.ui.search.view.holder.PlaylistCreateViewHolder
