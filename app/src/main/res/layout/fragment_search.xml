@@ -76,6 +76,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tracksList"
         android:padding="@dimen/view_padding"
+        android:layout_marginBottom="@dimen/scroll_search_container_margin"
         style="@style/TrackViewContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -185,6 +186,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/historyTracksList"
             android:layout_weight="7"
+            android:layout_marginBottom="@dimen/scroll_search_container_margin"
             style="@style/TrackViewContainer"
             android:layout_width="match_parent"
             android:layout_marginTop="@dimen/search_history_margin"

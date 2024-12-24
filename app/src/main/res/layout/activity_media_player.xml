@@ -2,49 +2,48 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/container"
     android:background="#252222"
     android:orientation="vertical">
 
 
-    <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/mediaPlayerActivity"
+        android:id="@+id/mediaPlayer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.ui.media_player.MediaPlayerActivity">
+        android:background="?attr/colorOnBackground"
+        android:orientation="vertical"
+        android:theme="@style/Base.Theme.PlaylistMaker.Common">
 
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/tooltipId"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/common_main_header_small"
+            android:contentInsetStart="0dp"
+            android:paddingStart="@dimen/toolbar_padding_navigation_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/back"
+            app:title=" " />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/mediaPlayerActivity"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_marginTop="70dp"
+            tools:context=".presentation.ui.media_player.MediaPlayerActivity">
 
-            <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/mediaPlayer"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="?attr/colorOnBackground"
-                android:orientation="vertical"
-                android:theme="@style/Base.Theme.PlaylistMaker.Common">
-
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/tooltipId"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/common_main_header_small"
-                    android:contentInsetStart="0dp"
-                    android:paddingStart="@dimen/toolbar_padding_navigation_icon"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:navigationIcon="@drawable/back"
-                    app:title=" " />
+                android:orientation="vertical">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/imageTrack"
@@ -288,28 +287,27 @@
                     app:layout_constraintTop_toBottomOf="@id/typeValue"
                     app:layout_constraintWidth_percent="0.6"
                     tools:text="text" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </ScrollView>
+        </ScrollView>
 
 
-    <View android:id="@+id/blurContainer"
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <View
+        android:id="@+id/blurContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#99000000"
-        />
+        android:background="#99000000" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"
         android:name="com.example.playlistmaker.presentation.ui.media.fragments.PlaylistCreateFragment"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:visibility="gone"
         app:defaultNavHost="true"
-        app:navGraph="@navigation/main_navigation_graph"
-        android:layout_height="match_parent" />
+        app:navGraph="@navigation/main_navigation_graph" />
 
     <LinearLayout
         android:id="@+id/standard_bottom_sheet"
@@ -331,18 +329,18 @@
             android:orientation="vertical">
 
             <View
+                style="@style/PlaylistLine"
                 android:layout_width="50dp"
                 android:layout_height="4dp"
-                android:layout_marginTop="@dimen/margin_add_tack_line"
-                style="@style/PlaylistLine"
-                android:layout_centerInParent="true" />
+                android:layout_centerInParent="true"
+                android:layout_marginTop="@dimen/margin_add_tack_line" />
 
             <TextView
                 android:id="@+id/add_new_title"
                 style="@style/AddNewTrackTitle"
-                android:text="@string/media_add_new_playlist_title"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:text="@string/media_add_new_playlist_title" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/add_new"
@@ -353,20 +351,18 @@
                 android:text="@string/media_add_new_playlist" />
 
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/playlist"
-                    style="@style/PlaylistCreateViewContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:nestedScrollingEnabled="false"
-                    android:visibility="gone"/>
-
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/playlist"
+                style="@style/PlaylistCreateViewContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:nestedScrollingEnabled="false"
+                android:visibility="gone" />
 
 
         </LinearLayout>
 
     </LinearLayout>
-
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

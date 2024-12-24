@@ -69,6 +69,7 @@
     <dimen name="playlist_font_size_track_size">12sp</dimen>
     <dimen name="cardview_bottom">12dp</dimen>
     <dimen name="scroll_container_margin">80dp</dimen>
+    <dimen name="scroll_search_container_margin">70dp</dimen>
     <dimen name="margin_add_tack_bottom">20dp</dimen>
     <dimen name="add_tack_title">19dp</dimen>
     <dimen name="margin_add_tack_line">16dp</dimen>
@@ -76,4 +77,5 @@
     <dimen name="margin_container_top_empty">0dp</dimen>
     <dimen name="textbox_button_margin">8dp</dimen>
     <dimen name="search_history_submit_text_size">16dp</dimen>
+    <dimen name="media_padding">9dp</dimen>
 </resources>
