@@ -29,10 +29,12 @@ class MediaViewModel(
     private var loadingTrackLiveData = MutableLiveData<MediaScreenState>()
     private var trackLiveData = MutableLiveData<TrackState>()
     private var loadingPlaylistLiveData = MutableLiveData<PlaylistListScreenState>()
+    private var playlistStateLiveData = MutableLiveData<Boolean>()
     private var timerJob: Job? = null
     fun getLoadingTrackLiveData(): LiveData<MediaScreenState> = loadingTrackLiveData
     fun getTrackLiveData(): LiveData<TrackState> = trackLiveData
     fun getLoadingPlaylistLiveData(): LiveData<PlaylistListScreenState> = loadingPlaylistLiveData
+    fun getPlaylistStateLiveData(): LiveData<Boolean> = playlistStateLiveData
 
     init {
         requestLoadingTrackLiveData()
@@ -125,6 +127,14 @@ class MediaViewModel(
                 }
                 .launchIn(this)
         }
+    }
+
+    fun openPlaylist() {
+        playlistStateLiveData.postValue(true)
+    }
+
+    fun closePlaylist() {
+        playlistStateLiveData.postValue(false)
     }
 
     private fun stopTimer() {

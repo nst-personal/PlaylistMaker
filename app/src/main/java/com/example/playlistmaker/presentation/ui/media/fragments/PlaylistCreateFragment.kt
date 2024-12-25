@@ -67,7 +67,9 @@ class PlaylistCreateFragment : Fragment() {
             binding?.tbDescription?.setText(savedInstanceState.getString(DESCRIPTION, ""))
             if (savedInstanceState.getString(URI, "")?.isNotEmpty() == true) {
                 binding?.pickerImage?.setImageURI(savedInstanceState.getString(URI, "").toUri())
+                binding.pickerImagePreview.visibility = View.GONE
             }
+            fillInputData(savedInstanceState)
         }
 
 
@@ -162,6 +164,21 @@ class PlaylistCreateFragment : Fragment() {
         }
         if (data is PlaylistCreateScreenState.PlaylistCreateCompletedContent) {
             playlist = null
+        }
+        binding.btnSubmit.isEnabled = playlist?.playlistName != null && playlist?.playlistName?.trim()?.isEmpty() != true
+        this.isContentChanged = playlist?.playlistName?.trim()?.isNotEmpty() == true ||
+                playlist?.playlistDescription?.trim()?.isNotEmpty() == true ||
+                playlist?.playlistImageUrl?.toString()?.trim()?.isNotEmpty() == true
+    }
+
+    private fun fillInputData(savedInstanceState: Bundle) {
+        if (playlist == null) {
+            playlist = PlaylistCreate()
+        }
+        playlist?.playlistName = savedInstanceState.getString(NAME, "")
+        playlist?.playlistDescription = savedInstanceState.getString(DESCRIPTION, "")
+        if (savedInstanceState.getString(URI, "")?.isNotEmpty() == true) {
+            playlist?.playlistImageUrl = savedInstanceState.getString(URI, "").toUri()
         }
         binding.btnSubmit.isEnabled = playlist?.playlistName != null && playlist?.playlistName?.trim()?.isEmpty() != true
         this.isContentChanged = playlist?.playlistName?.trim()?.isNotEmpty() == true ||

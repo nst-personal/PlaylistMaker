@@ -97,6 +97,37 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
 
         handleSaveToPlaylistView()
 
+        viewModel.getPlaylistStateLiveData().observe(this){
+                data ->
+            if (data) {
+                openFragment()
+            } else {
+                removeFragment()
+            }
+        }
+    }
+
+    private fun openFragment() {
+        binding.fragmentContainer.visibility = View.VISIBLE
+        binding.mediaPlayerActivity.visibility = View.GONE
+        binding.blurContainer.visibility = View.GONE
+        binding.standardBottomSheet.visibility = View.GONE
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+        binding.container.apply {
+            (layoutParams as ViewGroup.MarginLayoutParams).apply {
+                topMargin = resources.getDimensionPixelSize(R.dimen.margin_container_top)
+            }
+            requestLayout()
+        }
+        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+        if (fragment == null) {
+            val createPlaylistFragment = PlaylistCreateFragment()
+            val fragmentManager: FragmentManager = supportFragmentManager
+            val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.fragment_container, createPlaylistFragment)
+            fragmentTransaction.commit()
+        }
     }
 
     private fun handlePlaylistData(data: PlaylistListScreenState) {
@@ -187,24 +218,7 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
         })
 
         binding.addNew.setOnClickListener {
-            binding.fragmentContainer.visibility = View.VISIBLE
-            binding.mediaPlayerActivity.visibility = View.GONE
-            binding.blurContainer.visibility = View.GONE
-            binding.standardBottomSheet.visibility = View.GONE
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-
-            binding.container.apply {
-                (layoutParams as ViewGroup.MarginLayoutParams).apply {
-                    topMargin = resources.getDimensionPixelSize(R.dimen.margin_container_top)
-                }
-                requestLayout()
-            }
-
-            val createPlaylistFragment = PlaylistCreateFragment()
-            val fragmentManager: FragmentManager = supportFragmentManager
-            val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.fragment_container, createPlaylistFragment)
-            fragmentTransaction.commit()
+            viewModel.openPlaylist()
         }
     }
 
@@ -315,7 +329,7 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
         }
     }
 
-    override fun onFragmentRemoved() {
+    private fun removeFragment() {
         binding.fragmentContainer.visibility = View.GONE
         binding.mediaPlayerActivity.visibility = View.VISIBLE
         binding.blurContainer.visibility = View.GONE
@@ -326,6 +340,10 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
             }
             requestLayout()
         }
+    }
+
+    override fun onFragmentRemoved() {
+        viewModel.closePlaylist()
     }
 
 }
