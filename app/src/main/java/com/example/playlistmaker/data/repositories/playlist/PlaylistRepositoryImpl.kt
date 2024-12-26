@@ -5,8 +5,8 @@ import com.example.playlistmaker.data.db.convertors.PlaylistDbConvertor
 import com.example.playlistmaker.data.db.entity.PlaylistEntity
 import com.example.playlistmaker.data.dto.playlist.PlaylistTrackDto
 import com.example.playlistmaker.data.dto.search.TrackDto
-import com.example.playlistmaker.data.models.Playlist
-import com.example.playlistmaker.data.models.Track
+import com.example.playlistmaker.domain.models.Playlist
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repositories.playlist.PlaylistRepository
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow

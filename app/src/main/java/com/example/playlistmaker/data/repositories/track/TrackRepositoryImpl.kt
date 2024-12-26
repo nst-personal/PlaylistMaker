@@ -2,8 +2,8 @@ package com.example.playlistmaker.data.repositories.track
 
 import com.example.playlistmaker.data.dto.history.TrackResponse
 import com.example.playlistmaker.data.dto.search.TracksSearchRequest
-import com.example.playlistmaker.data.models.Track
 import com.example.playlistmaker.data.network.NetworkClient
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repositories.favorites.FavoriteTrackRepository
 import com.example.playlistmaker.domain.repositories.track.TrackRepository
 import kotlinx.coroutines.flow.Flow

@@ -2,7 +2,7 @@ package com.example.playlistmaker.data.db.convertors
 
 import com.example.playlistmaker.data.db.entity.PlaylistEntity
 import com.example.playlistmaker.data.dto.playlist.PlaylistDto
-import com.example.playlistmaker.data.models.Playlist
+import com.example.playlistmaker.domain.models.Playlist
 import java.time.Instant
 
 class PlaylistDbConvertor {

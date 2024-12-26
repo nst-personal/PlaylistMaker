@@ -16,8 +16,8 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.models.Playlist
-import com.example.playlistmaker.data.models.Track
+import com.example.playlistmaker.domain.models.Playlist
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.databinding.ActivityMediaPlayerBinding
 import com.example.playlistmaker.presentation.ui.media.fragments.PlaylistCreateFragment
 import com.example.playlistmaker.presentation.ui.media.fragments.interfaces.playlist.PlaylistItem

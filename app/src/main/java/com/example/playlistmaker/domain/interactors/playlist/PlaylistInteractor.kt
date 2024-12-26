@@ -1,7 +1,7 @@
 package com.example.playlistmaker.domain.interactors.playlist
 
-import com.example.playlistmaker.data.models.Playlist
-import com.example.playlistmaker.data.models.Track
+import com.example.playlistmaker.domain.models.Playlist
+import com.example.playlistmaker.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 
 interface PlaylistInteractor {

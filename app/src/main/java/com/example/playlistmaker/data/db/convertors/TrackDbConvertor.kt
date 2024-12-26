@@ -2,7 +2,7 @@ package com.example.playlistmaker.data.db.convertors
 
 import com.example.playlistmaker.data.db.entity.TrackEntity
 import com.example.playlistmaker.data.dto.search.TrackDto
-import com.example.playlistmaker.data.models.Track
+import com.example.playlistmaker.domain.models.Track
 import java.time.Instant
 
 class TrackDbConvertor {

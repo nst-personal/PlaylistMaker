@@ -1,6 +1,6 @@
 package com.example.playlistmaker.presentation.ui.media.fragments.interfaces
 
-import com.example.playlistmaker.data.models.Track
+import com.example.playlistmaker.domain.models.Track
 
 sealed class FavoriteTrackScreenState {
     data class FavoriteContent(

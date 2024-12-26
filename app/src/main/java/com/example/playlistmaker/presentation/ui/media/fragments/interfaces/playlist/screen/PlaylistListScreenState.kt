@@ -1,7 +1,7 @@
 package com.example.playlistmaker.presentation.ui.media.fragments.interfaces.playlist.screen
 
-import com.example.playlistmaker.data.models.Playlist
-import com.example.playlistmaker.data.models.Track
+import com.example.playlistmaker.domain.models.Playlist
+import com.example.playlistmaker.domain.models.Track
 
 sealed class PlaylistListScreenState {
     data class PlaylistListContent(
