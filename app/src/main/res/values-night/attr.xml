@@ -15,4 +15,7 @@
     <attr name="tabTitle" format="reference" />
     <attr name="colorBottomMenu" format="reference" />
     <attr name="colorBorderMenu" format="reference" />
+    <declare-styleable name="TextInputLayout">
+        <attr name="text_input_has_text" format="boolean" />
+    </declare-styleable>
 </resources>

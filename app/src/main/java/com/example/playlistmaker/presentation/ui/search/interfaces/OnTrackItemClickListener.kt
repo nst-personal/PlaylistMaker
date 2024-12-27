@@ -1,6 +1,6 @@
 package com.example.playlistmaker.presentation.ui.search.interfaces
 
-import com.example.playlistmaker.data.models.Track
+import com.example.playlistmaker.domain.models.Track
 
 interface OnTrackItemClickListener {
     fun onItemClick(track: Track)

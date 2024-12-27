@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.configuration.ShareablePreferencesConfig
 import com.example.playlistmaker.data.dto.history.TrackHistory
-import com.example.playlistmaker.data.models.Track
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repositories.track.TrackHistoryRepository
 import com.google.gson.Gson
 

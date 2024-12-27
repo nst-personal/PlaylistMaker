@@ -9,7 +9,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.data.models.Track
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.databinding.FragmentFavoritesBinding
 import com.example.playlistmaker.presentation.ui.media.fragments.interfaces.FavoriteTrackScreenState
 import com.example.playlistmaker.presentation.ui.media_player.MediaPlayerActivity

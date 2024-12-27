@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.data.models.Track
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.interactors.track.TrackHistoryInteractor
 import com.example.playlistmaker.presentation.ui.search.interfaces.TrackScreenState

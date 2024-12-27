@@ -1,6 +1,6 @@
 package com.example.playlistmaker.domain.interactors.track
 
-import com.example.playlistmaker.data.models.Track
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repositories.favorites.FavoriteTrackRepository
 import com.example.playlistmaker.domain.repositories.track.TrackHistoryRepository
 import kotlinx.coroutines.flow.Flow

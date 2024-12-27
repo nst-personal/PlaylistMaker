@@ -1,23 +1,42 @@
 package com.example.playlistmaker.presentation.ui.media_player
 
 import android.os.Bundle
+import android.os.Environment
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.models.Track
+import com.example.playlistmaker.domain.models.Playlist
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.databinding.ActivityMediaPlayerBinding
+import com.example.playlistmaker.presentation.ui.media.fragments.PlaylistCreateFragment
+import com.example.playlistmaker.presentation.ui.media.fragments.interfaces.playlist.PlaylistItem
+import com.example.playlistmaker.presentation.ui.media.fragments.interfaces.playlist.screen.PlaylistListScreenState
 import com.example.playlistmaker.presentation.ui.media_player.interfaces.MediaScreenState
 import com.example.playlistmaker.presentation.ui.media_player.interfaces.MediaState
+import com.example.playlistmaker.presentation.ui.media_player.interfaces.OnFragmentRemovedListener
+import com.example.playlistmaker.presentation.ui.media_player.interfaces.OnPlaylistItemClickListener
 import com.example.playlistmaker.presentation.ui.media_player.interfaces.TrackState
+import com.example.playlistmaker.presentation.ui.search.view.adapter.PlaylistCreateAdapter
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
 import java.text.SimpleDateFormat
 import java.time.ZoneId
 import java.util.Locale
 
-class MediaPlayerActivity : AppCompatActivity() {
+
+class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
     private lateinit var track: Track
     private var playerState: Int = MediaState.STATE_DEFAULT
 
@@ -25,6 +44,12 @@ class MediaPlayerActivity : AppCompatActivity() {
     private val dateFormatParse by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
     private lateinit var binding: ActivityMediaPlayerBinding
     private val viewModel: MediaViewModel by viewModel()
+
+    private var playlist: List<Playlist>? = null
+
+    private var adapter: PlaylistCreateAdapter? = null
+
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +68,7 @@ class MediaPlayerActivity : AppCompatActivity() {
             handleData(data)
         }
 
-        viewModel.getTrackLiveData().observe(this) {data ->
+        viewModel.getTrackLiveData().observe(this) { data ->
             handleTrackData(data)
         }
 
@@ -62,6 +87,143 @@ class MediaPlayerActivity : AppCompatActivity() {
         binding.likeMedia.setOnClickListener({
             onFavoriteClicked()
         })
+
+        viewModel.getLoadingPlaylistLiveData().observe(this) { data ->
+            handlePlaylistData(data)
+        }
+
+        val bottomSheetContainer = findViewById<LinearLayout>(R.id.standard_bottom_sheet)
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
+
+        handleSaveToPlaylistView()
+
+        viewModel.getPlaylistStateLiveData().observe(this){
+                data ->
+            if (data) {
+                openFragment()
+            } else {
+                removeFragment()
+            }
+        }
+    }
+
+    private fun openFragment() {
+        binding.fragmentContainer.visibility = View.VISIBLE
+        binding.mediaPlayerActivity.visibility = View.GONE
+        binding.blurContainer.visibility = View.GONE
+        binding.standardBottomSheet.visibility = View.GONE
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+        binding.container.apply {
+            (layoutParams as ViewGroup.MarginLayoutParams).apply {
+                topMargin = resources.getDimensionPixelSize(R.dimen.margin_container_top)
+            }
+            requestLayout()
+        }
+        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+        if (fragment == null) {
+            val createPlaylistFragment = PlaylistCreateFragment()
+            val fragmentManager: FragmentManager = supportFragmentManager
+            val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.fragment_container, createPlaylistFragment)
+            fragmentTransaction.commit()
+        }
+    }
+
+    private fun handlePlaylistData(data: PlaylistListScreenState) {
+        if (data is PlaylistListScreenState.PlaylistListContent) {
+            playlist = data.playlists
+            handlePlaylistView()
+        }
+        if (data is PlaylistListScreenState.PlaylistListUpdatedContent) {
+            Toast.makeText(
+                this,
+                "${getString(R.string.playlist_tracks_added)} ${data.playlist.playlistName}", Toast.LENGTH_SHORT
+            ).show()
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        }
+        if (data is PlaylistListScreenState.PlaylistListNotUpdatedContent) {
+            Toast.makeText(
+                this,
+                "${getString(R.string.playlist_tracks_already_added)} ${data.playlist.playlistName}", Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun handlePlaylistView() {
+        val playlistClickListener = object : OnPlaylistItemClickListener {
+            override fun onItemClick(playlist: PlaylistItem) {
+                viewModel.updatePlaylist(track,
+                    this@MediaPlayerActivity.playlist?.first { item -> item.playlistId == playlist.id }!!)
+            }
+        }
+        if (playlist?.isEmpty() == false) {
+            binding.playlist.layoutManager = LinearLayoutManager(this)
+            binding.playlist.isClickable = true
+            adapter = PlaylistCreateAdapter(
+                    playlist!!.map { item ->
+                        var file: File? = null
+                        if (item.playlistImageUrl?.isNotEmpty() == true) {
+                            val filePath = File(
+                                applicationContext?.getExternalFilesDir(
+                                    Environment.DIRECTORY_PICTURES
+                                ), "myalbum"
+                            )
+                            file = File(filePath, item.playlistImageUrl?.substringAfterLast("/"))
+                        }
+                        PlaylistItem(item.playlistId, item.playlistName, item.playlistTracksCount, file)
+                    }
+
+                , playlistClickListener)
+            binding.playlist.adapter = adapter
+            binding.playlist.isVisible = true
+        } else {
+            binding.playlist.isVisible = false
+        }
+    }
+
+    private fun handleSaveToPlaylistView() {
+        this.bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        binding.blurContainer.visibility = View.GONE
+
+        binding.addMedia.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+            binding.blurContainer.visibility = View.VISIBLE
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HALF_EXPANDED -> {
+                        binding.blurContainer.visibility = View.VISIBLE
+                        loadPlaylist()
+                    }
+
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        binding.blurContainer.visibility = View.GONE
+                    }
+
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.blurContainer.visibility = View.GONE
+                    }
+
+                    else -> {
+                        binding.blurContainer.visibility = View.GONE
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+
+        binding.addNew.setOnClickListener {
+            viewModel.openPlaylist()
+        }
+    }
+
+    private fun loadPlaylist() {
+        viewModel.showPlaylist()
     }
 
     fun handleTrackData(data: TrackState) {
@@ -165,6 +327,23 @@ class MediaPlayerActivity : AppCompatActivity() {
         } else {
             viewModel.addTrack(this.track)
         }
+    }
+
+    private fun removeFragment() {
+        binding.fragmentContainer.visibility = View.GONE
+        binding.mediaPlayerActivity.visibility = View.VISIBLE
+        binding.blurContainer.visibility = View.GONE
+        binding.standardBottomSheet.visibility = View.VISIBLE
+        binding.container.apply {
+            (layoutParams as ViewGroup.MarginLayoutParams).apply {
+                topMargin = resources.getDimensionPixelSize(R.dimen.margin_container_top_empty)
+            }
+            requestLayout()
+        }
+    }
+
+    override fun onFragmentRemoved() {
+        viewModel.closePlaylist()
     }
 
 }

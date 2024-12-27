@@ -3,7 +3,7 @@ package com.example.playlistmaker.data.repositories.favorites
 import com.example.playlistmaker.data.db.AppDatabase
 import com.example.playlistmaker.data.db.convertors.TrackDbConvertor
 import com.example.playlistmaker.data.db.entity.TrackEntity
-import com.example.playlistmaker.data.models.Track
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repositories.favorites.FavoriteTrackRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

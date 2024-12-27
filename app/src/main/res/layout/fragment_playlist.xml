@@ -2,23 +2,22 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:theme="@style/Base.Theme.PlaylistMaker.Common">
 
     <LinearLayout
         android:id="@+id/mediaNoDataContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/media_side_padding"
-        android:layout_marginEnd="@dimen/media_side_padding"
         android:gravity="center"
-        android:orientation="vertical"
-        android:padding="@dimen/textbox_padding">
+        android:orientation="vertical">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/add_new"
-            android:layout_marginTop="@dimen/media_add_new_top"
             style="@style/AddNewButtonItem"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/media_add_new_top"
+            android:layout_marginBottom="@dimen/media_add_new_top"
             android:text="@string/media_add_new_playlist" />
 
         <ImageView
@@ -39,5 +38,18 @@
             android:layout_marginRight="@dimen/media_not_found_title"
             android:text="@string/media_playlist_empty" />
     </LinearLayout>
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:layout_marginTop="@dimen/scroll_container_margin"
+        android:layout_marginBottom="@dimen/scroll_container_margin"
+        android:scrollbars="none">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
 
 </FrameLayout>
