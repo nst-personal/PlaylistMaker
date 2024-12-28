@@ -137,6 +137,29 @@ class PlaylistRepositoryImpl(
         return false
     }
 
+    override suspend fun deletePlaylistTrack(track: Track, playlist: Playlist): Boolean {
+        var playlistTracks = PlaylistTrackDto(
+            mutableListOf(),
+        )
+        if (playlist.playlistTracks.isNotEmpty()) {
+            playlistTracks =
+                gson.fromJson(playlist.playlistTracks, PlaylistTrackDto::class.java)
+        }
+        if (!playlistTracks.tracks.filter { trackItem -> trackItem.trackId == track.trackId }
+                .isEmpty()) {
+            playlistTracks.tracks.removeIf{
+                trackItem -> trackItem.trackId == track.trackId
+            }
+            playlist.playlistTracksCount = playlistTracks.tracks.size.toLong()
+            playlist.playlistTracks = gson.toJson(playlistTracks)
+            appDatabase.playlistDao().updatePlaylist(
+                playlistDbConvertor.map(playlist)
+            )
+            return true
+        }
+        return false
+    }
+
     private fun convertFromPlaylistEntity(playlists: List<PlaylistEntity>): List<Playlist> {
         return playlists.map { playlist -> playlistDbConvertor.map(playlist) }
             .sortedByDescending { playlist -> playlist.addedTime }

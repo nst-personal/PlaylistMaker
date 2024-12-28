@@ -5,30 +5,39 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:theme="@style/Base.Theme.PlaylistMaker"
+    tools:context=".presentation.ui.media.fragments.PlayListDetailsFragment">
 
     <ScrollView
         android:layout_width="match_parent"
         style="@style/PlaylistDetailsContainer"
         android:layout_height="match_parent"
+        android:fillViewport="true">
 
-        tools:context=".presentation.ui.media.fragments.PlayListDetailsFragment">
-
-        <FrameLayout
-            android:id="@+id/playlistDetails"
-            style="@style/PlaylistDetailsContainer"
+        <LinearLayout
+            android:id="@+id/playlist"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:theme="@style/Base.Theme.PlaylistMaker"
-            >
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/playlist"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:paddingTop="@dimen/textbox_padding">
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:clickable="true">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/pickerImage"
+                    style="@style/PlaylistDetailsItemImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/button_margin"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/placeholder"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:shapeAppearanceOverlay="@style/PlaylistDetailsItemImage" />
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbarId"
@@ -40,115 +49,95 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:navigationIcon="@drawable/back" />
 
-                <FrameLayout
+            </FrameLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/t"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/tb_name_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="0.6"
-
-                    android:clickable="true">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/pickerImage"
-                        style="@style/PlaylistDetailsItemImage"
-                        android:layout_width="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="@dimen/button_margin"
-                        android:layout_marginBottom="@dimen/button_margin"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/placeholder"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintDimensionRatio="1:1"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:shapeAppearanceOverlay="@style/PlaylistDetailsItemImage" />
-                </FrameLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_weight="0.6"
+                    android:layout_height="match_parent"
                     android:orientation="vertical">
 
+                    <TextView
+                        android:id="@+id/playlistTitle"
+                        style="@style/PlaylistDetailsTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/button_margin"
+                        android:layout_marginBottom="@dimen/playlist_track_margin"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:text="Name" />
+
+                    <TextView
+                        android:id="@+id/playlistDescription"
+                        style="@style/PlaylistDetailsDescription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:layout_marginHorizontal="@dimen/button_margin"
+                        android:layout_marginBottom="@dimen/playlist_track_margin"
+                        tools:text="DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription" />
+
                     <LinearLayout
-                        android:id="@+id/tb_name_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/button_margin"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
                         <TextView
-                            android:id="@+id/playlistTitle"
-                            style="@style/PlaylistDetailsTitle"
+                            android:id="@+id/tracksDuration"
+                            style="@style/PlaylistTrackSubTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="@dimen/button_margin"
-                            android:layout_marginBottom="@dimen/playlist_track_margin"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            tools:text="Name" />
+                            android:layout_weight="0.75"
+                            tools:text="Track Duration" />
+
+                        <ImageView
+                            style="@style/TrackDelimiter"
+                            android:src="@drawable/playlist_point" />
 
                         <TextView
-                            android:id="@+id/playlistDescription"
-                            style="@style/PlaylistDetailsDescription"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/tracksCount"
+                            style="@style/PlaylistTrackSubTitle"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="@dimen/button_margin"
-                            android:layout_marginBottom="@dimen/playlist_track_margin"
-                            tools:text="DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="@dimen/button_margin"
-                            android:gravity="center"
-                            android:orientation="horizontal"
-                            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
-
-                            <TextView
-                                android:id="@+id/tracksDuration"
-                                style="@style/PlaylistTrackSubTitle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.75"
-                                tools:text="Track Duration" />
-
-                            <ImageView
-                                style="@style/TrackDelimiter"
-                                android:src="@drawable/playlist_point" />
-
-                            <TextView
-                                android:id="@+id/tracksCount"
-                                style="@style/PlaylistTrackSubTitle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:maxLines="1"
-                                tools:text="00:00" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="@dimen/button_margin"
-                            android:gravity="center"
-
-                            android:orientation="horizontal">
-
-                            <ImageButton
-                                style="@style/PlaylistDetailsImageButton"
-                                android:background="@null"
-                                android:src="@drawable/playlist_share" />
-
-                            <ImageButton
-                                style="@style/PlaylistDetailsImageButton"
-                                android:background="@null"
-                                android:src="@drawable/more" />
-
-                        </LinearLayout>
+                            android:maxLines="1"
+                            tools:text="00:00" />
                     </LinearLayout>
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </LinearLayout>
-        </FrameLayout>
 
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/button_margin"
+                        android:gravity="center"
+
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            style="@style/PlaylistDetailsImageButton"
+                            android:background="@null"
+                            android:id="@+id/share"
+                            android:src="@drawable/playlist_share" />
+
+                        <ImageButton
+                            style="@style/PlaylistDetailsImageButton"
+                            android:background="@null"
+                            android:src="@drawable/more" />
+
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
     </ScrollView>
 
     <LinearLayout
@@ -158,9 +147,8 @@
         android:background="@drawable/playlist_track_playlist"
         android:orientation="vertical"
         android:paddingHorizontal="@dimen/button_margin"
-        android:theme="@style/Base.Theme.PlaylistMaker.Common"
         app:behavior_hideable="true"
-        app:behavior_peekHeight="140dp"
+        app:behavior_peekHeight="200dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <LinearLayout

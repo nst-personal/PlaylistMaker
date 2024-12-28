@@ -1,5 +1,7 @@
 package com.example.playlistmaker.presentation.ui.media.fragments
 
+import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,8 +17,10 @@ import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.ui.media.fragments.adapter.PlaylistTrackAdapter
 import com.example.playlistmaker.presentation.ui.media.fragments.interfaces.playlist.screen.PlaylistDetailsScreenState
-import com.example.playlistmaker.presentation.ui.search.interfaces.OnTrackItemClickListener
+import com.example.playlistmaker.presentation.ui.media_player.MediaPlayerActivity
+import com.example.playlistmaker.presentation.ui.media_player.interfaces.OnPlaylistTrackItemClickListener
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayListDetailsFragment : Fragment() {
@@ -49,6 +53,21 @@ class PlayListDetailsFragment : Fragment() {
         }
         bottomSheetBehavior = BottomSheetBehavior.from(binding.trackList)
         bottomSheetBehavior.isHideable = false
+
+        binding.share.setOnClickListener {
+            if (playlist?.tracks?.isEmpty() == true) {
+                MaterialAlertDialogBuilder(requireActivity())
+                    .setMessage(getString(R.string.playlist_track_share_info))
+                    .setNeutralButton(
+                        getString(R.string.playlist_track_share_info_ok),
+                        object : DialogInterface.OnClickListener {
+                            override fun onClick(dialog: DialogInterface?, which: Int) {
+
+                            }
+                        })
+                    .show()
+            }
+        }
     }
 
     private fun handlePlaylistData(data: PlaylistDetailsScreenState) {
@@ -71,16 +90,30 @@ class PlayListDetailsFragment : Fragment() {
                     getResources().getString(R.string.playlist_tracks)
         }
         if (playlist?.playlistImageUrl != null) {
-            binding?.pickerImage?.setImageURI(playlist?.playlistImageUrl?.toUri())
+            binding.pickerImage.setImageURI(playlist?.playlistImageUrl?.toUri())
         }
-        val trackClickListener = object : OnTrackItemClickListener {
+        val trackClickListener = object : OnPlaylistTrackItemClickListener {
             override fun onItemClick(track: Track) {
+                viewModel.saveTrack(track)
+                val displayMediaIntent = Intent(requireContext(), MediaPlayerActivity::class.java)
+                startActivity(displayMediaIntent)
+            }
 
+            override fun onItemLongClick(playlistTrack: Track) {
+                MaterialAlertDialogBuilder(requireActivity())
+                    .setMessage(getString(R.string.playlist_track_delete_confirmation))
+                    .setPositiveButton(getString(R.string.playlist_track_delete_confirmation_yes)) { dialog, which ->
+                        viewModel.deleteTrack(playlist!!, playlistTrack)
+                    }
+                    .setNegativeButton(getString(R.string.playlist_track_delete_confirmation_no)) { dialog, which ->
+
+                    }.show()
             }
         }
         binding.playlistTracks.layoutManager = LinearLayoutManager(requireContext())
         binding.playlistTracks.isClickable = true
-        binding.playlistTracks.adapter = PlaylistTrackAdapter(playlist?.tracks!!, trackClickListener)
+        binding.playlistTracks.adapter =
+            PlaylistTrackAdapter(playlist?.tracks!!, trackClickListener)
     }
 
     override fun onResume() {
