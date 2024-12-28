@@ -123,6 +123,14 @@
         <item name="android:layout_marginRight">@dimen/icon_margin_right</item>
     </style>
 
+    <style name="PlaylistMoreDetailsImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+        <item name="android:layout_width">45dp</item>
+        <item name="android:layout_height">45dp</item>
+        <item name="android:layout_marginRight">@dimen/icon_margin_right</item>
+    </style>
+
     <style name="PlaylistDetailsImage">
         <item name="android:layout_width">45dp</item>
         <item name="android:layout_height">45dp</item>
@@ -160,6 +168,14 @@
         <item name="android:layout_height">16dp</item>
         <item name="iconTint">?attr/searchSubTitle</item>
         <item name="android:backgroundTint">?attr/searchSubTitle</item>
+    </style>
+
+    <style name="PlaylistDetailsMoreTitle">
+        <item name="android:textColor">?attr/trackTitle</item>
+        <item name="android:textSize">@dimen/media_player_main_title</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
     </style>
 
     <style name="PlaylistCreateTitle">
@@ -229,6 +245,14 @@
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
     </style>
+
+    <style name="PlaylistDetailsSubTitle">
+        <item name="android:textSize">@dimen/subtitle_size</item>
+        <item name="android:textColor">?attr/searchSubTitle</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
     <style name="TrackSubTitle">
         <item name="android:textSize">@dimen/subtitle_size</item>
         <item name="android:textColor">?attr/searchSubTitle</item>
@@ -291,6 +315,12 @@
         <item name="android:color">@color/black</item>
         <item name="android:layout_width">48dp</item>
         <item name="android:layout_height">48dp</item>
+    </style>
+
+
+    <style name="PlaylistMoreOption">
+        <item name="android:textSize">@dimen/playlist_more_item</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
     </style>
 
     <style name="PlaylistLine">

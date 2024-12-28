@@ -55,4 +55,7 @@
     <string name="playlist_track_delete_confirmation_no">Нет</string>
     <string name="playlist_track_share_info">В этом плейлисте нет списка треков, которым можно поделиться</string>
     <string name="playlist_track_share_info_ok">OK</string>
+    <string name="playlist_share">Поделиться</string>
+    <string name="playlist_edit">Редактировать информацию</string>
+    <string name="playlist_delete">Удалить плейлист</string>
 </resources>

@@ -33,6 +33,7 @@ class PlayListDetailsFragment : Fragment() {
     private var playlist: Playlist? = null
     private var playlistId: Long? = null
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var bottomSheetMoreBehavior: BottomSheetBehavior<LinearLayout>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,23 +53,67 @@ class PlayListDetailsFragment : Fragment() {
             findNavController().popBackStack()
         }
         bottomSheetBehavior = BottomSheetBehavior.from(binding.trackList)
+        binding.blurContainer.visibility = View.GONE
+        bottomSheetMoreBehavior = BottomSheetBehavior.from(binding.playlistMore).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+        bottomSheetMoreBehavior.setPeekHeight(getResources().getDisplayMetrics().heightPixels / 2)
         bottomSheetBehavior.isHideable = false
 
-        binding.share.setOnClickListener {
-            if (playlist?.tracks?.isEmpty() == true) {
-                MaterialAlertDialogBuilder(requireActivity())
-                    .setMessage(getString(R.string.playlist_track_share_info))
-                    .setNeutralButton(
-                        getString(R.string.playlist_track_share_info_ok),
-                        object : DialogInterface.OnClickListener {
-                            override fun onClick(dialog: DialogInterface?, which: Int) {
 
-                            }
-                        })
-                    .show()
-            } else {
-                sendContent()
+        binding.moreShare.setOnClickListener{
+            handleShare()
+        }
+
+        binding.share.setOnClickListener {
+            handleShare()
+        }
+
+        binding.more.setOnClickListener {
+            bottomSheetMoreBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            binding.blurContainer.visibility = View.GONE
+        }
+
+        bottomSheetMoreBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HALF_EXPANDED -> {
+                        binding.blurContainer.visibility = View.VISIBLE
+                    }
+
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        binding.blurContainer.visibility = View.GONE
+                    }
+
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.blurContainer.visibility = View.GONE
+                    }
+
+                    else -> {
+                        binding.blurContainer.visibility = View.GONE
+                    }
+                }
             }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+    }
+
+    private fun handleShare() {
+        if (playlist?.tracks?.isEmpty() == true) {
+            MaterialAlertDialogBuilder(requireActivity())
+                .setMessage(getString(R.string.playlist_track_share_info))
+                .setNeutralButton(
+                    getString(R.string.playlist_track_share_info_ok),
+                    object : DialogInterface.OnClickListener {
+                        override fun onClick(dialog: DialogInterface?, which: Int) {
+
+                        }
+                    })
+                .show()
+        } else {
+            sendContent()
         }
     }
 
@@ -101,18 +146,24 @@ class PlayListDetailsFragment : Fragment() {
 
     private fun fillDetails() {
         binding.playlistTitle.text = playlist?.playlistName
+        binding.playlistName.text = playlist?.playlistName
         binding.playlistDescription.text = playlist?.playlistDescription
         binding.tracksDuration.text = playlist?.tracksDuration?.toString() +
                 " " + getResources().getString(R.string.playlist_minute)
         if (playlist?.tracksCount?.toInt() == 1) {
             binding.tracksCount.text = playlist?.tracksCount.toString() + " " +
                     getResources().getString(R.string.playlist_track)
+            binding.playlistTracksCount.text = playlist?.tracksCount.toString() + " " +
+                    getResources().getString(R.string.playlist_track)
         } else {
             binding.tracksCount.text = playlist?.tracksCount.toString() + " " +
+                    getResources().getString(R.string.playlist_tracks)
+            binding.playlistTracksCount.text = playlist?.tracksCount.toString() + " " +
                     getResources().getString(R.string.playlist_tracks)
         }
         if (playlist?.playlistImageUrl != null) {
             binding.pickerImage.setImageURI(playlist?.playlistImageUrl?.toUri())
+            binding.playlistImage.setImageURI(playlist?.playlistImageUrl?.toUri())
         }
         val trackClickListener = object : OnPlaylistTrackItemClickListener {
             override fun onItemClick(track: Track) {
@@ -136,6 +187,8 @@ class PlayListDetailsFragment : Fragment() {
         binding.playlistTracks.isClickable = true
         binding.playlistTracks.adapter =
             PlaylistTrackAdapter(playlist?.tracks!!, trackClickListener)
+
+
     }
 
     override fun onResume() {

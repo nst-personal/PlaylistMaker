@@ -82,4 +82,6 @@
     <dimen name="playlist_details_description">18dp</dimen>
     <dimen name="playlist_track_subtitle_size">18dp</dimen>
     <dimen name="playlist_track_margin">8dp</dimen>
+    <dimen name="playlist_more_item">16dp</dimen>
+    <dimen name="margin_more_item">16dp</dimen>
 </resources>
