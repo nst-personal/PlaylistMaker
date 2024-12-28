@@ -66,8 +66,30 @@ class PlayListDetailsFragment : Fragment() {
                             }
                         })
                     .show()
+            } else {
+                sendContent()
             }
         }
+    }
+
+    private fun sendContent() {
+        val trackCount = playlist?.tracks?.size.toString() + " " +
+                getString(R.string.playlist_tracks) + "\n"
+        val trackListString =
+            playlist?.tracks?.mapIndexed { index, track ->
+                "${index + 1}. " +
+                        "${track.artistName} - ${track.trackName} (${
+                            (track.trackTimeMillis / 60000).toString() +
+                                    getString(R.string.playlist_minute)
+                        })"
+            }
+        val content = StringBuilder()
+        content.append(trackCount)
+        content.append(trackListString?.joinToString("\n"))
+        val sendIntent = Intent(Intent.ACTION_SEND)
+        sendIntent.setType("text/plain")
+        sendIntent.putExtra(Intent.EXTRA_TEXT, content.toString())
+        startActivity(Intent.createChooser(sendIntent, null))
     }
 
     private fun handlePlaylistData(data: PlaylistDetailsScreenState) {
