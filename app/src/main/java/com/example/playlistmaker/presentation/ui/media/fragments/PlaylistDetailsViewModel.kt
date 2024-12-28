@@ -42,4 +42,10 @@ class PlaylistDetailsViewModel (
         }
     }
 
+    fun deletePlaylist(playlist: Playlist) {
+        viewModelScope.launch {
+            playlistInteractor.removePlaylist(playlist)
+        }
+    }
+
 }

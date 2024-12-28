@@ -69,6 +69,10 @@ class PlayListDetailsFragment : Fragment() {
             handleShare()
         }
 
+        binding.moreDelete.setOnClickListener{
+            handleDeletion()
+        }
+
         binding.more.setOnClickListener {
             bottomSheetMoreBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             binding.blurContainer.visibility = View.GONE
@@ -98,6 +102,20 @@ class PlayListDetailsFragment : Fragment() {
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         })
+    }
+
+    private fun handleDeletion() {
+        bottomSheetMoreBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        MaterialAlertDialogBuilder(requireActivity())
+            .setTitle(getString(R.string.playlist_delete_confirmation_title))
+            .setMessage(getString(R.string.playlist_delete_confirmation))
+            .setPositiveButton(getString(R.string.playlist_track_delete_confirmation_yes)) { dialog, which ->
+                viewModel.deletePlaylist(playlist!!)
+                findNavController().popBackStack()
+            }
+            .setNegativeButton(getString(R.string.playlist_track_delete_confirmation_no)) { dialog, which ->
+
+            }.show()
     }
 
     private fun handleShare() {
