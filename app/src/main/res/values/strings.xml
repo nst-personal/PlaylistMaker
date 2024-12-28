@@ -47,6 +47,7 @@
     <string name="save_confirmation_created">создан</string>
     <string name="playlist_track">трек</string>
     <string name="playlist_tracks">треков</string>
+    <string name="playlist_minute">минут</string>
     <string name="playlist_tracks_added">Добавлено в плейлист</string>
     <string name="playlist_tracks_already_added">Трек уже добавлен в плейлист</string>
 </resources>

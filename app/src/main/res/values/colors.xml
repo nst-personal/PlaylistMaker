@@ -18,4 +18,5 @@
     <color name="menu">#FFFFFF</color>
     <color name="search_cursor_color">#3772E7</color>
     <color name="black_transparent">#1a1b22</color>
+    <color name="grey_placeholder">#e6e8eb</color>
 </resources>

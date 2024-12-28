@@ -93,6 +93,11 @@
         <item name="android:layout_marginRight">@dimen/icon_margin_right</item>
     </style>
 
+    <style name="PlaylistDetailsItemImage">
+        <item name="android:layout_width">312dp</item>
+        <item name="android:layout_height">312dp</item>
+    </style>
+
     <style name="CustomTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="hintTextColor">@color/text_input_hint_color</item>
     </style>
@@ -102,6 +107,11 @@
         <item name="android:textSize">@dimen/search_history_submit_text_size</item>
     </style>
 
+    <style name="PlaylistDetailsContainer">
+        <item name="android:background">@color/grey_placeholder</item>
+    </style>
+
+
     <style name="PlaylistCreateContainer">
         <item name="android:background">?attr/colorOnBackground</item>
     </style>
@@ -109,6 +119,12 @@
     <style name="PlaylistCreateImage">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">8dp</item>
+        <item name="android:layout_width">45dp</item>
+        <item name="android:layout_height">45dp</item>
+        <item name="android:layout_marginRight">@dimen/icon_margin_right</item>
+    </style>
+
+    <style name="PlaylistDetailsImage">
         <item name="android:layout_width">45dp</item>
         <item name="android:layout_height">45dp</item>
         <item name="android:layout_marginRight">@dimen/icon_margin_right</item>
@@ -220,6 +236,12 @@
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
     </style>
+    <style name="PlaylistTrackSubTitle">
+        <item name="android:textSize">@dimen/playlist_track_subtitle_size</item>
+        <item name="android:textColor">?attr/searchSubTitle</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
     <style name="TrackButton">
         <item name="android:layout_width">24dp</item>
         <item name="android:layout_height">24dp</item>
@@ -229,6 +251,10 @@
     </style>
 
     <style name="PlaylistCreateViewContainer">
+        <item name="android:layout_marginTop">4dp</item>
+    </style>
+
+    <style name="PlaylistTrackViewContainer">
         <item name="android:layout_marginTop">4dp</item>
     </style>
 
@@ -246,6 +272,26 @@
     </style>
 
     <style name="MediaSubDescription" parent="SearchSubDescription">
+    </style>
+
+    <style name="PlaylistDetailsTitle">
+        <item name="android:textSize">@dimen/playlist_details_title</item>
+        <item name="android:fontFamily">@font/ys_display_bold</item>
+        <item name="android:color">@color/black</item>
+    </style>
+
+    <style name="PlaylistDetailsDescription">
+        <item name="android:textSize">@dimen/playlist_details_description</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:color">@color/black</item>
+    </style>
+
+    <style name="PlaylistDetailsImageButton">
+        <item name="android:textSize">@dimen/playlist_details_description</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:color">@color/black</item>
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
     </style>
 
     <style name="PlaylistLine">

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.presentation.ui.media.fragments.interfaces.playlist.PlaylistItem
+import com.example.playlistmaker.presentation.ui.media_player.interfaces.OnPlaylistItemClickListener
 
 class PlaylistViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -14,8 +15,8 @@ class PlaylistViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val size: TextView = itemView.findViewById(R.id.size)
     private val image: ImageView = itemView.findViewById(R.id.playlist_image)
 
-    fun bind(item: PlaylistItem) {
-
+    fun bind(item: PlaylistItem, listener: OnPlaylistItemClickListener?) {
+        itemView.setOnClickListener { listener?.onItemClick(item) }
         title.text = item.title
         if (item.trackCount.toInt() == 1) {
             size.text = item.trackCount.toString() + " " +

@@ -25,6 +25,41 @@ class PlaylistRepositoryImpl(
         }
     }
 
+    override suspend fun getPlaylistById(id: Long) : Flow<Playlist> {
+        return flow {
+            val playlistEntity = appDatabase.playlistDao().getPlaylistById(id)
+            val playlist = playlistDbConvertor.map(playlistEntity!!)
+            var playlistTracks = PlaylistTrackDto(
+                mutableListOf(),
+            )
+            if (playlist.playlistTracks.isNotEmpty()) {
+                playlistTracks =
+                    gson.fromJson(playlist.playlistTracks, PlaylistTrackDto::class.java)
+            }
+
+            playlist.tracks = playlistTracks.tracks.map {
+                track ->
+                Track(
+                    track.trackId,
+                    track.trackName,
+                    track.artistName,
+                    track.trackTimeMillis,
+                    track.artworkUrl100,
+                    track.previewUrl,
+                    track.collectionName,
+                    track.releaseDate,
+                    track.primaryGenreName,
+                    track.country
+                )
+            }
+            playlist.tracksCount = playlistTracks.tracks.size.toLong()
+            playlist.tracksDuration =
+                playlistTracks.tracks.sumOf { track -> track.trackTimeMillis } / 60000
+
+            emit(playlist)
+        }
+    }
+
     override fun getPlaylistIds(): Flow<List<Long>> {
         return flow {
             val playlistIds = appDatabase.playlistDao().getPlaylistIds()

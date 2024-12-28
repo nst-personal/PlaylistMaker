@@ -78,4 +78,8 @@
     <dimen name="textbox_button_margin">8dp</dimen>
     <dimen name="search_history_submit_text_size">16dp</dimen>
     <dimen name="media_padding">9dp</dimen>
+    <dimen name="playlist_details_title">24dp</dimen>
+    <dimen name="playlist_details_description">18dp</dimen>
+    <dimen name="playlist_track_subtitle_size">18dp</dimen>
+    <dimen name="playlist_track_margin">8dp</dimen>
 </resources>

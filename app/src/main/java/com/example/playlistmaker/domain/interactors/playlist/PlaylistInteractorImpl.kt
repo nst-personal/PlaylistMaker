@@ -17,7 +17,9 @@ class PlaylistInteractorImpl(
         return playlistRepository.getPlaylistIds()
     }
 
-
+    override suspend fun getPlaylistById(playlistId: Long) : Flow<Playlist> {
+        return playlistRepository.getPlaylistById(playlistId)
+    }
 
     override suspend fun addPlaylist(playlistName: String,
                                      playlistDescription: String?,

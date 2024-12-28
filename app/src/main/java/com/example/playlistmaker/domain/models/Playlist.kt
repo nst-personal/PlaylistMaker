@@ -7,5 +7,8 @@ data class Playlist(
     val playlistImageUrl: String?,
     var playlistTracks: String,
     var playlistTracksCount: Long,
-    val addedTime: Long? = null
+    val addedTime: Long? = null,
+    var tracks: List<Track>? = null,
+    var tracksDuration: Long? = null,
+    var tracksCount: Long? = null,
 )

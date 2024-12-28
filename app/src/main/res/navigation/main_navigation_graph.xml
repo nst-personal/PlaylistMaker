@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_media_to_playlistCreateFragment3"
             app:destination="@id/playlistCreateFragment3" />
+        <action
+            android:id="@+id/action_media_to_playListDetailsFragment"
+            app:destination="@id/playListDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/settings"
@@ -44,4 +47,9 @@
         android:name="com.example.playlistmaker.presentation.ui.media.fragments.PlaylistCreateFragment"
         android:label="fragment_playlist_create"
         tools:layout="@layout/fragment_playlist_create" />
+    <fragment
+        android:id="@+id/playListDetailsFragment"
+        android:name="com.example.playlistmaker.presentation.ui.media.fragments.PlayListDetailsFragment"
+        android:label="fragment_playlist_details"
+        tools:layout="@layout/fragment_playlist_details" />
 </navigation>

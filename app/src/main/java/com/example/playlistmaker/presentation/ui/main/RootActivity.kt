@@ -22,7 +22,8 @@ class RootActivity : AppCompatActivity() {
         bottomNavigationView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            bottomNavigationView.isGone = destination.id == R.id.playlistCreateFragment3
+            bottomNavigationView.isGone = (destination.id == R.id.playlistCreateFragment3) ||
+                    destination.id == R.id.playListDetailsFragment
         }
 
         if (savedInstanceState == null) {
