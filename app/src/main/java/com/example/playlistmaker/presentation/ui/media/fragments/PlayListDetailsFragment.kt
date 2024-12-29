@@ -74,7 +74,6 @@ class PlayListDetailsFragment : Fragment() {
         }
 
         binding.moreEdit.setOnClickListener{
-            bottomSheetMoreBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             val bundle = Bundle().apply {
                 putLong("playlistId", playlistId!!)
             }
@@ -112,7 +111,6 @@ class PlayListDetailsFragment : Fragment() {
     }
 
     private fun handleDeletion() {
-        bottomSheetMoreBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         MaterialAlertDialogBuilder(requireActivity())
             .setTitle(getString(R.string.playlist_delete_confirmation_title))
             .setMessage(getString(R.string.playlist_delete_confirmation))
@@ -219,6 +217,9 @@ class PlayListDetailsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.showPlaylist(playlistId!!)
+        if (bottomSheetMoreBehavior.state !== BottomSheetBehavior.STATE_HIDDEN) {
+            binding.blurContainer.visibility = View.VISIBLE
+        }
     }
 
     override fun onDestroyView() {
