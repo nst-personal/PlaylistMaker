@@ -9,11 +9,11 @@ import com.example.playlistmaker.domain.interactors.playlist.PlaylistInteractor
 import com.example.playlistmaker.presentation.ui.media.fragments.interfaces.playlist.screen.PlaylistCreateScreenState
 import kotlinx.coroutines.launch
 
-class PlaylistCreateViewModel (
-    private val playlistInteractor: PlaylistInteractor
+open class PlaylistCreateViewModel (
+    protected val playlistInteractor: PlaylistInteractor
 ): ViewModel() {
 
-    private var loadingPlaylistLiveData = MutableLiveData<PlaylistCreateScreenState>()
+    protected var loadingPlaylistLiveData = MutableLiveData<PlaylistCreateScreenState>()
     fun getLoadingPlaylistLiveData(): LiveData<PlaylistCreateScreenState> = loadingPlaylistLiveData
 
     fun savePlaylist(playlistName: String,

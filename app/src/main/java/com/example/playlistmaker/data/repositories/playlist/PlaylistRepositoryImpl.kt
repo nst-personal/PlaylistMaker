@@ -137,6 +137,13 @@ class PlaylistRepositoryImpl(
         return false
     }
 
+    override suspend fun updatePlaylist(playlist: Playlist): Boolean {
+        appDatabase.playlistDao().updatePlaylist(
+            playlistDbConvertor.map(playlist)
+        )
+        return true
+    }
+
     override suspend fun deletePlaylistTrack(track: Track, playlist: Playlist): Boolean {
         var playlistTracks = PlaylistTrackDto(
             mutableListOf(),

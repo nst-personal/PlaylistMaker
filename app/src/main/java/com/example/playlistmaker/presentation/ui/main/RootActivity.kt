@@ -23,7 +23,8 @@ class RootActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             bottomNavigationView.isGone = (destination.id == R.id.playlistCreateFragment3) ||
-                    destination.id == R.id.playListDetailsFragment
+                    (destination.id == R.id.playListDetailsFragment) ||
+                    (destination.id == R.id.playlistEditFragment)
         }
 
         if (savedInstanceState == null) {

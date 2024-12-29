@@ -73,9 +73,16 @@ class PlayListDetailsFragment : Fragment() {
             handleDeletion()
         }
 
+        binding.moreEdit.setOnClickListener{
+            bottomSheetMoreBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            val bundle = Bundle().apply {
+                putLong("playlistId", playlistId!!)
+            }
+            findNavController().navigate(R.id.action_playListDetailsFragment_to_playlistEditFragment, bundle)
+        }
+
         binding.more.setOnClickListener {
             bottomSheetMoreBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            binding.blurContainer.visibility = View.GONE
         }
 
         bottomSheetMoreBehavior.addBottomSheetCallback(object :
@@ -87,7 +94,7 @@ class PlayListDetailsFragment : Fragment() {
                     }
 
                     BottomSheetBehavior.STATE_COLLAPSED -> {
-                        binding.blurContainer.visibility = View.GONE
+                        binding.blurContainer.visibility = View.VISIBLE
                     }
 
                     BottomSheetBehavior.STATE_HIDDEN -> {
@@ -105,7 +112,7 @@ class PlayListDetailsFragment : Fragment() {
     }
 
     private fun handleDeletion() {
-        bottomSheetMoreBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        bottomSheetMoreBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         MaterialAlertDialogBuilder(requireActivity())
             .setTitle(getString(R.string.playlist_delete_confirmation_title))
             .setMessage(getString(R.string.playlist_delete_confirmation))

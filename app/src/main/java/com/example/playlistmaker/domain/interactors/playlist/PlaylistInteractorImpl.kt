@@ -40,4 +40,8 @@ class PlaylistInteractorImpl(
     override suspend fun deletePlaylistTrack(track: Track, playlist: Playlist): Boolean {
         return playlistRepository.deletePlaylistTrack(track, playlist)
     }
+
+    override suspend fun updatePlaylist(playlist: Playlist) : Boolean {
+        return playlistRepository.updatePlaylist(playlist)
+    }
 }
