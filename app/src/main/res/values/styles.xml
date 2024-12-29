@@ -261,7 +261,7 @@
     </style>
     <style name="PlaylistTrackSubTitle">
         <item name="android:textSize">@dimen/playlist_track_subtitle_size</item>
-        <item name="android:textColor">?attr/searchSubTitle</item>
+        <item name="android:textColor">@color/black</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
     </style>
