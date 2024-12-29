@@ -1,33 +1,32 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.PlaylistMaker" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/black</item>
-        <item name="colorButtonNormal">@color/white</item>
-        <item name="colorOnBackground">@color/main_background</item>
-        <item name="searchTitle">@color/title_text</item>
-        <item name="searchSubTitle">@color/subtitle_text</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorButtonNormal">@color/black</item>
+        <item name="colorOnBackground">@color/black</item>
+        <item name="searchTitle">@color/white</item>
+        <item name="searchSubTitle">@color/white</item>
         <item name="backgroundIconColor">@color/textbox</item>
         <item name="mediaDescriptionTitle">@color/subtitle_text</item>
     </style>
     <style name="Base.Theme.PlaylistMaker.Common" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="titleTextAppearance">@color/textbox_text</item>
-        <item name="colorOnBackground">@color/white</item>
-        <item name="trackTitle">@color/title_text</item>
-        <item name="colorPrimaryContainer">@color/textbox</item>
-        <item name="colorPrimary">@color/button_title</item>
-        <item name="colorControlNormal">@color/textbox</item>
-        <item name="retryBackgroundColor">@color/black</item>
-        <item name="retryTextColor">@color/white</item>
-        <item name="notFoundDescription">@color/black</item>
-        <item name="tabTitle">@color/black</item>
-        <item name="iconColor">@color/textbox_text</item>
+        <item name="titleTextAppearance">@color/black</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="trackTitle">@color/white</item>
+        <item name="colorPrimaryContainer">@color/white</item>
+        <item name="colorOnBackground">@color/black</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="retryBackgroundColor">@color/white</item>
+        <item name="retryTextColor">@color/black</item>
+        <item name="notFoundDescription">@color/white</item>
+        <item name="tabTitle">@color/white</item>
+        <item name="iconColor">@color/black</item>
         <item name="searchTitle">@color/title_text</item>
         <item name="mediaDescriptionTitle">@color/subtitle_text</item>
-        <item name="switchColorTint">@color/textbox</item>
-        <item name="switchColorThumbTint">@color/switcher</item>
-        <item name="menuItem">@color/menu_item</item>
-        <item name="colorBottomMenu">@color/white</item>
-        <item name="colorBorderMenu">@color/grey</item>
+        <item name="switchColorTint">@color/switcher_line</item>
+        <item name="switchColorThumbTint">@color/switcher_disabled</item>
+        <item name="menuItem">@color/white</item>
+        <item name="colorBottomMenu">@color/black</item>
+        <item name="colorBorderMenu">@color/white</item>
     </style>
-    <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker"/>
 </resources>
