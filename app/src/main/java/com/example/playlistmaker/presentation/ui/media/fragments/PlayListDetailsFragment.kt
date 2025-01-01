@@ -3,6 +3,7 @@ package com.example.playlistmaker.presentation.ui.media.fragments
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,8 @@ import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistDetailsBinding
 import com.example.playlistmaker.domain.models.Playlist
@@ -21,6 +24,7 @@ import com.example.playlistmaker.presentation.ui.media_player.MediaPlayerActivit
 import com.example.playlistmaker.presentation.ui.media_player.interfaces.OnPlaylistTrackItemClickListener
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayListDetailsFragment : Fragment() {
@@ -186,6 +190,18 @@ class PlayListDetailsFragment : Fragment() {
         }
         if (playlist?.playlistImageUrl != null) {
             binding.pickerImage.setImageURI(playlist?.playlistImageUrl?.toUri())
+
+            Glide.with(binding.pickerImage)
+                .load(playlist?.playlistImageUrl)
+                .placeholder(R.drawable.placeholder)
+                .transform(
+                    RoundedCorners(
+                        TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP,
+                            40F,
+                            resources.displayMetrics).toInt()
+                )).into(binding.pickerImage)
+
             binding.playlistImage.setImageURI(playlist?.playlistImageUrl?.toUri())
         }
         val trackClickListener = object : OnPlaylistTrackItemClickListener {
@@ -211,7 +227,13 @@ class PlayListDetailsFragment : Fragment() {
         binding.playlistTracks.adapter =
             PlaylistTrackAdapter(playlist?.tracks!!, trackClickListener)
 
-
+        if (playlist?.tracks?.isEmpty() == true) {
+            Snackbar.make(
+                binding.container,
+                getString(R.string.playlist_track_not_found),
+                Snackbar.LENGTH_SHORT)
+            .show();
+        }
     }
 
     override fun onResume() {

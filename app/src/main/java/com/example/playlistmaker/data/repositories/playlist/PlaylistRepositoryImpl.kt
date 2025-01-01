@@ -11,6 +11,7 @@ import com.example.playlistmaker.domain.repositories.playlist.PlaylistRepository
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.time.Instant
 
 class PlaylistRepositoryImpl(
     private val appDatabase: AppDatabase,
@@ -49,9 +50,11 @@ class PlaylistRepositoryImpl(
                     track.collectionName,
                     track.releaseDate,
                     track.primaryGenreName,
-                    track.country
+                    track.country,
+                    track.isFavorite,
+                    track.addedTime
                 )
-            }
+            }.sortedByDescending { track -> track.addedTime }
             playlist.tracksCount = playlistTracks.tracks.size.toLong()
             playlist.tracksDuration =
                 playlistTracks.tracks.sumOf { track -> track.trackTimeMillis } / 60000
@@ -123,7 +126,9 @@ class PlaylistRepositoryImpl(
                     track.collectionName,
                     track.releaseDate,
                     track.primaryGenreName,
-                    track.country
+                    track.country,
+                    track.isFavorite,
+                    Instant.now().toEpochMilli()
                 )
             )
             playlist.playlistTracksCount = playlistTracks.tracks.size.toLong()

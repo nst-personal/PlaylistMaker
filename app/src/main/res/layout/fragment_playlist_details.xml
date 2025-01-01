@@ -9,6 +9,7 @@
     android:theme="@style/Base.Theme.PlaylistMaker"
     tools:context=".presentation.ui.media.fragments.PlayListDetailsFragment">
 
+
     <ScrollView
         android:layout_width="match_parent"
         style="@style/PlaylistDetailsContainer"
@@ -21,6 +22,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbarId"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/common_main_header_small"
+                android:contentInsetStart="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:navigationIcon="@drawable/static_back" />
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -29,25 +40,22 @@
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/pickerImage"
-                    style="@style/PlaylistDetailsItemImage"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="@dimen/button_margin"
+                    android:layout_gravity="center"
                     android:scaleType="centerCrop"
                     android:src="@drawable/placeholder"
+                    android:background="@drawable/rounded_image_corner"
+                    style="@style/PlaylistCreateImage"
+                    android:layout_marginLeft="@dimen/button_margin"
+                    android:layout_marginTop="@dimen/button_margin"
+                    android:layout_marginRight="@dimen/button_margin"
+                    android:layout_marginBottom="@dimen/button_margin"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="1:1"
-                    app:shapeAppearanceOverlay="@style/PlaylistDetailsItemImage" />
-
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbarId"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/common_main_header_small"
-                    android:contentInsetStart="0dp"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:navigationIcon="@drawable/static_back" />
+                    app:shapeAppearanceOverlay="@style/PlaylistCreateItemImage"/>
 
             </FrameLayout>
 
@@ -157,6 +165,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:theme="@style/Base.Theme.PlaylistMaker.Common"
             android:orientation="vertical">
 
             <View
@@ -199,6 +208,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:theme="@style/Base.Theme.PlaylistMaker.Common"
             android:orientation="vertical">
 
             <View
