@@ -115,7 +115,7 @@ class PlayListDetailsFragment : Fragment() {
     }
 
     private fun handleDeletion() {
-        MaterialAlertDialogBuilder(requireActivity())
+        MaterialAlertDialogBuilder(requireActivity(), R.style.AlertDialogTheme)
             .setTitle(getString(R.string.playlist_delete_confirmation_title))
             .setMessage(getString(R.string.playlist_delete_confirmation))
             .setPositiveButton(getString(R.string.playlist_track_delete_confirmation_yes)) { dialog, which ->
@@ -212,7 +212,7 @@ class PlayListDetailsFragment : Fragment() {
             }
 
             override fun onItemLongClick(playlistTrack: Track) {
-                MaterialAlertDialogBuilder(requireActivity())
+                MaterialAlertDialogBuilder(requireActivity(), R.style.AlertDialogTheme)
                     .setMessage(getString(R.string.playlist_track_delete_confirmation))
                     .setPositiveButton(getString(R.string.playlist_track_delete_confirmation_yes)) { dialog, which ->
                         viewModel.deleteTrack(playlist!!, playlistTrack)

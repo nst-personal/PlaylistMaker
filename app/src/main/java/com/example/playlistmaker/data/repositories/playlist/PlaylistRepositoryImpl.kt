@@ -11,6 +11,7 @@ import com.example.playlistmaker.domain.repositories.playlist.PlaylistRepository
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import java.time.Instant
 
 class PlaylistRepositoryImpl(
@@ -19,14 +20,12 @@ class PlaylistRepositoryImpl(
     private val playlistDbConvertor: PlaylistDbConvertor
 ) : PlaylistRepository {
 
-    override fun getPlaylists(): Flow<List<Playlist>> {
-        return flow {
-            val playlists = appDatabase.playlistDao().getPlaylist()
-            emit(convertFromPlaylistEntity(playlists))
+    override fun getPlaylists(): Flow<List<Playlist>> =
+        appDatabase.playlistDao().getPlaylist().map { playlists ->
+            convertFromPlaylistEntity(playlists)
         }
-    }
 
-    override suspend fun getPlaylistById(id: Long) : Flow<Playlist> {
+    override suspend fun getPlaylistById(id: Long): Flow<Playlist> {
         return flow {
             val playlistEntity = appDatabase.playlistDao().getPlaylistById(id)
             val playlist = playlistDbConvertor.map(playlistEntity!!)
@@ -38,8 +37,7 @@ class PlaylistRepositoryImpl(
                     gson.fromJson(playlist.playlistTracks, PlaylistTrackDto::class.java)
             }
 
-            playlist.tracks = playlistTracks.tracks.map {
-                track ->
+            playlist.tracks = playlistTracks.tracks.map { track ->
                 Track(
                     track.trackId,
                     track.trackName,
@@ -159,8 +157,8 @@ class PlaylistRepositoryImpl(
         }
         if (!playlistTracks.tracks.filter { trackItem -> trackItem.trackId == track.trackId }
                 .isEmpty()) {
-            playlistTracks.tracks.removeIf{
-                trackItem -> trackItem.trackId == track.trackId
+            playlistTracks.tracks.removeIf { trackItem ->
+                trackItem.trackId == track.trackId
             }
             playlist.playlistTracksCount = playlistTracks.tracks.size.toLong()
             playlist.playlistTracks = gson.toJson(playlistTracks)
