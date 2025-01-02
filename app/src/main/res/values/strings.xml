@@ -34,8 +34,10 @@
     <string name="media_favorites_empty">Ваша медиатека пуста</string>
     <string name="media_playlist_empty">Вы не создали ни одного плейлиста</string>
     <string name="media_add_new_playlist">Новый плейлист</string>
+    <string name="media_edit_playlist">Редактировать</string>
     <string name="media_add_new_playlist_title">Добавить в плейлист</string>
     <string name="create">Создать</string>
+    <string name="save">Сохранить</string>
     <string name="name">Название</string>
     <string name="name_required">Название *</string>
     <string name="description">Описание</string>
@@ -45,8 +47,21 @@
     <string name="close_confirmation_close_cancel">Отмена</string>
     <string name="save_confirmation_playlist">Плейлист</string>
     <string name="save_confirmation_created">создан</string>
+    <string name="save_confirmation_updated">обновлен</string>
     <string name="playlist_track">трек</string>
     <string name="playlist_tracks">треков</string>
+    <string name="playlist_minute">минут</string>
     <string name="playlist_tracks_added">Добавлено в плейлист</string>
     <string name="playlist_tracks_already_added">Трек уже добавлен в плейлист</string>
+    <string name="playlist_track_delete_confirmation">Хотите удалить трек?</string>
+    <string name="playlist_track_delete_confirmation_yes">Да</string>
+    <string name="playlist_track_delete_confirmation_no">Нет</string>
+    <string name="playlist_track_share_info">В этом плейлисте нет списка треков, которым можно поделиться</string>
+    <string name="playlist_track_not_found">В этом плейлисте нет списка треков</string>
+    <string name="playlist_track_share_info_ok">OK</string>
+    <string name="playlist_share">Поделиться</string>
+    <string name="playlist_edit">Редактировать информацию</string>
+    <string name="playlist_delete">Удалить плейлист</string>
+    <string name="playlist_delete_confirmation_title">Удалить плейлист</string>
+    <string name="playlist_delete_confirmation">Хотите удалить плейлист?</string>
 </resources>

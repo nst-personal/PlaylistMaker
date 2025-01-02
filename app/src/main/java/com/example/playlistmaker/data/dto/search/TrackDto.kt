@@ -9,5 +9,7 @@ data class TrackDto(
     val collectionName: String,
     val releaseDate: String,
     val primaryGenreName: String,
-    val country: String
+    val country: String,
+    val isFavorite: Boolean = false,
+    val addedTime: Long? = null
 )

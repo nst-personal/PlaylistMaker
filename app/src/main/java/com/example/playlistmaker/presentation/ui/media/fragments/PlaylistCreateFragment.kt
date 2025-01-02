@@ -29,16 +29,16 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.UUID
 
-class PlaylistCreateFragment : Fragment() {
+open class PlaylistCreateFragment : Fragment() {
     private var listener: OnFragmentRemovedListener? = null
 
     private var _binding: FragmentPlaylistCreateBinding? = null
-    private val binding get() = _binding!!
+    protected open val binding get() = _binding!!
 
-    private val viewModel: PlaylistCreateViewModel by viewModel()
+    protected open val viewModel: PlaylistCreateViewModel by viewModel()
 
-    private var playlist: PlaylistCreate? = null
-    private var isContentChanged: Boolean = false
+    open var playlist: PlaylistCreate? = null
+    open var isContentChanged: Boolean = false
 
     private lateinit var confirmDialog: MaterialAlertDialogBuilder
     private lateinit var textWatcherName: TextWatcher
@@ -149,7 +149,7 @@ class PlaylistCreateFragment : Fragment() {
 
     }
 
-    fun handlePlaylistData(data: PlaylistCreateScreenState) {
+    open fun handlePlaylistData(data: PlaylistCreateScreenState) {
         if (playlist == null) {
             playlist = PlaylistCreate()
         }
@@ -165,13 +165,17 @@ class PlaylistCreateFragment : Fragment() {
         if (data is PlaylistCreateScreenState.PlaylistCreateCompletedContent) {
             playlist = null
         }
+        validateContent()
+    }
+
+    open fun validateContent() {
         binding.btnSubmit.isEnabled = playlist?.playlistName != null && playlist?.playlistName?.trim()?.isEmpty() != true
         this.isContentChanged = playlist?.playlistName?.trim()?.isNotEmpty() == true ||
                 playlist?.playlistDescription?.trim()?.isNotEmpty() == true ||
                 playlist?.playlistImageUrl?.toString()?.trim()?.isNotEmpty() == true
     }
 
-    private fun fillInputData(savedInstanceState: Bundle) {
+    protected fun fillInputData(savedInstanceState: Bundle) {
         if (playlist == null) {
             playlist = PlaylistCreate()
         }
@@ -186,7 +190,7 @@ class PlaylistCreateFragment : Fragment() {
                 playlist?.playlistImageUrl?.toString()?.trim()?.isNotEmpty() == true
     }
 
-    private fun onPlaylistCreationClicked() {
+    open fun onPlaylistCreationClicked() {
         var path: String? = null
         if (playlist?.playlistImageUrl?.toString()?.isNotEmpty() == true) {
             path = saveImageToStore()
@@ -209,7 +213,7 @@ class PlaylistCreateFragment : Fragment() {
         handleBack()
     }
 
-    private fun saveImageToStore(): String {
+    open fun saveImageToStore(): String {
         val filePath =
             File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "myalbum")
         if (!filePath.exists()) {
@@ -233,7 +237,7 @@ class PlaylistCreateFragment : Fragment() {
         }
     }
 
-    private fun handleBack() {
+    open fun handleBack() {
         val fragmentToRemove = parentFragmentManager.findFragmentById(R.id.fragment_container)
         if (fragmentToRemove != null) {
             viewModel.clearList()

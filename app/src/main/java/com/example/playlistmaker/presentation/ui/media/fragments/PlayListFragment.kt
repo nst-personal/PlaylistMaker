@@ -9,11 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.databinding.FragmentPlaylistBinding
+import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.presentation.ui.media.fragments.adapter.PlaylistAdapter
 import com.example.playlistmaker.presentation.ui.media.fragments.interfaces.playlist.PlaylistItem
 import com.example.playlistmaker.presentation.ui.media.fragments.interfaces.playlist.screen.PlaylistListScreenState
+import com.example.playlistmaker.presentation.ui.media_player.interfaces.OnPlaylistItemClickListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
@@ -62,6 +63,14 @@ class PlayListFragment : Fragment() {
             binding.mediaNoDataIcon.visibility = View.VISIBLE
         } else {
             binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+            val trackClickListener = object : OnPlaylistItemClickListener {
+                override fun onItemClick(playlistItem: PlaylistItem) {
+                    val bundle = Bundle().apply {
+                        putLong("playlistId", playlistItem.id)
+                    }
+                    findNavController().navigate(R.id.action_media_to_playListDetailsFragment, bundle)
+                }
+            }
             binding.recyclerView.adapter = PlaylistAdapter(
                 playlist!!.map { item ->
                     var file: File? = null
@@ -74,7 +83,7 @@ class PlayListFragment : Fragment() {
                         file = File(filePath, item.playlistImageUrl?.substringAfterLast("/"))
                     }
                     PlaylistItem(item.playlistId, item.playlistName, item.playlistTracksCount, file)
-                })
+                }, trackClickListener)
             binding.recyclerView.visibility = View.VISIBLE
             binding.mediaNoDataText.visibility = View.GONE
             binding.mediaNoDataIcon.visibility = View.GONE

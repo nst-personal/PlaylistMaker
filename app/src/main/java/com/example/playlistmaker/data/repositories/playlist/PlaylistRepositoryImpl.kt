@@ -11,6 +11,8 @@ import com.example.playlistmaker.domain.repositories.playlist.PlaylistRepository
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import java.time.Instant
 
 class PlaylistRepositoryImpl(
     private val appDatabase: AppDatabase,
@@ -18,10 +20,44 @@ class PlaylistRepositoryImpl(
     private val playlistDbConvertor: PlaylistDbConvertor
 ) : PlaylistRepository {
 
-    override fun getPlaylists(): Flow<List<Playlist>> {
+    override fun getPlaylists(): Flow<List<Playlist>> =
+        appDatabase.playlistDao().getPlaylist().map { playlists ->
+            convertFromPlaylistEntity(playlists)
+        }
+
+    override suspend fun getPlaylistById(id: Long): Flow<Playlist> {
         return flow {
-            val playlists = appDatabase.playlistDao().getPlaylist()
-            emit(convertFromPlaylistEntity(playlists))
+            val playlistEntity = appDatabase.playlistDao().getPlaylistById(id)
+            val playlist = playlistDbConvertor.map(playlistEntity!!)
+            var playlistTracks = PlaylistTrackDto(
+                mutableListOf(),
+            )
+            if (playlist.playlistTracks.isNotEmpty()) {
+                playlistTracks =
+                    gson.fromJson(playlist.playlistTracks, PlaylistTrackDto::class.java)
+            }
+
+            playlist.tracks = playlistTracks.tracks.map { track ->
+                Track(
+                    track.trackId,
+                    track.trackName,
+                    track.artistName,
+                    track.trackTimeMillis,
+                    track.artworkUrl100,
+                    track.previewUrl,
+                    track.collectionName,
+                    track.releaseDate,
+                    track.primaryGenreName,
+                    track.country,
+                    track.isFavorite,
+                    track.addedTime
+                )
+            }.sortedByDescending { track -> track.addedTime }
+            playlist.tracksCount = playlistTracks.tracks.size.toLong()
+            playlist.tracksDuration =
+                playlistTracks.tracks.sumOf { track -> track.trackTimeMillis } / 60000
+
+            emit(playlist)
         }
     }
 
@@ -88,7 +124,9 @@ class PlaylistRepositoryImpl(
                     track.collectionName,
                     track.releaseDate,
                     track.primaryGenreName,
-                    track.country
+                    track.country,
+                    track.isFavorite,
+                    Instant.now().toEpochMilli()
                 )
             )
             playlist.playlistTracksCount = playlistTracks.tracks.size.toLong()
@@ -99,6 +137,36 @@ class PlaylistRepositoryImpl(
             return true
         }
 
+        return false
+    }
+
+    override suspend fun updatePlaylist(playlist: Playlist): Boolean {
+        appDatabase.playlistDao().updatePlaylist(
+            playlistDbConvertor.map(playlist)
+        )
+        return true
+    }
+
+    override suspend fun deletePlaylistTrack(track: Track, playlist: Playlist): Boolean {
+        var playlistTracks = PlaylistTrackDto(
+            mutableListOf(),
+        )
+        if (playlist.playlistTracks.isNotEmpty()) {
+            playlistTracks =
+                gson.fromJson(playlist.playlistTracks, PlaylistTrackDto::class.java)
+        }
+        if (!playlistTracks.tracks.filter { trackItem -> trackItem.trackId == track.trackId }
+                .isEmpty()) {
+            playlistTracks.tracks.removeIf { trackItem ->
+                trackItem.trackId == track.trackId
+            }
+            playlist.playlistTracksCount = playlistTracks.tracks.size.toLong()
+            playlist.playlistTracks = gson.toJson(playlistTracks)
+            appDatabase.playlistDao().updatePlaylist(
+                playlistDbConvertor.map(playlist)
+            )
+            return true
+        }
         return false
     }
 
