@@ -92,14 +92,9 @@ class PlaybackButtonView @JvmOverloads constructor(
     }
 
     private fun handleImage(canvas: Canvas) {
-        if (!isPlaying) {
-            imagePlayBitmap?.let {
-                canvas.drawBitmap(imagePlayBitmap, null, imageRect, null)
-            }
-        } else {
-            imagePauseBitmap?.let {
-                canvas.drawBitmap(imagePauseBitmap, null, imageRect, null)
-            }
+        val image = if (!isPlaying) imagePlayBitmap else imagePauseBitmap
+        image?.let {
+            canvas.drawBitmap(image, null, imageRect, null)
         }
     }
 
