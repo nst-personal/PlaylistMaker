@@ -16,9 +16,9 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.ActivityMediaPlayerBinding
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.databinding.ActivityMediaPlayerBinding
 import com.example.playlistmaker.presentation.ui.media.fragments.PlaylistCreateFragment
 import com.example.playlistmaker.presentation.ui.media.fragments.interfaces.playlist.PlaylistItem
 import com.example.playlistmaker.presentation.ui.media.fragments.interfaces.playlist.screen.PlaylistListScreenState
@@ -76,13 +76,15 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
         supportActionBar?.setDisplayShowHomeEnabled(true);
-        binding.tooltipId.setNavigationOnClickListener{
+        binding.tooltipId.setNavigationOnClickListener {
             finish()
         }
 
-        binding.playMedia.setOnClickListener {
-            playbackControl()
-        }
+        binding.playMedia.setOnPlayPauseButtonClickListener(object : OnPlaybackButtonViewClickListener {
+            override fun onTouch(isPlaying: Boolean) {
+                playbackControl()
+            }
+        })
 
         binding.likeMedia.setOnClickListener({
             onFavoriteClicked()
@@ -293,7 +295,7 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
 
     private fun stopPlayer() {
         playerState = MediaState.STATE_PREPARED
-        binding.playMedia.setImageResource(R.drawable.playlist_play)
+        binding.playMedia.updateState()
         binding.time.text = getResources().getString(R.string.media_player_initial_value)
     }
 
@@ -312,13 +314,13 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
     private fun startPlayer() {
         if (track.trackTimeMillis > 0) {
             viewModel.start()
-            binding.playMedia.setImageResource(R.drawable.playlist_pause)
+            binding.playMedia.updateState()
         }
     }
 
     private fun pausePlayer() {
         viewModel.pause()
-        binding.playMedia.setImageResource(R.drawable.playlist_play)
+        binding.playMedia.updateState()
     }
 
     fun onFavoriteClicked() {
