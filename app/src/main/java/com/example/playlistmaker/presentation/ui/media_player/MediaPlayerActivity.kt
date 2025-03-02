@@ -151,7 +151,6 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
     private fun updateNotificationState() {
         if (playerState is MediaState.Prepared ||
             playerState is MediaState.Paused) {
-            println(playerState.progress)
             viewModel.hideNotification()
         }
 
