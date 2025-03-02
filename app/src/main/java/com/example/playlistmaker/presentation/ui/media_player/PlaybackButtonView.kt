@@ -64,7 +64,11 @@ class PlaybackButtonView @JvmOverloads constructor(
     }
 
     fun updateState() {
-        isPlaying = !isPlaying
+        updateState(!isPlaying)
+    }
+
+    fun updateState(isPlayingValue: Boolean) {
+        isPlaying = isPlayingValue
         invalidate()
     }
 
