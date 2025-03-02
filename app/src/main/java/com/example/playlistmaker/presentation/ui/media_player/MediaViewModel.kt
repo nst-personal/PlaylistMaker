@@ -27,6 +27,7 @@ class MediaViewModel(
     private var trackLiveData = MutableLiveData<TrackState>()
     private var loadingPlaylistLiveData = MutableLiveData<PlaylistListScreenState>()
     private var playlistStateLiveData = MutableLiveData<Boolean>()
+
     fun getLoadingTrackLiveData(): LiveData<MediaScreenState> = loadingTrackLiveData
     fun getTrackLiveData(): LiveData<TrackState> = trackLiveData
     fun getLoadingPlaylistLiveData(): LiveData<PlaylistListScreenState> = loadingPlaylistLiveData
@@ -103,4 +104,19 @@ class MediaViewModel(
         playlistStateLiveData.postValue(false)
     }
 
+    fun hideNotification() {
+        audioPlayerControl?.hideNotification()
+    }
+
+    fun showNotification(description: String) {
+        audioPlayerControl?.showNotification(description)
+    }
+
+    fun startPlayer() {
+        audioPlayerControl?.startPlayer()
+    }
+
+    fun pausePlayer() {
+        audioPlayerControl?.pausePlayer()
+    }
 }

@@ -21,10 +21,10 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
+import com.example.playlistmaker.configuration.MediaConfig
 import com.example.playlistmaker.databinding.ActivityMediaPlayerBinding
 import com.example.playlistmaker.domain.models.Playlist
 import com.example.playlistmaker.domain.models.Track
@@ -39,7 +39,6 @@ import com.example.playlistmaker.presentation.ui.media_player.interfaces.TrackSt
 import com.example.playlistmaker.presentation.ui.search.view.adapter.PlaylistCreateAdapter
 import com.example.playlistmaker.services.MusicService
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.text.SimpleDateFormat
@@ -62,15 +61,6 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
             val binder = service as MusicService.MusicServiceBinder
             musicService = binder.getService()
             viewModel.setAudioPlayerControl(binder.getService())
-            lifecycleScope.launch {
-                musicService?.playerState?.collect {
-                    playerState = it
-                    if (playerState.progress == 0) {
-                        binding.playMedia.updateState(false)
-                    }
-                    updateButtonAndProgress()
-                }
-            }
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -115,6 +105,11 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
             handleTrackData(data)
         }
 
+        viewModel.observePlayerState().observe(this) {
+            playerState = it
+            updateButtonAndProgress()
+        }
+
         setSupportActionBar(binding.tooltipId);
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
@@ -123,7 +118,8 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
             finish()
         }
 
-        binding.playMedia.setOnPlayPauseButtonClickListener(object : OnPlaybackButtonViewClickListener {
+        binding.playMedia.setOnPlayPauseButtonClickListener(object :
+            OnPlaybackButtonViewClickListener {
             override fun onTouch(isPlaying: Boolean) {
                 playbackControl()
             }
@@ -142,8 +138,7 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
 
         handleSaveToPlaylistView()
 
-        viewModel.getPlaylistStateLiveData().observe(this){
-                data ->
+        viewModel.getPlaylistStateLiveData().observe(this) { data ->
             if (data) {
                 openFragment()
             } else {
@@ -153,6 +148,10 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
     }
 
     private fun updateButtonAndProgress() {
+        if (playerState is MediaState.Prepared ||
+            playerState is MediaState.Paused) {
+            binding.playMedia.updateState(false)
+        }
         val remainingTime = playerState.progress
         binding.time.text = dateFormat.format(remainingTime)
     }
@@ -188,14 +187,16 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
         if (data is PlaylistListScreenState.PlaylistListUpdatedContent) {
             Toast.makeText(
                 this,
-                "${getString(R.string.playlist_tracks_added)} ${data.playlist.playlistName}", Toast.LENGTH_SHORT
+                "${getString(R.string.playlist_tracks_added)} ${data.playlist.playlistName}",
+                Toast.LENGTH_SHORT
             ).show()
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
         if (data is PlaylistListScreenState.PlaylistListNotUpdatedContent) {
             Toast.makeText(
                 this,
-                "${getString(R.string.playlist_tracks_already_added)} ${data.playlist.playlistName}", Toast.LENGTH_SHORT
+                "${getString(R.string.playlist_tracks_already_added)} ${data.playlist.playlistName}",
+                Toast.LENGTH_SHORT
             ).show()
         }
     }
@@ -204,27 +205,26 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
         val playlistClickListener = object : OnPlaylistItemClickListener {
             override fun onItemClick(playlist: PlaylistItem) {
                 viewModel.updatePlaylist(track,
-                    this@MediaPlayerActivity.playlist?.first { item -> item.playlistId == playlist.id }!!)
+                    this@MediaPlayerActivity.playlist?.first { item -> item.playlistId == playlist.id }!!
+                )
             }
         }
         if (playlist?.isEmpty() == false) {
             binding.playlist.layoutManager = LinearLayoutManager(this)
             binding.playlist.isClickable = true
             adapter = PlaylistCreateAdapter(
-                    playlist!!.map { item ->
-                        var file: File? = null
-                        if (item.playlistImageUrl?.isNotEmpty() == true) {
-                            val filePath = File(
-                                applicationContext?.getExternalFilesDir(
-                                    Environment.DIRECTORY_PICTURES
-                                ), "myalbum"
-                            )
-                            file = File(filePath, item.playlistImageUrl?.substringAfterLast("/"))
-                        }
-                        PlaylistItem(item.playlistId, item.playlistName, item.playlistTracksCount, file)
+                playlist!!.map { item ->
+                    var file: File? = null
+                    if (item.playlistImageUrl?.isNotEmpty() == true) {
+                        val filePath = File(
+                            applicationContext?.getExternalFilesDir(
+                                Environment.DIRECTORY_PICTURES
+                            ), "myalbum"
+                        )
+                        file = File(filePath, item.playlistImageUrl?.substringAfterLast("/"))
                     }
-
-                , playlistClickListener)
+                    PlaylistItem(item.playlistId, item.playlistName, item.playlistTracksCount, file)
+                }, playlistClickListener)
             binding.playlist.adapter = adapter
             binding.playlist.isVisible = true
         } else {
@@ -314,7 +314,7 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
 
     private fun bindMusicService() {
         val intent = Intent(this, MusicService::class.java).apply {
-            putExtra("song_url", track.previewUrl)
+            putExtra(MediaConfig.SONG_URL, track.previewUrl)
         }
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
@@ -338,7 +338,8 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
         binding.albumValue.text = track.collectionName
         binding.typeValue.text = track.primaryGenreName
         val date = dateFormatParse.parse(track.releaseDate)
-        binding.yearValue.text = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().year.toString()
+        binding.yearValue.text =
+            date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().year.toString()
         binding.time.text = getResources().getString(R.string.media_player_initial_value)
         binding.durationValue.text = dateFormat.format(track.trackTimeMillis)
 
@@ -349,8 +350,8 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
             .into(imageView)
         binding.playMedia.isEnabled = true
     }
-    
-    fun getCoverArtwork(url: String) = url.replaceAfterLast('/',"512x512bb.jpg")
+
+    fun getCoverArtwork(url: String) = url.replaceAfterLast('/', "512x512bb.jpg")
 
     private fun stopPlayer() {
         playerState = MediaState.Prepared()
@@ -359,14 +360,15 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
     }
 
     private fun playbackControl() {
-        if (playerState is MediaState.Prepared || playerState is MediaState.Paused) {
+        if (playerState is MediaState.Prepared ||
+            playerState is MediaState.Paused) {
             if (track.trackTimeMillis > 0) {
-                musicService?.startPlayer()
                 binding.playMedia.updateState()
+                viewModel.startPlayer()
             }
         } else {
-            musicService?.pausePlayer()
             binding.playMedia.updateState()
+            viewModel.pausePlayer()
         }
     }
 
@@ -393,6 +395,16 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
 
     override fun onFragmentRemoved() {
         viewModel.closePlaylist()
+    }
+
+    override fun onPause() {
+        viewModel.showNotification("${track.artistName} - ${track.trackName}")
+        super.onPause()
+    }
+
+    override fun onResume() {
+        viewModel.hideNotification()
+        super.onResume()
     }
 
 }

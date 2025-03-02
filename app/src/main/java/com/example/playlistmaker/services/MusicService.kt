@@ -14,6 +14,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import com.example.playlistmaker.R
+import com.example.playlistmaker.configuration.MediaConfig
 import com.example.playlistmaker.domain.interactors.media.MediaInteractor
 import com.example.playlistmaker.presentation.ui.media_player.interfaces.MediaState
 import kotlinx.coroutines.CoroutineScope
@@ -29,13 +30,14 @@ import org.koin.android.ext.android.inject
 interface MediaPlayerControl {
     fun getMediaState(): StateFlow<MediaState>
     fun startPlayer()
+    fun showNotification(description: String)
+    fun hideNotification()
     fun pausePlayer()
 }
 
 
 internal class MusicService : Service(), MediaPlayerControl {
     private val mediaInteractor: MediaInteractor by inject()
-    private var songUrl = ""
 
     private val _playerState = MutableStateFlow<MediaState>(MediaState.Default())
     val playerState = _playerState.asStateFlow()
@@ -60,12 +62,6 @@ internal class MusicService : Service(), MediaPlayerControl {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
-        ServiceCompat.startForeground(
-            this,
-            SERVICE_NOTIFICATION_ID,
-            createServiceNotification(),
-            getForegroundServiceTypeConstant()
-        )
     }
 
     private fun createNotificationChannel() {
@@ -80,10 +76,13 @@ internal class MusicService : Service(), MediaPlayerControl {
         notificationManager.createNotificationChannel(channel)
     }
 
-    private fun createServiceNotification(): Notification {
+    private fun createServiceNotification(
+        title: String = "Playlist Maker",
+        description: String = "Our service is working right now!"
+    ): Notification {
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-            .setContentTitle("Playlist Maker")
-            .setContentText("Our service is working right now!")
+            .setContentTitle(title)
+            .setContentText(description)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
@@ -91,7 +90,7 @@ internal class MusicService : Service(), MediaPlayerControl {
     }
 
     override fun onBind(intent: Intent?): IBinder {
-        songUrl = intent?.getStringExtra("song_url") ?: ""
+        val songUrl = intent?.getStringExtra(MediaConfig.SONG_URL) ?: ""
         mediaInteractor.init(songUrl,
             {
                 _playerState.value = MediaState.Prepared()
@@ -125,6 +124,19 @@ internal class MusicService : Service(), MediaPlayerControl {
         mediaInteractor.start()
         _playerState.value = MediaState.Playing(mediaInteractor.currentPosition())
         startTimer()
+    }
+
+    override fun showNotification(description: String) {
+        ServiceCompat.startForeground(
+            this,
+            SERVICE_NOTIFICATION_ID,
+            createServiceNotification(description = description),
+            getForegroundServiceTypeConstant()
+        )
+    }
+
+    override fun hideNotification() {
+        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
     }
 
     private fun startTimer() {
