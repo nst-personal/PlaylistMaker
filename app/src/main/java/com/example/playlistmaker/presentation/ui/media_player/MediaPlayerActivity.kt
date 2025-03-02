@@ -108,6 +108,7 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
         viewModel.observePlayerState().observe(this) {
             playerState = it
             updateButtonAndProgress()
+            updateNotificationState()
         }
 
         setSupportActionBar(binding.tooltipId);
@@ -145,6 +146,15 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
                 removeFragment()
             }
         }
+    }
+
+    private fun updateNotificationState() {
+        if (playerState is MediaState.Prepared ||
+            playerState is MediaState.Paused) {
+            println(playerState.progress)
+            viewModel.hideNotification()
+        }
+
     }
 
     private fun updateButtonAndProgress() {
@@ -398,7 +408,9 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
     }
 
     override fun onPause() {
-        viewModel.showNotification("${track.artistName} - ${track.trackName}")
+        if (playerState is MediaState.Playing) {
+            viewModel.showNotification("${track.artistName} - ${track.trackName}")
+        }
         super.onPause()
     }
 

@@ -96,8 +96,8 @@ internal class MusicService : Service(), MediaPlayerControl {
                 _playerState.value = MediaState.Prepared()
             },
             {
-                _playerState.value = MediaState.Prepared()
                 stopTimer()
+                _playerState.value = MediaState.Prepared()
             })
         return binder
     }
@@ -149,10 +149,9 @@ internal class MusicService : Service(), MediaPlayerControl {
     }
 
     override fun pausePlayer() {
-        mediaInteractor.pause()
-        stopTimer()
         _playerState.value = MediaState.Paused(mediaInteractor.currentPosition())
-
+        stopTimer()
+        mediaInteractor.pause()
     }
 
     override fun onDestroy() {

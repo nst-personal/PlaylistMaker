@@ -47,7 +47,14 @@ class MediaViewModel(
         viewModelScope.launch {
             audioPlayerControl.getMediaState().collect {
                 playerState.postValue(it)
+                handleState(it)
             }
+        }
+    }
+
+    private fun handleState(it: MediaState) {
+        if (it is MediaState.Prepared) {
+            hideNotification()
         }
     }
 
