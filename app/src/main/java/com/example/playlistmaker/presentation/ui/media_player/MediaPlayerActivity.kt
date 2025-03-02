@@ -1,18 +1,27 @@
 package com.example.playlistmaker.presentation.ui.media_player
 
+import android.Manifest
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.IBinder
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
@@ -28,7 +37,9 @@ import com.example.playlistmaker.presentation.ui.media_player.interfaces.OnFragm
 import com.example.playlistmaker.presentation.ui.media_player.interfaces.OnPlaylistItemClickListener
 import com.example.playlistmaker.presentation.ui.media_player.interfaces.TrackState
 import com.example.playlistmaker.presentation.ui.search.view.adapter.PlaylistCreateAdapter
+import com.example.playlistmaker.services.MusicService
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.text.SimpleDateFormat
@@ -38,18 +49,50 @@ import java.util.Locale
 
 class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
     private lateinit var track: Track
-    private var playerState: Int = MediaState.STATE_DEFAULT
+    private var playerState: MediaState = MediaState.Default()
 
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
     private val dateFormatParse by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
     private lateinit var binding: ActivityMediaPlayerBinding
     private val viewModel: MediaViewModel by viewModel()
+    private var musicService: MusicService? = null
+
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as MusicService.MusicServiceBinder
+            musicService = binder.getService()
+            viewModel.setAudioPlayerControl(binder.getService())
+            lifecycleScope.launch {
+                musicService?.playerState?.collect {
+                    playerState = it
+                    if (playerState.progress == 0) {
+                        binding.playMedia.updateState(false)
+                    }
+                    updateButtonAndProgress()
+                }
+            }
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            musicService = null
+        }
+    }
 
     private var playlist: List<Playlist>? = null
 
     private var adapter: PlaylistCreateAdapter? = null
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            bindMusicService()
+        } else {
+            Toast.makeText(this, "Cannot bind service!", Toast.LENGTH_LONG).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,6 +150,11 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
                 removeFragment()
             }
         }
+    }
+
+    private fun updateButtonAndProgress() {
+        val remainingTime = playerState.progress
+        binding.time.text = dateFormat.format(remainingTime)
     }
 
     private fun openFragment() {
@@ -237,10 +285,19 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
         }
     }
 
+    fun handleService() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            bindMusicService()
+        }
+    }
+
     fun handleData(data: MediaScreenState) {
         if (data is MediaScreenState.Ready) {
             track = data.track!!
             fillContent()
+            handleService()
         }
         if (data is MediaScreenState.Completed) {
             stopPlayer()
@@ -248,20 +305,22 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
         if (data is MediaScreenState.State) {
             playerState = data.state
         }
-        if (data is MediaScreenState.Time) {
-            val remainingTime = data.currentPosition
-            binding.time.text = dateFormat.format(remainingTime)
-        }
     }
 
     override fun onDestroy() {
+        unbindMusicService()
         super.onDestroy()
-        viewModel.stop()
     }
 
-    override fun onPause() {
-        super.onPause()
-        pausePlayer()
+    private fun bindMusicService() {
+        val intent = Intent(this, MusicService::class.java).apply {
+            putExtra("song_url", track.previewUrl)
+        }
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun unbindMusicService() {
+        unbindService(serviceConnection)
     }
 
     private fun fillTrackContent() {
@@ -294,33 +353,21 @@ class MediaPlayerActivity : AppCompatActivity(), OnFragmentRemovedListener {
     fun getCoverArtwork(url: String) = url.replaceAfterLast('/',"512x512bb.jpg")
 
     private fun stopPlayer() {
-        playerState = MediaState.STATE_PREPARED
+        playerState = MediaState.Prepared()
         binding.playMedia.updateState()
         binding.time.text = getResources().getString(R.string.media_player_initial_value)
     }
 
     private fun playbackControl() {
-        when(playerState) {
-            MediaState.STATE_PLAYING -> {
-                pausePlayer()
+        if (playerState is MediaState.Prepared || playerState is MediaState.Paused) {
+            if (track.trackTimeMillis > 0) {
+                musicService?.startPlayer()
+                binding.playMedia.updateState()
             }
-            MediaState.STATE_PREPARED,
-            MediaState.STATE_PAUSED -> {
-                startPlayer()
-            }
-        }
-    }
-
-    private fun startPlayer() {
-        if (track.trackTimeMillis > 0) {
-            viewModel.start()
+        } else {
+            musicService?.pausePlayer()
             binding.playMedia.updateState()
         }
-    }
-
-    private fun pausePlayer() {
-        viewModel.pause()
-        binding.playMedia.updateState()
     }
 
     fun onFavoriteClicked() {
