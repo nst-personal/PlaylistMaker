@@ -122,7 +122,6 @@ internal class MusicService : Service(), MediaPlayerControl {
 
     override fun startPlayer() {
         mediaInteractor.start()
-        _playerState.value = MediaState.Playing(mediaInteractor.currentPosition())
         startTimer()
     }
 
