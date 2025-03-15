@@ -12,10 +12,7 @@ sealed class MediaScreenState {
     ): MediaScreenState()
 
     data class State(
-        val state: Int,
+        val state: MediaState,
     ): MediaScreenState()
 
-    data class Time(
-        val currentPosition: Int,
-    ): MediaScreenState()
 }

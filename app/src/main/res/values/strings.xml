@@ -28,6 +28,9 @@
     <string name="media_player_type">Жанр</string>
     <string name="media_player_country">Страна</string>
     <string name="media_player_initial_value">00:00</string>
+    <string name="media_player_service_title">Playlist Maker</string>
+    <string name="media_player_service_working_now_playing">Service for playing music</string>
+    <string name="media_player_service_working_now">Our service is working right now!</string>
     <string name="media_title">Медиатека</string>
     <string name="media_tab_title_favorites">Избранные треки</string>
     <string name="media_tab_title_playlist">Плейлисты</string>
