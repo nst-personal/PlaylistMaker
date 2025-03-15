@@ -67,18 +67,18 @@ internal class MusicService : Service(), MediaPlayerControl {
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
             NOTIFICATION_CHANNEL_ID,
-            "Playlist Maker",
+            getResources().getString(R.string.media_player_service_title),
             NotificationManager.IMPORTANCE_DEFAULT
         )
-        channel.description = "Service for playing music"
+        channel.description = getResources().getString(R.string.media_player_service_working_now_playing)
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
 
     private fun createServiceNotification(
-        title: String = "Playlist Maker",
-        description: String = "Our service is working right now!"
+        title: String = getResources().getString(R.string.media_player_service_title),
+        description: String = getResources().getString(R.string.media_player_service_working_now)
     ): Notification {
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setContentTitle(title)
