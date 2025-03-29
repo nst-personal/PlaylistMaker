@@ -30,6 +30,9 @@ kotlinxCoroutinesAndroid = "1.9.0"
 roomRuntime = "2.7.0-alpha11"
 roomKtx = "2.7.0-alpha11"
 peko = "3.0.5"
+ui = "1.7.8"
+androidxMaterial = "1.7.8"
+activityCompose = "1.10.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -61,6 +64,9 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomRuntime" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 peko = { group = "com.markodevcic", name = "peko", version.ref = "peko" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
+androidx-material = { group = "androidx.compose.material", name = "material", version.ref = "androidxMaterial" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
