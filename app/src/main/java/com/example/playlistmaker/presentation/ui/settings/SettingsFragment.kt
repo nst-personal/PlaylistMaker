@@ -1,6 +1,7 @@
 package com.example.playlistmaker.presentation.ui.settings
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -43,7 +44,11 @@ class SettingsFragment : Fragment() {
 
 
     private val viewModel: SettingsViewModel by viewModel()
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         _binding = FragmentSettingsBinding.inflate(layoutInflater)
         ViewCompat.setOnApplyWindowInsetsListener(binding.settings) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -52,42 +57,43 @@ class SettingsFragment : Fragment() {
         }
 
         val sendIntent = Intent(Intent.ACTION_SENDTO)
-//        val shareButton = binding.shareId
-//        val shareButtonClickListener: View.OnClickListener = View.OnClickListener {
-//            sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.settings_shareadble_link))
-//            startActivity(Intent.createChooser(sendIntent, null))
-//        }
-//        shareButton.setOnClickListener(shareButtonClickListener)
-//
-//        val supportButton = binding.supportId
-//        val supportButtonClickListener: View.OnClickListener = View.OnClickListener {
-//            val shareIntent = Intent(Intent.ACTION_SENDTO)
-//            shareIntent.data = Uri.parse("mailto:")
-//            shareIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.settings_shareadble_email)))
-//            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.settings_shareadble_text))
-//            shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.settings_shareadble_subject))
-//            startActivity(shareIntent)
-//        }
-//        supportButton.setOnClickListener(supportButtonClickListener)
-//
-//        val tcButton = binding.tcId
-//        val tcButtonClickListener: View.OnClickListener = View.OnClickListener {
-//            val shareIntent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.settings_shareadble_url)))
-//            startActivity(shareIntent)
-//        }
-//        tcButton.setOnClickListener(tcButtonClickListener)
-//
-//        val themeSwitcher = binding.themeSwitcher
-//        themeSwitcher.isChecked = (requireActivity().getApplicationContext() as App).darkTheme
-         val darkTheme = (requireActivity().getApplicationContext() as App).darkTheme
-//
-//        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-//            (getActivity()?.getApplicationContext() as App).switchTheme(checked)
-//            viewModel.updateTheme(checked)
-//        }
+
+        val darkTheme = (requireActivity().getApplicationContext() as App).darkTheme
 
         binding.composeView.setContent {
-            SettingsScreen(viewModel = viewModel, darkTheme = darkTheme)
+            SettingsScreen(viewModel = viewModel, darkTheme = darkTheme) { id ->
+                if (id == 1) {
+                    sendIntent.putExtra(
+                        Intent.EXTRA_TEXT,
+                        getString(R.string.settings_shareadble_link)
+                    )
+                    startActivity(Intent.createChooser(sendIntent, null))
+                }
+                if (id == 2) {
+                    val shareIntent = Intent(Intent.ACTION_SENDTO)
+                    shareIntent.data = Uri.parse("mailto:")
+                    shareIntent.putExtra(
+                        Intent.EXTRA_EMAIL,
+                        arrayOf(getString(R.string.settings_shareadble_email))
+                    )
+                    shareIntent.putExtra(
+                        Intent.EXTRA_TEXT,
+                        getString(R.string.settings_shareadble_text)
+                    )
+                    shareIntent.putExtra(
+                        Intent.EXTRA_SUBJECT,
+                        getString(R.string.settings_shareadble_subject)
+                    )
+                    startActivity(shareIntent)
+                }
+                if (id == 3) {
+                    val shareIntent = Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(getString(R.string.settings_shareadble_url))
+                    )
+                    startActivity(shareIntent)
+                }
+            }
         }
 
         return binding.root
@@ -101,7 +107,11 @@ class SettingsFragment : Fragment() {
 
 
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel, darkTheme: Boolean) {
+fun SettingsScreen(
+    viewModel: SettingsViewModel,
+    darkTheme: Boolean,
+    onClick: (id: Int) -> Unit
+) {
 
     val themeSwitcherState = remember { mutableStateOf(darkTheme) }
     val textColor = if (isSystemInDarkTheme()) {
@@ -166,23 +176,23 @@ fun SettingsScreen(viewModel: SettingsViewModel, darkTheme: Boolean) {
             text = stringResource(id = R.string.settings_share_app),
             icon = R.drawable.share,
             onClick = {
-
+                onClick(1)
             }
         )
-        
+
         SettingsItemButton(
             text = stringResource(id = R.string.settings_support),
             icon = R.drawable.support,
             onClick = {
-
+                onClick(2)
             }
         )
-        
+
         SettingsItemButton(
             text = stringResource(id = R.string.settings_tc),
             icon = R.drawable.tc,
             onClick = {
-
+                onClick(3)
             }
         )
     }
