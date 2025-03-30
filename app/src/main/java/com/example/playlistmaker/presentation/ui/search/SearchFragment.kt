@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,17 +15,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -47,32 +49,26 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.asFlow
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import coil.compose.AsyncImage
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.ui.media_player.MediaPlayerActivity
-import com.example.playlistmaker.presentation.ui.search.interfaces.OnTrackItemClickListener
 import com.example.playlistmaker.presentation.ui.search.interfaces.TrackScreenState
-import com.example.playlistmaker.presentation.ui.search.view.adapter.TrackAdapter
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -80,31 +76,15 @@ import java.util.Locale
 class SearchFragment : Fragment() {
     private var binding: FragmentSearchBinding? = null
 
-    private var historyView: RecyclerView? = null
-    private var recyclerView: RecyclerView? = null
-    private var adapter: TrackAdapter? = null
-    private var searchProgressBar: ProgressBar? = null
-
     private var searchValue: String = ""
 
-    private var tracks = listOf<Track>()
-    private var historyTracks = listOf<Track>()
     private val viewModel: SearchViewModel by viewModel()
-    private var isItemClickAllowed = true
 
-    private fun clickItemDebounce() : Boolean {
-        val current = isItemClickAllowed
-        if (isItemClickAllowed) {
-            isItemClickAllowed = false
-            viewLifecycleOwner.lifecycleScope.launch {
-                delay(ITEM_BUTTON_DEBOUNCE_DELAY)
-                isItemClickAllowed = true
-            }
-        }
-        return current
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -119,154 +99,31 @@ class SearchFragment : Fragment() {
         if (savedInstanceState != null) {
             searchValue = savedInstanceState.getString(SEARCH, "")
         }
-        binding?.inputEditText?.setText(searchValue)
         ViewCompat.setOnApplyWindowInsetsListener(binding?.search!!) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        searchProgressBar = binding?.searchProgressBarId
-
-        val clearButton = binding?.clearIcon
-
-        clearButton?.setOnClickListener {
-            binding?.inputEditText?.setText("")
-            handleHistoryView()
-            viewModel.showHistory()
-            searchProgressBar?.isVisible = false
-        }
-
-        recyclerView = binding?.tracksList
-        recyclerView?.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView?.isClickable = true
-
-        historyView = binding?.historyTracksList
-        historyView?.layoutManager = LinearLayoutManager(requireContext())
-        historyView?.isClickable = true
-
-        binding?.inputEditText?.setOnFocusChangeListener { view, hasFocus ->
-            if (hasFocus) {
-                handleHistoryView()
-            }
-        }
-
-        val clearHistoryButton = binding?.clearHistory
-        clearHistoryButton?.setOnClickListener {
-            viewModel.clearHistory()
-            showHistory(false)
-            searchProgressBar?.isVisible = false
-        }
-
-        viewModel.getLoadingTrackLiveData().observe(viewLifecycleOwner) { screenState ->
-            when (screenState) {
-                is TrackScreenState.SearchContent -> {
-                    if (screenState.tracks == null) {
-                        showSearchErrorView(true, screenState.search)
-                        showSearchNotFoundView(false)
-                        showHistory(false)
-                        recyclerView?.isVisible = false
-                    } else {
-                        handleTrackData(screenState.tracks, screenState.search)
-                    }
-                }
-                is TrackScreenState.HistoryContent -> {
-                    val trackClickListener = object : OnTrackItemClickListener {
-                        override fun onItemClick(track: Track) {
-                            openMediaPlayer(track)
-                        }
-                    }
-                    historyTracks = screenState.tracks
-                    historyView?.adapter = TrackAdapter(historyTracks, trackClickListener)
-                }
-            }
-        }
-
         binding?.composeView?.setContent {
-            SearchScreen(viewModel = viewModel)
+            SearchScreen(viewModel = viewModel, openMediaPlayer = { track ->
+                this.openMediaPlayer(track)
+            }, {
+                this.clearHistory()
+            })
         }
+    }
+
+    private fun clearHistory() {
+        viewModel.clearHistory()
+        viewModel.showHistory()
     }
 
     private fun openMediaPlayer(track: Track) {
-        if (clickItemDebounce()) {
-            viewModel.saveTrack(track)
-            val displayMediaIntent = Intent(requireContext(), MediaPlayerActivity::class.java)
-            startActivity(displayMediaIntent)
-        }
+        viewModel.saveTrack(track)
+        val displayMediaIntent = Intent(requireContext(), MediaPlayerActivity::class.java)
+        startActivity(displayMediaIntent)
     }
-
-    private fun handleHistoryView() {
-        recyclerView?.isVisible = false
-        showHistory(historyTracks.isNotEmpty() && searchValue.isEmpty())
-    }
-
-    private fun handleSearchTracks(savedSearchValue: String) {
-        if (savedSearchValue.isNotEmpty()) {
-            viewModel.searchTracks(savedSearchValue)
-        }
-    }
-
-    private fun handleTrackData(resultList: List<Track>?, savedSearchValue: String) {
-        showSearchErrorView(false, savedSearchValue)
-        if (resultList != null) {
-            searchProgressBar?.isVisible = false
-            if (resultList.isNotEmpty()) {
-                tracks = resultList
-                val trackClickListener = object : OnTrackItemClickListener {
-                    override fun onItemClick(track: Track) {
-                        viewModel.addTrack(track)
-                        openMediaPlayer(track)
-                    }
-                }
-                adapter = TrackAdapter(tracks, trackClickListener)
-                recyclerView?.adapter = adapter
-                recyclerView?.isVisible = true
-                showSearchNotFoundView(false)
-                showHistory(false)
-            } else {
-                showSearchNotFoundView(true)
-                showHistory(false)
-                recyclerView?.isVisible = false
-            }
-        } else {
-            showSearchErrorView(true, savedSearchValue)
-            showSearchNotFoundView(false)
-            showHistory(false)
-            recyclerView?.isVisible = false
-        }
-    }
-
-    private fun showHistory(isVisible: Boolean) {
-        if (isVisible) {
-            viewModel.showHistory()
-        }
-        binding?.historyData?.isVisible = isVisible
-    }
-
-    private fun showSearchNotFoundView(isVisible: Boolean) {
-        val searchNoDataTextView = binding?.searchNoDataText
-        val searchNoDataImageView = binding?.searchNoDataIcon
-        searchNoDataTextView?.isVisible = isVisible
-        searchNoDataImageView?.isVisible = isVisible
-        searchProgressBar?.isVisible = false
-    }
-
-    private fun showSearchErrorView(isVisible: Boolean, savedSearchValue: String) {
-        val searchErrorTextView = binding?.searchErrorText
-        val searchErrorConnectionTextView = binding?.searchErrorTextConnection
-        val searchErrorImageView = binding?.searchErrorIcon
-        val retryButton = binding?.retry
-        searchErrorTextView?.isVisible = isVisible
-        searchErrorTextView?.isVisible = isVisible
-        searchErrorConnectionTextView?.isVisible = isVisible
-        searchErrorImageView?.isVisible = isVisible
-        retryButton?.isVisible = isVisible
-        retryButton?.setOnClickListener{
-            handleSearchTracks(savedSearchValue)
-        }
-        searchProgressBar?.isVisible = false
-    }
-
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -281,108 +138,68 @@ class SearchFragment : Fragment() {
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun SearchScreen(viewModel: SearchViewModel) {
-    var query by remember { mutableStateOf("") }
-    var isClearIconVisible = remember { false }
-    var historyView by remember { mutableStateOf(null) }
-    var recyclerView by remember { mutableStateOf(null) }
-    var searchProgressBar by remember { mutableStateOf(false) }
-    var tracks by remember { mutableStateOf<List<Track>>(listOf()) }
-    var historyTracks by remember { mutableStateOf<List<Track>>(listOf()) }
-    var historyData = remember { false }
+fun SearchScreen(
+    viewModel: SearchViewModel, openMediaPlayer: (
+        track: Track
+    ) -> Unit,
+    onClearHistoryClick: (
 
+    ) -> Unit,
+) {
+    var query by remember { mutableStateOf("") }
+    var savedQuery by remember { mutableStateOf("") }
+    var searchProgressBar by remember { mutableStateOf(false) }
+    var tracks by remember { mutableStateOf<List<Track>?>(null) }
+    var historyTracks by remember { mutableStateOf<List<Track>?>(listOf()) }
 
     val screenState by viewModel.getLoadingTrackLiveData().asFlow().collectAsState(initial = null)
 
     when (screenState) {
         is TrackScreenState.SearchContent -> {
             val state = screenState as TrackScreenState.SearchContent
-            if (state.tracks == null) {
-//                showSearchErrorView(true, state.search)
-//                showSearchNotFoundView(false)
-//                showHistory(false)
-//                recyclerView?.isVisible = false
-            } else {
-                tracks = state.tracks
-                searchProgressBar = false
-//                handleTrackData(state.tracks, state.search)
-            }
+            savedQuery = state.search
+            tracks = state.tracks
+            searchProgressBar = false
         }
+
         is TrackScreenState.HistoryContent -> {
-//            val trackClickListener = object : OnTrackItemClickListener {
-//                override fun onItemClick(track: Track) {
-//                    openMediaPlayer(track)
-//                }
-//            }
             historyTracks = (screenState as TrackScreenState.HistoryContent).tracks
         }
-        null -> {}
+
+        null -> {
+
+        }
     }
 
-
-    fun showHistory(isVisible: Boolean) {
-        if (isVisible) {
+    fun onFocus(hasFocus: Boolean) {
+        if (hasFocus) {
             viewModel.showHistory()
         }
-        historyData = isVisible
-    }
-
-    fun showSearchNotFoundView(isVisible: Boolean) {
-//        val searchNoDataTextView = binding?.searchNoDataText
-//        val searchNoDataImageView = binding?.searchNoDataIcon
-//        searchNoDataTextView?.isVisible = isVisible
-//        searchNoDataImageView?.isVisible = isVisible
-        searchProgressBar = false
-    }
-
-    fun showSearchErrorView(isVisible: Boolean, savedSearchValue: String) {
-//        val searchErrorTextView = binding?.searchErrorText
-//        val searchErrorConnectionTextView = binding?.searchErrorTextConnection
-//        val searchErrorImageView = binding?.searchErrorIcon
-//        val retryButton = binding?.retry
-//        searchErrorTextView?.isVisible = isVisible
-//        searchErrorTextView?.isVisible = isVisible
-//        searchErrorConnectionTextView?.isVisible = isVisible
-//        searchErrorImageView?.isVisible = isVisible
-//        retryButton?.isVisible = isVisible
-//        retryButton?.setOnClickListener{
-//            handleSearchTracks(savedSearchValue)
-//        }
-        searchProgressBar = false
     }
 
     fun onTextChanged(queryValue: String) {
         query = queryValue
-        val isVisible = queryValue.isNotEmpty()
-        isClearIconVisible = isVisible
-        showHistory(false)
-        showSearchNotFoundView(false)
-        showSearchErrorView(false, "")
-        recyclerView?.isVisible = false
-        searchProgressBar = isVisible
-        viewModel.searchDebounce(
-            changedText = query
-        )
-    }
-    fun handleHistoryView() {
-        recyclerView?.isVisible = false
-        showHistory(historyTracks.isNotEmpty() && query.isEmpty())
+        if (queryValue.isNotEmpty()) {
+            searchProgressBar = true
+            viewModel.searchDebounce(
+                changedText = query
+            )
+        } else {
+            searchProgressBar = false
+        }
     }
 
     fun clearText() {
-        println("Clear")
         query = ""
-        handleHistoryView()
+        savedQuery = ""
         viewModel.showHistory()
         searchProgressBar = false
     }
 
-    fun onFocus(hasFocus: Boolean) {
-        println(hasFocus)
-        if (hasFocus) {
-            handleHistoryView()
-        }
+    fun onRetryClick() {
+        onTextChanged(savedQuery)
     }
+
 
     Scaffold(
         topBar = { Toolbar() },
@@ -395,7 +212,6 @@ fun SearchScreen(viewModel: SearchViewModel) {
             onQueryChanged = { newQuery -> onTextChanged(newQuery) },
             onClearClick = { clearText() },
             onFocus = { hasFocus -> onFocus(hasFocus) },
-            isClearIconVisible = isClearIconVisible
         )
 
         if (searchProgressBar) {
@@ -403,26 +219,37 @@ fun SearchScreen(viewModel: SearchViewModel) {
             SearchProgressBar(isVisible = true)
         }
 
-        if (tracks.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(16.dp))
-            TracksList(tracks = tracks)
-        }
+        if (!searchProgressBar) {
+            if (query.isNotEmpty()) {
+                if (tracks?.isNotEmpty() == true) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    TracksList(tracks = tracks!!, { track ->
+                        viewModel.addTrack(track)
+                        openMediaPlayer(track)
+                    })
+                }
 
-//        Spacer(modifier = Modifier.height(16.dp))
-//
-//        // No Data Content
-//        NoDataContent(isVisible = true)
-//
-//        Spacer(modifier = Modifier.height(16.dp))
-//
-//        // Error Content
-//        ErrorContent(isVisible = true, onRetryClick = {})
-//
-//        Spacer(modifier = Modifier.height(16.dp))
-//
+                if (tracks?.isEmpty() == true) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    NotFound()
+                }
+                if (tracks == null) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    ErrorOccured(onRetryClick = {
+                        onRetryClick()
+                    })
+                }
+            } else {
+                if (historyTracks?.isNotEmpty() == true) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    HistoryContent(
+                        historyTracks = historyTracks!!,
+                        openMediaPlayer = openMediaPlayer,
+                        onClearHistoryClick = onClearHistoryClick
+                    )
+                }
+            }
 
-        if (historyData) {
-            HistoryContent(history = historyTracks, isVisible = historyData, onClearHistoryClick = {})
         }
     }
 
@@ -437,13 +264,15 @@ fun Toolbar() {
     }
 
     Row {
-        Column( modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                horizontal = dimensionResource(id = R.dimen.main_top_padding),
-                vertical = dimensionResource(id = R.dimen.main_top_padding),
-            )
-            .background(color = Color.Transparent)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = dimensionResource(id = R.dimen.main_top_padding),
+                    vertical = dimensionResource(id = R.dimen.main_top_padding),
+                )
+                .background(color = Color.Transparent)
+        ) {
             Text(
                 color = textColor,
                 fontWeight = FontWeight(500),
@@ -460,7 +289,6 @@ fun SearchInput(
     onQueryChanged: (String) -> Unit,
     onClearClick: () -> Unit,
     onFocus: (Boolean) -> Unit,
-    isClearIconVisible: Boolean
 ) {
     Box(
         modifier = Modifier
@@ -472,7 +300,7 @@ fun SearchInput(
             onValueChange = onQueryChanged,
             modifier = Modifier
                 .fillMaxWidth()
-                .onFocusChanged { isFocus -> onFocus(isFocus.hasFocus) }
+                .onFocusChanged { isFocus -> onFocus(isFocus.isFocused) }
                 .background(colorResource(id = R.color.textbox), RoundedCornerShape(16.dp)),
             leadingIcon = {
                 Icon(
@@ -482,19 +310,19 @@ fun SearchInput(
                 )
             },
             trailingIcon = {
-                if (isClearIconVisible) {
+                if (query.isNotEmpty()) {
                     IconButton(onClick = {
                         onClearClick()
                     },
                         modifier = Modifier
-                            .clickable{
+                            .clickable {
                                 onClearClick()
                             }) {
                         Icon(
                             painter = painterResource(id = R.drawable.clear),
                             contentDescription = null,
                             modifier = Modifier
-                                .clickable{
+                                .clickable {
                                     onClearClick()
                                 }
                         )
@@ -513,6 +341,7 @@ fun SearchInput(
         )
     }
 }
+
 @Composable
 fun SearchProgressBar(isVisible: Boolean) {
     if (isVisible) {
@@ -532,23 +361,50 @@ fun SearchProgressBar(isVisible: Boolean) {
 }
 
 @Composable
-fun TracksList(tracks: List<Track>) {
+fun HistoryTracksList(
+    tracks: List<Track>, openMediaPlayer: (
+        track: Track
+    ) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier
+            .wrapContentHeight(align = Alignment.Top)
+            .padding(bottom = dimensionResource(id = R.dimen.list_bottom))
+    ) {
+        items(tracks) { track ->
+            TrackItem(track = track, openMediaPlayer)
+        }
+    }
+}
+
+
+@Composable
+fun TracksList(
+    tracks: List<Track>, openMediaPlayer: (
+        track: Track
+    ) -> Unit
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = dimensionResource(id = R.dimen.view_padding),
-                vertical  = dimensionResource(id = R.dimen.scroll_search_container_margin)
+            .padding(
+                horizontal = dimensionResource(id = R.dimen.view_padding),
+                vertical = dimensionResource(id = R.dimen.scroll_search_container_margin)
             )
+            .padding(bottom = dimensionResource(id = R.dimen.list_bottom)),
     ) {
         items(tracks) { track ->
-            TrackItem(track = track)
+            TrackItem(track = track, openMediaPlayer)
         }
     }
 }
 
 @Composable
 fun TrackItem(
-    track: Track
+    track: Track,
+    openMediaPlayer: (
+        track: Track
+    ) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -556,7 +412,10 @@ fun TrackItem(
             .padding(
                 top = dimensionResource(id = R.dimen.item_top_padding),
                 bottom = dimensionResource(id = R.dimen.item_top_padding)
-            ),
+            )
+            .clickable {
+                openMediaPlayer(track)
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -582,7 +441,8 @@ fun TrackItem(
         Image(
             painter = painterResource(id = R.drawable.forward),
             contentDescription = "",
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier
+                .width(24.dp)
         )
     }
 }
@@ -597,7 +457,9 @@ fun TrackInfo(
         colorResource(id = R.color.black)
     }
 
-    Column{
+    Column(
+        modifier = Modifier.fillMaxWidth(0.85f)
+    ) {
         Text(
             color = textColor,
             text = track.trackName,
@@ -619,18 +481,20 @@ fun TrackInfo(
                 style = MaterialTheme.typography.body2,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(0.75f)
+                modifier = Modifier
+                    .widthIn(max = LocalConfiguration.current.screenWidthDp.dp * 0.45f)
+                    .wrapContentWidth(align = Alignment.Start)
             )
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(2.dp))
 
             Image(
                 painter = painterResource(id = R.drawable.point),
                 contentDescription = null,
-                modifier = Modifier.size(4.dp)
+                modifier = Modifier.size(24.dp)
             )
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(2.dp))
 
             Text(
                 color = textColor,
@@ -644,100 +508,134 @@ fun TrackInfo(
 }
 
 @Composable
-fun PlaylistCard(
-    playlistImage: Int,
-    title: String,
-    size: String,
-    modifier: Modifier = Modifier
-) {
+fun NotFound() {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(bottom = dimensionResource(id = R.dimen.cardview_bottom)),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = dimensionResource(id = R.dimen.main_top_padding))
     ) {
         Image(
-            painter = painterResource(id = playlistImage),
+            painter = painterResource(id = R.drawable.not_found),
             contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-                .clip(RoundedCornerShape(16.dp)),
-            contentScale = ContentScale.Crop
+            modifier = Modifier.size(dimensionResource(id = R.dimen.icon_issue))
         )
-
         Text(
-            text = title,
-            style = MaterialTheme.typography.h6.copy(
-                fontSize = dimensionResource(id = R.dimen.playlist_font_size_title).value.sp,
-                fontWeight = FontWeight.Bold
-            ),
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.padding(top = 14.dp)
-        )
-
-        Text(
-            text = size,
-            style = MaterialTheme.typography.subtitle1.copy(
-                fontSize = dimensionResource(id = R.dimen.playlist_font_size_track_size).value.sp,
-                fontWeight = FontWeight.Bold
-            ),
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.padding(top = 6.dp)
+            text = stringResource(id = R.string.search_not_found),
+            fontWeight = FontWeight(400),
+            fontSize = 19.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = dimensionResource(id = R.dimen.margin_top))
         )
     }
 }
 
 @Composable
-fun NoDataContent(isVisible: Boolean) {
-    if (isVisible) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+fun ErrorOccured(onRetryClick: () -> Unit) {
+    val textColor = if (isSystemInDarkTheme()) {
+        colorResource(id = R.color.black)
+    } else {
+        colorResource(id = R.color.white)
+    }
+    val backgroundColor = if (isSystemInDarkTheme()) {
+        colorResource(id = R.color.white)
+    } else {
+        colorResource(id = R.color.black)
+    }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = dimensionResource(id = R.dimen.main_top_padding))
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.no_internet),
+            contentDescription = null,
+            modifier = Modifier.size(dimensionResource(id = R.dimen.icon_issue))
+        )
+        Text(
+            text = stringResource(id = R.string.search_error),
+            fontWeight = FontWeight(400),
+            fontSize = 19.sp,
+            textAlign = TextAlign.Center,
+        )
+        Text(
+            text = stringResource(id = R.string.search_error_check_connection),
+            modifier = Modifier.padding(top = dimensionResource(id = R.dimen.sub_description)),
+            fontWeight = FontWeight(400),
+            fontSize = 19.sp,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = onRetryClick,
+            shape = RoundedCornerShape(size = 24.dp),
+            colors = ButtonDefaults.buttonColors(backgroundColor = backgroundColor),
             modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = dimensionResource(id = R.dimen.main_top_padding))
+                .padding(
+                    start = dimensionResource(id = R.dimen.button_margin),
+                    end = dimensionResource(id = R.dimen.button_margin),
+                    top = dimensionResource(id = R.dimen.button_margin_bottom)
+                )
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.not_found),
-                contentDescription = null,
-                modifier = Modifier.size(dimensionResource(id = R.dimen.icon_issue))
-            )
-            Text(
-                text = stringResource(id = R.string.search_not_found),
-                modifier = Modifier.padding(top = dimensionResource(id = R.dimen.margin_top))
-            )
+            Text(text = stringResource(id = R.string.search_retry), color = textColor)
         }
     }
 }
 
 @Composable
-fun ErrorContent(isVisible: Boolean, onRetryClick: () -> Unit) {
-    if (isVisible) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+fun HistoryContent(
+    historyTracks: List<Track>,
+    openMediaPlayer: (
+        track: Track
+    ) -> Unit,
+    onClearHistoryClick: () -> Unit
+) {
+    val textColor = if (isSystemInDarkTheme()) {
+        colorResource(id = R.color.black)
+    } else {
+        colorResource(id = R.color.white)
+    }
+    val backgroundColor = if (isSystemInDarkTheme()) {
+        colorResource(id = R.color.white)
+    } else {
+        colorResource(id = R.color.black)
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                horizontal = dimensionResource(id = R.dimen.view_padding),
+                vertical = dimensionResource(id = R.dimen.scroll_search_container_margin)
+            )
+            .padding(bottom = dimensionResource(id = R.dimen.list_bottom))
+    ) {
+        Text(
+            text = stringResource(id = R.string.search_history),
             modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = dimensionResource(id = R.dimen.main_top_padding))
+                .fillMaxWidth()
+                .padding(
+                    top = dimensionResource(id = R.dimen.margin_search_title_margin),
+                    bottom = dimensionResource(id = R.dimen.media_bottom_margin)
+                ),
+            fontWeight = FontWeight(500),
+            fontSize = 19.sp,
+            textAlign = TextAlign.Center
+        )
+        Row {
+            HistoryTracksList(historyTracks, openMediaPlayer)
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.no_internet),
-                contentDescription = null,
-                modifier = Modifier.size(dimensionResource(id = R.dimen.icon_issue))
-            )
-            Text(
-                text = stringResource(id = R.string.search_error),
-                modifier = Modifier.padding(top = dimensionResource(id = R.dimen.settings_description_top))
-            )
-            Text(
-                text = stringResource(id = R.string.search_error_check_connection),
-                modifier = Modifier.padding(top = dimensionResource(id = R.dimen.sub_description))
-            )
             Button(
-                onClick = onRetryClick,
+                onClick = onClearHistoryClick,
+                shape = RoundedCornerShape(size = 24.dp),
+                colors = ButtonDefaults.buttonColors(backgroundColor = backgroundColor),
                 modifier = Modifier
                     .padding(
                         start = dimensionResource(id = R.dimen.button_margin),
@@ -745,47 +643,7 @@ fun ErrorContent(isVisible: Boolean, onRetryClick: () -> Unit) {
                         top = dimensionResource(id = R.dimen.button_margin_bottom)
                     )
             ) {
-                Text(text = stringResource(id = R.string.search_retry))
-            }
-        }
-    }
-}
-
-@Composable
-fun HistoryContent(
-    history: List<Track>,
-    isVisible: Boolean,
-    onClearHistoryClick: () -> Unit
-) {
-    if (isVisible) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = dimensionResource(id = R.dimen.main_top_padding))
-        ) {
-            Text(
-                text = stringResource(id = R.string.search_history),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = dimensionResource(id = R.dimen.search_history_margin))
-            )
-//            LazyColumn(
-//                modifier = Modifier.weight(1f)
-//            ) {
-//                items(history) { item ->
-//                    Text(
-//                        text = item,
-//                        modifier = Modifier.padding(vertical = 8.dp)
-//                    )
-//                }
-//            }
-            Button(
-                onClick = onClearHistoryClick,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(bottom = dimensionResource(id = R.dimen.button_margin_bottom))
-            ) {
-                Text(text = stringResource(id = R.string.clear_history))
+                Text(text = stringResource(id = R.string.clear_history), color = textColor)
             }
         }
     }
