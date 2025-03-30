@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -152,7 +153,6 @@ fun MediaScreen(
         modifier = Modifier
             .fillMaxWidth()
             .height(dimensionResource(id = R.dimen.common_main_header_small))
-            .background(MaterialTheme.colors.background)
             .padding(
                 start = dimensionResource(id = R.dimen.main_top_padding_left),
                 bottom = dimensionResource(id = R.dimen.media_bottom_margin)
@@ -163,6 +163,7 @@ fun MediaScreen(
             text = stringResource(id = R.string.media_title),
             style = MaterialTheme.typography.h6,
             fontSize = dimensionResource(id = R.dimen.font_size).value.sp,
+            color = textColor,
             modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.button_margin))
         )
     }
@@ -241,6 +242,12 @@ fun FavoriteScreen(
         track: Track
     ) -> Unit
 ) {
+    val backgroundColor = if (isSystemInDarkTheme()) {
+        colorResource(id = R.color.white)
+    } else {
+        colorResource(id = R.color.black)
+    }
+
     var tracks by remember { mutableStateOf<List<Track>?>(null) }
 
     val screenState by viewModel.getLoadingTrackLiveData().asFlow().collectAsState(initial = null)
@@ -272,6 +279,7 @@ fun FavoriteScreen(
                     modifier = Modifier.padding(top = dimensionResource(id = R.dimen.margin_top)),
                     fontWeight = FontWeight(400),
                     fontSize = 19.sp,
+                    color = backgroundColor,
                     textAlign = TextAlign.Center,
                 )
             }
@@ -350,21 +358,38 @@ fun PlaylistScreen(
                         .fillMaxWidth(fraction = 0.5f),
                     fontWeight = FontWeight(400),
                     fontSize = 19.sp,
+                    color = backgroundColor,
                     textAlign = TextAlign.Center,
                 )
             } else {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
                         .padding(bottom = dimensionResource(id = R.dimen.margin_top)),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(playlists) { playlist ->
-                        PlaylistItem(
-                            playlist = playlist,
-                            onClick = { item ->
-                                openPlaylist(item)
+                    items(playlists.chunked(2)) { pair ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            pair.forEach { playlist ->
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                ) {
+                                    PlaylistItem(
+                                        playlist = playlist,
+                                        onClick = { item ->
+                                            openPlaylist(item)
+                                        }
+                                    )
+                                }
                             }
-                        )
+                            if (pair.size == 1) {
+                                Spacer(modifier = Modifier.weight(1f))
+                            }
+                        }
                     }
                 }
             }
@@ -508,6 +533,18 @@ fun PlaylistItem(
     playlist: Playlist,
     onClick: (Playlist) -> Unit
 ) {
+    val textColor = if (isSystemInDarkTheme()) {
+        colorResource(id = R.color.white)
+    } else {
+        colorResource(id = R.color.black)
+    }
+    val tracksCount = if (playlist.playlistTracksCount.toInt() == 1) {
+        playlist.playlistTracksCount.toString() + " " +
+                stringResource(id = R.string.playlist_track)
+    } else {
+        (playlist.playlistTracksCount.toString()) + " " +
+                stringResource(id = R.string.playlist_tracks)
+    }
     Column(
         modifier = Modifier
             .padding(bottom = dimensionResource(id = R.dimen.cardview_bottom))
@@ -521,8 +558,6 @@ fun PlaylistItem(
             placeholder = painterResource(id = R.drawable.placeholder),
             error = painterResource(id = R.drawable.placeholder),
             modifier = Modifier
-                .width(160.dp)
-                .height(160.dp)
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(8.dp)),
             contentScale = ContentScale.Crop
@@ -536,24 +571,24 @@ fun PlaylistItem(
             fontSize = dimensionResource(id = R.dimen.playlist_font_size_title).value.sp,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
+            color = textColor,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 14.dp)
         )
 
-        playlist.playlistDescription?.let {
-            Text(
-                text = it,
-                style = MaterialTheme.typography.subtitle1.copy(
-                    fontWeight = FontWeight.Bold
-                ),
-                fontSize = dimensionResource(id = R.dimen.playlist_font_size_track_size).value.sp,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 6.dp)
-            )
-        }
+        Text(
+            text = tracksCount,
+            style = MaterialTheme.typography.subtitle1.copy(
+                fontWeight = FontWeight.Bold
+            ),
+            color = textColor,
+            fontSize = dimensionResource(id = R.dimen.playlist_font_size_track_size).value.sp,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 6.dp)
+        )
     }
 }

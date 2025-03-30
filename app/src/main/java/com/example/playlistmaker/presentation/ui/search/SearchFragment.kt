@@ -524,6 +524,11 @@ fun TrackInfo(
 
 @Composable
 fun NotFound() {
+    val textColor = if (isSystemInDarkTheme()) {
+        colorResource(id = R.color.white)
+    } else {
+        colorResource(id = R.color.black)
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -540,6 +545,7 @@ fun NotFound() {
             text = stringResource(id = R.string.search_not_found),
             fontWeight = FontWeight(400),
             fontSize = 19.sp,
+            color = textColor,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = dimensionResource(id = R.dimen.margin_top))
         )
@@ -552,6 +558,11 @@ fun ErrorOccured(onRetryClick: () -> Unit) {
         colorResource(id = R.color.black)
     } else {
         colorResource(id = R.color.white)
+    }
+    val titleColor = if (isSystemInDarkTheme()) {
+        colorResource(id = R.color.white)
+    } else {
+        colorResource(id = R.color.black)
     }
     val backgroundColor = if (isSystemInDarkTheme()) {
         colorResource(id = R.color.white)
@@ -575,6 +586,7 @@ fun ErrorOccured(onRetryClick: () -> Unit) {
             text = stringResource(id = R.string.search_error),
             fontWeight = FontWeight(400),
             fontSize = 19.sp,
+            color = titleColor,
             textAlign = TextAlign.Center,
         )
         Text(
@@ -582,6 +594,7 @@ fun ErrorOccured(onRetryClick: () -> Unit) {
             modifier = Modifier.padding(top = dimensionResource(id = R.dimen.sub_description)),
             fontWeight = FontWeight(400),
             fontSize = 19.sp,
+            color = titleColor,
             textAlign = TextAlign.Center,
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -638,7 +651,8 @@ fun HistoryContent(
                 ),
             fontWeight = FontWeight(500),
             fontSize = 19.sp,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = backgroundColor
         )
         Row {
             HistoryTracksList(historyTracks, openMediaPlayer)
