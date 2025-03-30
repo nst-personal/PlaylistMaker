@@ -38,10 +38,12 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -69,6 +71,9 @@ import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.ui.media_player.MediaPlayerActivity
 import com.example.playlistmaker.presentation.ui.search.interfaces.TrackScreenState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -151,7 +156,8 @@ fun SearchScreen(
     var searchProgressBar by remember { mutableStateOf(false) }
     var tracks by remember { mutableStateOf<List<Track>?>(null) }
     var historyTracks by remember { mutableStateOf<List<Track>?>(listOf()) }
-
+    val scope = rememberCoroutineScope()
+    var debounceJob by remember { mutableStateOf<Job?>(null) }
     val screenState by viewModel.getLoadingTrackLiveData().asFlow().collectAsState(initial = null)
 
     when (screenState) {
@@ -181,9 +187,6 @@ fun SearchScreen(
         query = queryValue
         if (queryValue.isNotEmpty()) {
             searchProgressBar = true
-            viewModel.searchDebounce(
-                changedText = query
-            )
         } else {
             searchProgressBar = false
         }
@@ -200,9 +203,21 @@ fun SearchScreen(
         onTextChanged(savedQuery)
     }
 
+    LaunchedEffect(query) {
+        debounceJob?.cancel()
+        if (query.isNotEmpty()) {
+            searchProgressBar = true
+        }
+        debounceJob = scope.launch {
+            delay(300L)
+            viewModel.searchDebounce(
+                changedText = query
+            )
+        }
+    }
 
     Scaffold(
-        topBar = { Toolbar() },
+        topBar = { AppToolbar() },
         backgroundColor = Color.Transparent
     ) {
 
@@ -256,7 +271,7 @@ fun SearchScreen(
 }
 
 @Composable
-fun Toolbar() {
+fun AppToolbar() {
     val textColor = if (isSystemInDarkTheme()) {
         colorResource(id = R.color.white)
     } else {
