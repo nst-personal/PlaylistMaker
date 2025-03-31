@@ -11,8 +11,4 @@
     android:paddingHorizontal="@dimen/media_padding"
     android:theme="@style/Base.Theme.PlaylistMaker.Common"
     tools:context=".presentation.ui.media.MediaFragment">
-    <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/compose_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 </LinearLayout>

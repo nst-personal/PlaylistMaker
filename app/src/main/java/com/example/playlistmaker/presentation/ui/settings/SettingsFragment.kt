@@ -25,83 +25,68 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.example.playlistmaker.App
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.FragmentSettingsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment : Fragment() {
-    private var _binding: FragmentSettingsBinding? = null
-    private val binding get() = _binding!!
-
-
     private val viewModel: SettingsViewModel by viewModel()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentSettingsBinding.inflate(layoutInflater)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.settings) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
         val sendIntent = Intent(Intent.ACTION_SENDTO)
-
         val darkTheme = (requireActivity().getApplicationContext() as App).darkTheme
 
-        binding.composeView.setContent {
-            SettingsScreen(viewModel = viewModel, darkTheme = darkTheme) { id ->
-                if (id == 1) {
-                    sendIntent.putExtra(
-                        Intent.EXTRA_TEXT,
-                        getString(R.string.settings_shareadble_link)
-                    )
-                    startActivity(Intent.createChooser(sendIntent, null))
-                }
-                if (id == 2) {
-                    val shareIntent = Intent(Intent.ACTION_SENDTO)
-                    shareIntent.data = Uri.parse("mailto:")
-                    shareIntent.putExtra(
-                        Intent.EXTRA_EMAIL,
-                        arrayOf(getString(R.string.settings_shareadble_email))
-                    )
-                    shareIntent.putExtra(
-                        Intent.EXTRA_TEXT,
-                        getString(R.string.settings_shareadble_text)
-                    )
-                    shareIntent.putExtra(
-                        Intent.EXTRA_SUBJECT,
-                        getString(R.string.settings_shareadble_subject)
-                    )
-                    startActivity(shareIntent)
-                }
-                if (id == 3) {
-                    val shareIntent = Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse(getString(R.string.settings_shareadble_url))
-                    )
-                    startActivity(shareIntent)
+        return ComposeView(requireContext()).apply {
+            setContent {
+                SettingsScreen(viewModel = viewModel, darkTheme = darkTheme) { id ->
+                    if (id == 1) {
+                        sendIntent.putExtra(
+                            Intent.EXTRA_TEXT,
+                            getString(R.string.settings_shareadble_link)
+                        )
+                        startActivity(Intent.createChooser(sendIntent, null))
+                    }
+                    if (id == 2) {
+                        val shareIntent = Intent(Intent.ACTION_SENDTO)
+                        shareIntent.data = Uri.parse("mailto:")
+                        shareIntent.putExtra(
+                            Intent.EXTRA_EMAIL,
+                            arrayOf(getString(R.string.settings_shareadble_email))
+                        )
+                        shareIntent.putExtra(
+                            Intent.EXTRA_TEXT,
+                            getString(R.string.settings_shareadble_text)
+                        )
+                        shareIntent.putExtra(
+                            Intent.EXTRA_SUBJECT,
+                            getString(R.string.settings_shareadble_subject)
+                        )
+                        startActivity(shareIntent)
+                    }
+                    if (id == 3) {
+                        val shareIntent = Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse(getString(R.string.settings_shareadble_url))
+                        )
+                        startActivity(shareIntent)
+                    }
                 }
             }
         }
-
-        return binding.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
     }
 }
 

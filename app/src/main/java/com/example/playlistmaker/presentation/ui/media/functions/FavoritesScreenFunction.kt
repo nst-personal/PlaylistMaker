@@ -16,9 +16,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -47,12 +45,10 @@ fun FavoriteScreen(
         colorResource(id = R.color.black)
     }
 
-    var tracks by remember { mutableStateOf<List<Track>?>(null) }
-
     val screenState by viewModel.getLoadingTrackLiveData().asFlow().collectAsState(initial = null)
 
-    if (screenState is FavoriteTrackScreenState.FavoriteContent) {
-        tracks = (screenState as FavoriteTrackScreenState.FavoriteContent).tracks
+    val tracks = remember(screenState) {
+        (screenState as? FavoriteTrackScreenState.FavoriteContent)?.tracks
     }
 
     if (tracks == null || tracks?.isEmpty() == true) {

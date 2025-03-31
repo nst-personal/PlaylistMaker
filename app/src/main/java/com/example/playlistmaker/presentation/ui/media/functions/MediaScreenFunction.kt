@@ -21,7 +21,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -66,9 +65,9 @@ fun MediaScreen(
             .height(dimensionResource(id = R.dimen.common_main_header_small))
             .padding(
                 start = dimensionResource(id = R.dimen.main_top_padding_left),
-                bottom = dimensionResource(id = R.dimen.media_bottom_margin)
+                bottom = dimensionResource(id = R.dimen.media_bottom_margin),
+                top = dimensionResource(id = R.dimen.button_margin)
             ),
-        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = stringResource(id = R.string.media_title),
