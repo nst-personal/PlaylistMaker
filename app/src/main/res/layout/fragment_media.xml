@@ -11,42 +11,4 @@
     android:paddingHorizontal="@dimen/media_padding"
     android:theme="@style/Base.Theme.PlaylistMaker.Common"
     tools:context=".presentation.ui.media.MediaFragment">
-    <Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/common_main_header_small"
-        android:layout_marginBottom="@dimen/media_bottom_margin"
-        android:paddingLeft="@dimen/main_top_padding_left">
-        <TextView
-            style="@style/CommonText"
-            android:layout_gravity="left"
-            android:layout_marginLeft="@dimen/button_margin"
-            android:layout_marginRight="@dimen/button_margin"
-            android:text="@string/media_title"
-            android:textSize="@dimen/font_size" />
-    </Toolbar>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingStart="@dimen/toolbar_padding"
-        android:paddingEnd="@dimen/toolbar_padding"
-        android:orientation="vertical">
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout"
-            android:background="?attr/colorOnBackground"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabMode="fixed"
-            app:tabTextAppearance="@style/MediaToolbar"
-            app:tabIndicatorFullWidth="true"
-            app:tabIndicatorColor="?attr/notFoundDescription"
-            app:tabTextColor="?attr/notFoundDescription"/>
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/viewPager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-        />
-
-    </LinearLayout>
 </LinearLayout>

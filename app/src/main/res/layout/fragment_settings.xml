@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,64 +9,5 @@
     android:orientation="vertical"
     android:id="@+id/settings"
     tools:context=".presentation.ui.settings.SettingsFragment"
-    android:padding="@dimen/main_top_padding"
-    >
-    <Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/common_main_header_small"
-        android:layout_marginBottom="@dimen/title_bottom_margin"
-        android:paddingLeft="@dimen/main_top_padding_left">
-        <TextView
-            style="@style/CommonText"
-            android:layout_gravity="left"
-            android:text="@string/settings_title"
-            android:layout_marginLeft="@dimen/button_margin"
-            android:layout_marginRight="@dimen/button_margin"
-            android:textSize="@dimen/font_size" />
-    </Toolbar>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/settings_header"
-            android:layout_marginTop="@dimen/settings_header_top"
-            android:layout_marginEnd="@dimen/settings_header_left"
-            android:orientation="horizontal">
-
-            <TextView
-                style="@style/SettingsSubText"
-                android:layout_marginLeft="@dimen/button_margin_mode"
-                android:layout_marginRight="@dimen/button_margin_mode"
-                android:text="@string/settings_dark_mode"
-                android:textSize="18sp" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/themeSwitcher"
-                android:layout_gravity="start"
-                android:layout_marginEnd="-8dp"
-                style="@style/SettingsMenuItemSwitcher"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-        <Button
-            android:gravity="left|center_vertical"
-            style="@style/SettingsMenuItem"
-            app:icon="@drawable/share"
-            android:id="@+id/shareId"
-            android:text="@string/settings_share_app"/>
-        <Button
-            android:gravity="left|center_vertical"
-            style="@style/SettingsMenuItem"
-            app:icon="@drawable/support"
-            android:id="@+id/supportId"
-            android:text="@string/settings_support"/>
-        <Button
-            android:gravity="left|center_vertical"
-            style="@style/SettingsMenuItem"
-            app:icon="@drawable/tc"
-            android:id="@+id/tcId"
-            android:text="@string/settings_tc"/>
-    </LinearLayout>
+>
 </LinearLayout>
